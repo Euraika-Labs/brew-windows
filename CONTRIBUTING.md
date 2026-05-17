@@ -57,5 +57,14 @@ For documentation-only changes:
 git diff --check
 ```
 
-For future code changes, add project-specific validation commands to this file
-as the implementation grows.
+For code changes on Windows:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\validate.ps1
+```
+
+For release payload changes:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\build-release.ps1 -Version dev
+```

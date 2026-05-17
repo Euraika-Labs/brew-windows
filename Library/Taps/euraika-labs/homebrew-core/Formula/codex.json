@@ -1,0 +1,98 @@
+{
+  "schemaVersion": "0",
+  "name": "codex",
+  "version": "0.130.0",
+  "description": "OpenAI Codex CLI for local agentic coding workflows.",
+  "homepage": "https://github.com/openai/codex",
+  "license": "Apache-2.0",
+  "type": "portable-cli",
+  "platforms": {
+    "windows": {
+      "arches": {
+        "x64": {
+          "url": "https://github.com/openai/codex/releases/download/rust-v0.130.0/codex-npm-win32-x64-0.130.0.tgz",
+          "sha256": "2f6309d4cf55d5a49847a018c4dcd4354995324ed9d240a9d4f57fb3254f2fec",
+          "extract": {
+            "type": "tgz",
+            "sourcePath": "package/vendor/x86_64-pc-windows-msvc"
+          },
+          "install": {
+            "files": [
+              {
+                "from": "codex/codex.exe",
+                "to": "codex.exe"
+              },
+              {
+                "from": "codex/codex-command-runner.exe",
+                "to": "codex-resources/codex-command-runner.exe"
+              },
+              {
+                "from": "codex/codex-windows-sandbox-setup.exe",
+                "to": "codex-resources/codex-windows-sandbox-setup.exe"
+              },
+              {
+                "from": "path/rg.exe",
+                "to": "codex-resources/rg.exe"
+              }
+            ]
+          }
+        },
+        "arm64": {
+          "url": "https://github.com/openai/codex/releases/download/rust-v0.130.0/codex-npm-win32-arm64-0.130.0.tgz",
+          "sha256": "69329907688d5cf6786efff9a584a80f0649969deed6ca351770d0b8e83a1e53",
+          "extract": {
+            "type": "tgz",
+            "sourcePath": "package/vendor/aarch64-pc-windows-msvc"
+          },
+          "install": {
+            "files": [
+              {
+                "from": "codex/codex.exe",
+                "to": "codex.exe"
+              },
+              {
+                "from": "codex/codex-command-runner.exe",
+                "to": "codex-resources/codex-command-runner.exe"
+              },
+              {
+                "from": "codex/codex-windows-sandbox-setup.exe",
+                "to": "codex-resources/codex-windows-sandbox-setup.exe"
+              },
+              {
+                "from": "path/rg.exe",
+                "to": "codex-resources/rg.exe"
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "bin": [
+    {
+      "name": "codex",
+      "path": "codex.exe"
+    }
+  ],
+  "resources": [
+    "codex-resources/codex-command-runner.exe",
+    "codex-resources/codex-windows-sandbox-setup.exe",
+    "codex-resources/rg.exe"
+  ],
+  "conflicts": [
+    {
+      "name": "@openai/codex",
+      "manager": "npm",
+      "hint": "Brew Windows installs the official GitHub release bundle directly instead of npm -g."
+    }
+  ],
+  "test": {
+    "command": "codex --version",
+    "match": "^codex-cli\\s+0\\.130\\.0"
+  },
+  "livecheck": {
+    "type": "github-release",
+    "repository": "openai/codex",
+    "tagPattern": "^rust-v(?<version>\\d+\\.\\d+\\.\\d+)$"
+  }
+}

@@ -1,94 +1,147 @@
 # Brew Windows
 
-Brew Windows is a native-Windows-first research and prototype project for
-bringing Homebrew to Windows as a real Windows package manager experience, not
-as a wrapper around WSL.
+Brew Windows is a native Windows prototype for bringing the Homebrew experience
+to Windows 11 Terminal and PowerShell.
 
-The long-term goal is to contribute practical, reviewable pull requests to the
-real [Homebrew/brew](https://github.com/Homebrew/brew) project. The short-term
-goal is to prove the native Windows architecture in this repository: a
-PowerShell bootstrap, Windows path handling, executable shims, Windows-aware keg
-linking, and eventually Windows bottle support.
+It is not a WSL wrapper, not an MSYS2 shortcut, and not a fake alias around
+another package manager. The default install is per-user at:
 
-## Position
+```text
+%LOCALAPPDATA%\Homebrew
+```
 
-This project is not about simulating Homebrew through WSL.
+## Target Experience
 
-WSL is an existing workaround for users who want Linux Homebrew on a Windows
-machine. It is not the product vision here. Brew Windows targets Windows itself:
-PowerShell, Windows Terminal, NTFS, Windows process execution, Windows path
-semantics, and native Windows binaries.
+The intended public install path is:
 
-## Vision
+```powershell
+irm https://github.com/Euraika-Labs/brew-windows/releases/latest/download/install.ps1 | iex
+brew install codex
+codex --version
+```
 
-Homebrew should be able to grow from macOS and Linux into a credible native
-Windows developer package manager while preserving the upstream Homebrew model:
+The current repository implements the first native MVP:
 
-- formula-style package definitions;
-- a Cellar-style install layout;
-- reproducible package metadata;
-- safe linking into a user-facing prefix;
-- checksum-verified downloads;
-- small, reviewable upstream changes.
+- PowerShell-native `brew` runtime.
+- Generic JSON formula catalog.
+- Cellar-style package layout.
+- SHA256-verified package downloads.
+- `.ps1` and `.cmd` executable shims.
+- A real `codex` formula using official OpenAI Windows release assets.
+- Windows CI for PowerShell 7 and Windows PowerShell.
 
-The native Windows implementation should feel like Homebrew, but it must respect
-Windows instead of pretending Windows is Unix.
+## Status
 
-## Current Scope
+This is experimental research and prototype code. Do not treat it as official
+Homebrew support for Windows.
 
-- Native `brew.ps1` bootstrap design.
-- Windows-native environment and path handling.
-- PowerShell and Windows Terminal integration for native Windows.
-- Executable shims and junction/link strategy.
-- Native Windows package install prototype for portable CLI tools.
-- Windows bottle tag and binary-format research.
-- Upstream pull request planning for `Homebrew/brew`.
+The long-term goal is to use this repository as evidence for small, reviewable
+upstream discussions and pull requests against
+[Homebrew/brew](https://github.com/Homebrew/brew).
 
-## Non-goals
+## Install From Source
 
-- Using WSL as the implementation strategy.
-- Wrapping `wsl.exe` and calling that native Windows support.
-- Replacing WinGet, Scoop, or Chocolatey.
-- Maintaining a permanent incompatible Homebrew fork.
-- Rewriting `homebrew/core` for Windows in one step.
-- Promising official Homebrew native Windows support before Homebrew
-  maintainers accept a support model.
+Until a release is published, run the prototype from a local checkout:
 
-## Roadmap
+```powershell
+$env:HOMEBREW_PREFIX = "$env:LOCALAPPDATA\Homebrew-dev"
+$env:HOMEBREW_TAP_PATHS = (Resolve-Path .\Library\Taps\euraika-labs\homebrew-core\Formula).Path
+.\bin\brew.ps1 --version
+.\bin\brew.ps1 doctor
+.\bin\brew.ps1 info codex
+```
 
-1. Build a native Windows proof in this repository.
-2. Implement a PowerShell launcher that can run read-only Homebrew commands.
-3. Add native Windows platform detection and path abstractions.
-4. Add a Windows shim/link strategy for installed executables.
-5. Install and uninstall a small portable CLI package on Windows.
-6. Add Windows CI for the prototype.
-7. Use the working prototype to open an upstream Homebrew discussion.
-8. Propose small upstream pull requests only after the native behavior is proven.
+To build the release payload that `install.ps1` expects:
 
-The architecture document explains the design in detail:
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\build-release.ps1 -Version 0.1.0
+```
 
-- [BREW_WINDOWS_UPSTREAM_ARCHITECTURE.md](BREW_WINDOWS_UPSTREAM_ARCHITECTURE.md)
+The release should upload both:
+
+- `install.ps1`
+- `dist\brew-windows-0.1.0.zip`
+
+## Commands
+
+```powershell
+brew --version
+brew config
+brew doctor
+brew search codex
+brew info codex
+brew install codex
+brew list
+brew upgrade codex
+brew uninstall codex
+brew self-uninstall
+```
+
+Most read commands support `--json`:
+
+```powershell
+brew --json config
+brew --json doctor
+brew --json info codex
+```
+
+## Manifest Model
+
+Formulae are JSON files under:
+
+```text
+Library\Taps\<owner>\<tap>\Formula\<name>.json
+```
+
+The manifest schema is documented in:
+
+- [schema/manifest.v0.schema.json](schema/manifest.v0.schema.json)
+
+The first real formula is:
+
+- [Library/Taps/euraika-labs/homebrew-core/Formula/codex.json](Library/Taps/euraika-labs/homebrew-core/Formula/codex.json)
+
+Codex is installed from OpenAI GitHub release bundles, not by shelling out to
+`npm install -g`.
 
 ## Repository Layout
 
 ```text
 .
-|-- .github/                 GitHub community templates
-|-- BREW_WINDOWS_UPSTREAM_ARCHITECTURE.md
-|-- CODE_OF_CONDUCT.md
-|-- CONTRIBUTING.md
-|-- LICENSE
-|-- README.md
-|-- SECURITY.md
-`-- SUPPORT.md
+|-- bin\                         brew.cmd and brew.ps1
+|-- docs\                        architecture, ADRs, sprint plan, threat model
+|-- Library\Taps\                built-in formula catalog
+|-- schema\                      manifest schema
+|-- scripts\                     validation and release payload tooling
+|-- tests\                       native Windows smoke tests
+|-- install.ps1                  release installer entrypoint
+`-- uninstall.ps1                prefix uninstaller
 ```
 
-## Development Status
+## Validate
 
-This repository is in the native Windows architecture and prototype phase. Code
-should be added when it validates one of the core native Windows design
-decisions: bootstrap, paths, shims, linking, package installation, binary
-inspection, or CI.
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\validate.ps1
+```
+
+## Roadmap
+
+The sprint plan is tracked in:
+
+- [docs/SPRINT_PLAN.md](docs/SPRINT_PLAN.md)
+
+The upstream strategy is tracked in:
+
+- [BREW_WINDOWS_UPSTREAM_ARCHITECTURE.md](BREW_WINDOWS_UPSTREAM_ARCHITECTURE.md)
+- [docs/UPSTREAM_DOSSIER.md](docs/UPSTREAM_DOSSIER.md)
+
+## Non-goals
+
+- Implementing Brew Windows through WSL.
+- Wrapping `wsl.exe`.
+- Becoming a WinGet, Scoop, Chocolatey, npm, or MSYS2 wrapper.
+- Promising official Homebrew Windows support before maintainers accept a
+  support model.
 
 ## Community
 

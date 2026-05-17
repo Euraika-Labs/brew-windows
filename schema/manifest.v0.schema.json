@@ -1,0 +1,168 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Euraika-Labs/brew-windows/schema/manifest.v0.schema.json",
+  "title": "Brew Windows Manifest v0",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "name",
+    "version",
+    "description",
+    "homepage",
+    "license",
+    "type",
+    "platforms",
+    "bin"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "0"
+    },
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._+-]*$"
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "homepage": {
+      "type": "string",
+      "format": "uri"
+    },
+    "license": {
+      "type": "string",
+      "minLength": 1
+    },
+    "type": {
+      "enum": [
+        "portable-cli"
+      ]
+    },
+    "platforms": {
+      "type": "object",
+      "required": [
+        "windows"
+      ],
+      "properties": {
+        "windows": {
+          "type": "object",
+          "required": [
+            "arches"
+          ],
+          "properties": {
+            "arches": {
+              "type": "object",
+              "minProperties": 1,
+              "additionalProperties": {
+                "type": "object",
+                "required": [
+                  "url",
+                  "sha256",
+                  "extract"
+                ],
+                "properties": {
+                  "url": {
+                    "type": "string"
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-fA-F]{64}$"
+                  },
+                  "extract": {
+                    "type": "object",
+                    "required": [
+                      "type"
+                    ],
+                    "properties": {
+                      "type": {
+                        "enum": [
+                          "zip",
+                          "tgz",
+                          "tar.gz"
+                        ]
+                      },
+                      "sourcePath": {
+                        "type": "string"
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "install": {
+                    "type": "object",
+                    "properties": {
+                      "files": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "from",
+                            "to"
+                          ],
+                          "properties": {
+                            "from": {
+                              "type": "string"
+                            },
+                            "to": {
+                              "type": "string"
+                            }
+                          },
+                          "additionalProperties": false
+                        }
+                      }
+                    },
+                    "additionalProperties": false
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "bin": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "path"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9._+-]*$"
+          },
+          "path": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "resources": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "conflicts": {
+      "type": "array"
+    },
+    "test": {
+      "type": "object"
+    },
+    "livecheck": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": false
+}
