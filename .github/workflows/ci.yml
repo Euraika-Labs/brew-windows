@@ -15,7 +15,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           persist-credentials: false
 
@@ -28,7 +28,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           persist-credentials: false
 
@@ -41,7 +41,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           persist-credentials: false
 
@@ -53,7 +53,9 @@ jobs:
         shell: pwsh
         run: |
           $paths = @("bin", "install.ps1", "uninstall.ps1", "tests")
-          $results = Invoke-ScriptAnalyzer -Path $paths -Recurse -Severity Error
+          $results = foreach ($path in $paths) {
+            Invoke-ScriptAnalyzer -Path $path -Recurse -Severity Error
+          }
           if ($results) {
             $results | Format-Table -AutoSize
             exit 1
@@ -64,7 +66,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           persist-credentials: false
 
