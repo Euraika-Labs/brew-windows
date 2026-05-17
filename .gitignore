@@ -15,6 +15,7 @@ Thumbs.db
 tmp/
 temp/
 dist/
+.cache/
 
 # Local environment
 .env

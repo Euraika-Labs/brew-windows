@@ -130,6 +130,10 @@ The sprint plan is tracked in:
 
 - [docs/SPRINT_PLAN.md](docs/SPRINT_PLAN.md)
 
+Automated catalog synchronization is tracked in:
+
+- [docs/CATALOG_SYNC.md](docs/CATALOG_SYNC.md)
+
 The upstream strategy is tracked in:
 
 - [BREW_WINDOWS_UPSTREAM_ARCHITECTURE.md](BREW_WINDOWS_UPSTREAM_ARCHITECTURE.md)

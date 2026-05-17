@@ -1,0 +1,64 @@
+name: Catalog Sync
+
+on:
+  schedule:
+    - cron: "17 4 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    name: Sync Homebrew Windows candidates
+    runs-on: windows-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: true
+
+      - name: Generate Windows catalog candidates
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          ./scripts/sync-homebrew-catalog.ps1 `
+            -Limit 200 `
+            -GenerateManifests `
+            -FailOnNoCandidates
+
+      - name: Validate generated catalog
+        shell: pwsh
+        run: ./scripts/validate.ps1
+
+      - name: Create or update catalog sync pull request
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if (-not (git status --short)) {
+            Write-Host "No catalog changes."
+            exit 0
+          }
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B automation/catalog-sync
+          git add catalog Library/Taps/euraika-labs/homebrew-core/Formula/Generated
+          git commit -m "Sync Windows-compatible Homebrew catalog"
+          git push --force-with-lease origin automation/catalog-sync
+
+          $existing = gh pr list --head automation/catalog-sync --state open --json number --jq ".[0].number"
+          if ([string]::IsNullOrWhiteSpace($existing)) {
+            gh pr create `
+              --title "Sync Windows-compatible Homebrew catalog" `
+              --body "Automated update from Homebrew formula metadata and verified Windows GitHub release assets." `
+              --base main `
+              --head automation/catalog-sync
+          } else {
+            gh pr edit $existing `
+              --title "Sync Windows-compatible Homebrew catalog" `
+              --body "Automated update from Homebrew formula metadata and verified Windows GitHub release assets."
+          }

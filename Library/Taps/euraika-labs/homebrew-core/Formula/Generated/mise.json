@@ -1,0 +1,59 @@
+﻿{
+    "schemaVersion":  "0",
+    "name":  "mise",
+    "version":  "2026.5.10",
+    "description":  "Polyglot runtime manager (asdf rust clone)",
+    "homepage":  "https://mise.jdx.dev/",
+    "license":  "MIT",
+    "type":  "portable-cli",
+    "upstream":  {
+                     "source":  "homebrew-formula-api",
+                     "tap":  "homebrew/core",
+                     "formulaPath":  "Formula/m/mise.rb",
+                     "formulaSha256":  "c82094e952bb6c55c3c97f5d31efcc67dd6c523091892ffe8e578aec698b7855",
+                     "githubRepository":  "jdx/mise",
+                     "githubReleaseTag":  "v2026.5.10"
+                 },
+    "platforms":  {
+                      "windows":  {
+                                      "arches":  {
+                                                     "x64":  {
+                                                                 "url":  "https://github.com/jdx/mise/releases/download/v2026.5.10/mise-v2026.5.10-windows-x64.zip",
+                                                                 "sha256":  "0c23d98ec8eafc5eb790188df68d402ad545913673cd40da41d183b6f3c5ae2b",
+                                                                 "extract":  {
+                                                                                 "type":  "zip",
+                                                                                 "sourcePath":  "mise/bin"
+                                                                             }
+                                                             },
+                                                     "arm64":  {
+                                                                   "url":  "https://github.com/jdx/mise/releases/download/v2026.5.10/mise-v2026.5.10-windows-arm64.zip",
+                                                                   "sha256":  "b2764f48f3c910f7a10cb540ea84c476e9ba79937bf7fde4e67826d7270b2c3e",
+                                                                   "extract":  {
+                                                                                   "type":  "zip",
+                                                                                   "sourcePath":  "mise/bin"
+                                                                               }
+                                                               }
+                                                 }
+                                  }
+                  },
+    "bin":  [
+                {
+                    "name":  "mise",
+                    "path":  "mise.exe"
+                }
+            ],
+    "resources":  [
+
+                  ],
+    "conflicts":  [
+
+                  ],
+    "test":  {
+                 "command":  "mise --version",
+                 "match":  "2026\\.5\\.10"
+             },
+    "livecheck":  {
+                      "type":  "github-release",
+                      "repository":  "jdx/mise"
+                  }
+}
