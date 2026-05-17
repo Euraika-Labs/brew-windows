@@ -9,10 +9,12 @@ Thumbs.db
 .idea/
 .vscode/
 
-# Logs and temporary files
+# Logs, temporary files, and release payloads
 *.log
+*.tmp
 tmp/
 temp/
+dist/
 
 # Local environment
 .env

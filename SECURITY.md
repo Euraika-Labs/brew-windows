@@ -35,3 +35,5 @@ The project should preserve Homebrew's trust model wherever possible:
 - Keep shims quote-safe.
 - Treat installer execution and native Windows package installation as
   high-risk areas.
+
+The active threat model is tracked in [docs/THREAT_MODEL.md](docs/THREAT_MODEL.md).
