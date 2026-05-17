@@ -48,7 +48,8 @@ jobs:
           git checkout -B automation/catalog-sync
           git add catalog Library/Taps/euraika-labs/homebrew-core/Formula/Generated
           git commit -m "Sync Windows-compatible Homebrew catalog"
-          git push --force-with-lease origin automation/catalog-sync
+          git fetch origin automation/catalog-sync --depth=1 2>$null
+          git push --force-with-lease origin HEAD:automation/catalog-sync
 
           $existing = gh pr list --head automation/catalog-sync --state open --json number --jq ".[0].number"
           if ([string]::IsNullOrWhiteSpace($existing)) {
