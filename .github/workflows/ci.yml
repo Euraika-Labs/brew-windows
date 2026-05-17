@@ -10,15 +10,9 @@ permissions:
   contents: read
 
 jobs:
-  powershell:
-    name: PowerShell (${{ matrix.shell }})
+  powershell-7:
+    name: PowerShell 7
     runs-on: windows-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        shell:
-          - pwsh
-          - powershell
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -26,7 +20,20 @@ jobs:
           persist-credentials: false
 
       - name: Run Brew Windows tests
-        shell: ${{ matrix.shell }}
+        shell: pwsh
+        run: ./tests/run.ps1
+
+  windows-powershell:
+    name: Windows PowerShell
+    runs-on: windows-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Run Brew Windows tests
+        shell: powershell
         run: ./tests/run.ps1
 
   script-analyzer:
