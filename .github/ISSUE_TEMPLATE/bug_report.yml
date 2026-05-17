@@ -37,7 +37,7 @@ body:
     id: environment
     attributes:
       label: Environment
-      description: Include OS, shell, WSL version if relevant, and PowerShell version if relevant.
+      description: Include Windows version, shell, PowerShell version, and any relevant prototype details.
       render: text
     validations:
       required: false

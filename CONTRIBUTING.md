@@ -9,8 +9,9 @@ credible upstream path for Windows-related Homebrew improvements.
 - Keep changes small, reviewable, and well documented.
 - Avoid breaking macOS and Linux assumptions unless the change introduces a
   clear abstraction.
-- Treat native Windows support as experimental until Homebrew maintainers accept
-  a support model.
+- Treat native Windows support as experimental until the prototype proves the
+  support model.
+- Do not propose WSL wrappers as native Windows support.
 - Do not copy Homebrew code into this repository unless the license and purpose
   are clear.
 
@@ -18,7 +19,7 @@ credible upstream path for Windows-related Homebrew improvements.
 
 Please check whether your idea belongs in one of these categories:
 
-- WSL, PowerShell, or Windows Terminal integration.
+- Native PowerShell or Windows Terminal integration.
 - Native Windows bootstrap or path handling.
 - Keg linking, shims, or executable resolution.
 - Bottle tags, binary inspection, or dependency scanning.

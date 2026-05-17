@@ -13,14 +13,14 @@ official Homebrew support channel.
 
 ## What This Project Supports
 
-- Windows-hosted Homebrew workflows through WSL, PowerShell, and Windows
-  Terminal.
-- Design work for native Windows support.
+- Native Windows Homebrew architecture and prototype work.
+- PowerShell and Windows Terminal workflows for native Windows.
 - Prototype code that validates upstreamable abstractions.
 
 ## What This Project Does Not Support
 
 - Production native Windows Homebrew installations.
+- WSL-based Homebrew workflows.
 - General Windows package-manager support.
 - Issues with WinGet, Scoop, Chocolatey, or unrelated tooling.
 - Formula-specific Homebrew problems that belong in `homebrew/core`.

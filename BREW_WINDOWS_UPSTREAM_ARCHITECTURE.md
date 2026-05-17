@@ -1,52 +1,70 @@
-# Homebrew on Windows: Upstream Vision and Architecture
+# Homebrew on Native Windows: Upstream Vision and Architecture
 
 Date: 2026-05-17
 
 ## 1. Executive Summary
 
-The realistic goal is not to create a separate "brew for Windows", but to build
-an upstream path into Homebrew itself. The best chance of acceptance is a phased
-approach:
+Brew Windows is a native Windows project. It is not a WSL bridge, not a Linux
+environment shortcut, and not a simulation of Windows support through another
+operating system.
 
-1. Start with a small, reviewable pull request for Windows-hosted usage through
-   WSL, PowerShell, and Windows Terminal.
-2. Build a native Windows prototype in this repository so the difficult parts
-   are proven before asking Homebrew maintainers to carry them.
-3. Upstream only small, platform-neutral abstractions: bootstrap, OS detection,
-   linking strategy, path handling, shell integration, bottle tags, and tests.
+The goal is to prove that Homebrew can run meaningfully on Windows itself:
 
-This matters because Homebrew maintainers have previously closed a native
-Windows support request, pointing out that WSL is already available and that a
-proper Windows port would be a large amount of work because Homebrew depends
-heavily on Unix tools such as Bash. At the same time, a recent pull request for
-PowerShell completion support was accepted, which shows that focused
-PowerShell-related improvements can fit upstream.
+- launched from PowerShell or Windows Terminal;
+- installed into a Windows prefix;
+- using Windows path and process semantics;
+- linking packages with shims or Windows-safe links;
+- installing native Windows CLI tools;
+- preparing a credible upstream path into `Homebrew/brew`.
 
-The recommendation is clear: do not open a large native Windows pull request.
-Open a sequence of small pull requests that improve today's supported Windows
-story and reduce future maintenance risk.
+WSL is relevant only as existing prior art and as a reason Homebrew maintainers
+may ask hard questions. It is not the roadmap.
+
+The recommended strategy is:
+
+1. Build a native Windows prototype in this repository first.
+2. Use the prototype to prove the difficult implementation details.
+3. Open an upstream Homebrew discussion with working evidence.
+4. Submit small pull requests to Homebrew only for abstractions that are already
+   validated by the native prototype.
 
 ## 2. Product Vision
 
-Homebrew should become a consistent developer package manager across macOS,
-Linux, and Windows-hosted workflows. Windows support should grow in layers:
+Homebrew should be able to offer a native Windows developer experience without
+losing what makes Homebrew useful:
 
-- Excellent Homebrew-on-WSL usage from Windows Terminal and PowerShell.
-- Experimental native Windows bootstrap and package installation outside
-  upstream.
-- Carefully scoped upstream platform abstractions once the prototype proves
-  they are maintainable.
+- readable package definitions;
+- predictable Cellar-style installation;
+- explicit package metadata;
+- checksum-verified downloads;
+- easy uninstall and upgrade behavior;
+- a command-line interface that feels familiar across platforms.
 
-For Windows Terminal and PowerShell this means:
+The Windows version must be Windows-native in the places that matter:
 
-- A clean Windows Terminal profile for Homebrew on WSL2.
-- A PowerShell function or shim that forwards `brew` to WSL reliably.
-- Long-term native Windows work around `brew.ps1`, Windows path handling,
-  shims, and Windows bottle tags.
+- PowerShell-first bootstrap;
+- Windows Terminal integration;
+- semicolon-separated environment paths;
+- Windows executable suffix resolution;
+- NTFS-aware linking behavior;
+- `.cmd` and `.ps1` shims;
+- PE/COFF and DLL awareness;
+- no dependency on WSL for normal operation.
 
-## 3. Relevant Upstream Facts
+## 3. Design Principles
 
-The current Homebrew codebase has several important constraints:
+- Native Windows first.
+- No WSL implementation path.
+- No permanent incompatible fork.
+- Keep upstream Homebrew compatibility where it is structurally possible.
+- Add abstractions before adding platform conditionals everywhere.
+- Start with portable CLI tools before GUI apps and MSI/EXE installers.
+- Make security and reversibility explicit.
+- Prove behavior in Windows CI before asking upstream to review it.
+
+## 4. Relevant Upstream Facts
+
+The current `Homebrew/brew` codebase has several important constraints:
 
 - `bin/brew` requires Bash and eventually launches `/bin/bash`.
 - `Library/Homebrew/brew.sh` performs early platform detection, default prefix
@@ -59,128 +77,69 @@ The current Homebrew codebase has several important constraints:
 - Bottle tags are derived from `HOMEBREW_SYSTEM` and `HOMEBREW_PROCESSOR`.
 - Keg linking and many formula helper methods assume symlinks and Bash wrapper
   scripts.
-- PowerShell completion and `brew shellenv pwsh` support already exist, but
-  they mainly serve PowerShell running in macOS, Linux, or WSL environments.
+- PowerShell completion support already exists, which is useful evidence that
+  PowerShell improvements can fit upstream when they are focused.
 
-## 4. Upstream Acceptance Criteria
-
-A pull request is more likely to be accepted if it:
-
-- Does not change existing macOS or Linux behavior.
-- Is small enough to review as an isolated platform abstraction.
-- Does not require mass changes in `homebrew/core`.
-- Does not imply Tier 1 or Tier 2 native Windows support.
-- Includes tests on existing supported platforms.
-- Keeps native Windows clearly experimental until maintainers accept a support
-  model.
-- Discloses any AI-assisted work in the pull request, following Homebrew's
-  contribution requirements.
-
-A pull request is unlikely to be accepted if it:
-
-- Attempts native Windows support, bottles, installers, and formula changes in
-  one large patch.
-- Makes Homebrew maintainers responsible for Windows bottle CI immediately.
-- Scatters Windows conditionals through the codebase instead of adding
-  maintainable abstractions.
+These facts do not mean native Windows is impossible. They mean the first work
+must be the bootstrap and platform layers, not formula migration.
 
 ## 5. Architecture Overview
 
 ```mermaid
 flowchart TD
-  A["Windows Terminal / PowerShell"] --> B["brew.ps1 or WSL bridge"]
-  B --> C["Bootstrap layer"]
+  A["Windows Terminal / PowerShell"] --> B["brew.ps1"]
+  B --> C["Native Windows bootstrap"]
   C --> D["Homebrew Ruby core"]
   D --> E["Platform abstraction"]
   E --> E1["OS::Mac"]
   E --> E2["OS::Linux"]
-  E --> E3["OS::Windows experimental"]
+  E --> E3["OS::Windows"]
   D --> F["Package resolver"]
-  F --> G["Formula/Cask DSL"]
+  F --> G["Formula DSL"]
   D --> H["Install engine"]
-  H --> I["Keg/Cellar layout"]
+  H --> I["Windows Cellar layout"]
   H --> J["Link strategy"]
-  J --> J1["POSIX symlink"]
-  J --> J2["Windows shim/junction"]
+  J --> J1["POSIX symlink strategy"]
+  J --> J2["Windows shim/junction strategy"]
   H --> K["Bottle strategy"]
   K --> K1["macOS bottles"]
   K --> K2["Linux bottles"]
-  K --> K3["Windows bottles experimental"]
+  K --> K3["Windows bottles"]
 ```
 
-The design should separate:
+The design separates:
 
-- Bootstrap: how `brew` starts.
-- Platform: which host OS is running.
-- Filesystem and linking: how installed executables become visible in `bin`.
+- Bootstrap: how `brew` starts on Windows.
+- Platform: what host OS is running.
+- Filesystem and linking: how installed files become visible.
 - Package semantics: formula DSL, dependencies, resources, and bottles.
 - Shell integration: `brew shellenv`, completions, and profile snippets.
+- Binary handling: Mach-O, ELF, and PE/COFF.
 
-## 6. Phase 1: Better Windows Host Support Through WSL
+## 6. Native Windows Roadmap
 
-This is the best first upstream route.
+### Phase 1: Repository Prototype Foundation
 
-Goal:
+Build the prototype here before proposing native code upstream.
 
-- Do not claim native Windows support.
-- Help Windows users run Homebrew through WSL2 from Windows Terminal and
-  PowerShell.
-- Extend existing Homebrew documentation instead of changing core behavior.
+Deliverables:
 
-Proposed changes:
-
-- Document a Windows Terminal profile that opens WSL2 with Homebrew shellenv
-  active.
-- Document a PowerShell function that forwards commands through `wsl.exe`.
-- Improve PowerShell completion or profile guidance only where it fits existing
-  upstream patterns.
-
-Example documentation snippet:
-
-```powershell
-function brew {
-  wsl.exe --exec /home/linuxbrew/.linuxbrew/bin/brew @args
-}
-```
-
-This does not solve native Windows installation, but it improves the supported
-path and gives the project an acceptable first contribution.
-
-## 7. Phase 2: Native Windows Prototype Outside Upstream
-
-Before asking Homebrew to accept native Windows support, this repository should
-prove the design.
-
-Prototype scope:
-
-- `brew.ps1` launcher.
-- `OS.windows?` and `OS::Windows`.
-- A default Windows prefix decision.
-- `Cellar`, `opt`, `var`, cache, and log layout on Windows.
-- Shims instead of symlinks for executables.
-- Portable ZIP/TAR releases with SHA256 verification.
-- No MSI/EXE orchestration in the first prototype.
+- Windows CI using `windows-latest`.
+- Project-local test package or fixture.
+- A minimal test harness for PowerShell and Ruby.
+- Documentation of expected prefix, cache, temp, and log paths.
 
 Success criteria:
 
-- `brew --version` works on native Windows.
-- `brew config` works on native Windows.
-- `brew doctor` reports Windows-specific checks.
-- `brew tap`, `brew search`, `brew install`, and `brew uninstall` work for a
-  small portable test package.
+- CI can run prototype tests on native Windows.
+- The repository can validate Windows behavior without Homebrew upstream changes.
 
-## 8. Phase 3: Native Windows Upstream Architecture
+### Phase 2: Native `brew.ps1` Bootstrap
 
-### 8.1 Bootstrap
+Create a PowerShell launcher that prepares the environment contract expected by
+Homebrew's Ruby code.
 
-New entry points:
-
-- Keep `bin/brew` unchanged for macOS and Linux.
-- Add `bin/brew.ps1` for Windows.
-- Optionally add `bin/brew.cmd` as a thin wrapper to PowerShell.
-
-The Windows launcher must provide the same environment contract as the current
-Bash bootstrap:
+Required environment:
 
 - `HOMEBREW_BREW_FILE`
 - `HOMEBREW_PREFIX`
@@ -190,13 +149,24 @@ Bash bootstrap:
 - `HOMEBREW_CACHE`
 - `HOMEBREW_TEMP`
 - `HOMEBREW_LOGS`
+- `HOMEBREW_SYSTEM`
+- `HOMEBREW_PROCESSOR`
 
-This must come before deeper native work because the Ruby core currently starts
-after the shell bootstrap has prepared the environment.
+Initial target commands:
 
-### 8.2 OS Detection
+- `brew --version`
+- `brew config`
+- `brew --prefix`
+- `brew doctor` with Windows-specific checks
 
-Add a Windows predicate:
+This phase should not install packages yet. It proves that Homebrew can start
+without Bash.
+
+### Phase 3: Windows Platform Layer
+
+Add a real Windows platform abstraction.
+
+Potential upstream shape:
 
 ```ruby
 def self.windows?
@@ -204,39 +174,46 @@ def self.windows?
 end
 ```
 
-Potential new files:
+Potential files:
 
 - `Library/Homebrew/os/windows.rb`
 - `Library/Homebrew/extend/os/windows/...`
-- Tests alongside current macOS and Linux tests.
+- Windows-specific tests beside existing macOS/Linux tests.
 
 Potential DSL:
 
 - `on_windows do ... end`
 - `OS.windows?`
-- Bottle tags such as `x86_64_windows` and `arm64_windows`.
+- bottle tags such as `x86_64_windows` and `arm64_windows`
 
-### 8.3 Paths and Environment
+This layer must avoid scattering `if windows` checks across unrelated code.
 
-Windows differs in several places:
+### Phase 4: Native Path and Executable Handling
+
+Windows path behavior needs a dedicated abstraction.
+
+Problems to solve:
 
 - PATH separator is `;`, not `:`.
-- Executable suffixes include `.exe`, `.cmd`, `.bat`, and `.ps1`.
-- Drive letters and backslashes must not be treated as POSIX paths.
-- PowerShell profile handling should use `$PROFILE` where possible.
-- Execution policy and script-signing behavior should be explicit.
+- Executables may end in `.exe`, `.cmd`, `.bat`, or `.ps1`.
+- Drive letters contain `:`.
+- Backslashes and forward slashes must be handled deliberately.
+- PowerShell profile handling should respect `$PROFILE`.
+- Long path behavior may depend on system policy.
 
 Recommended abstractions:
 
-- `Homebrew::Platform::PathList` for PATH-like formatting.
-- `Homebrew::Platform::ExecutableResolver` for suffix-aware executable lookup.
-- Platform-aware `brew shellenv` output for native PowerShell.
+- `Homebrew::Platform::PathList`
+- `Homebrew::Platform::ExecutableResolver`
+- `Homebrew::Platform::ShellEnvironment`
 
-### 8.4 Linking and Shims
+Native `brew shellenv pwsh` should emit Windows PowerShell code using Windows
+path separators and Windows paths.
 
-Homebrew links kegs into a prefix with symlinks. Native Windows symlinks depend
-on Developer Mode, administrator rights, or policy settings. The native Windows
-prototype should avoid requiring them for executables.
+### Phase 5: Windows Keg Linking and Shims
+
+Homebrew links kegs into a prefix with symlinks. Native Windows should not
+require symlink privileges for normal CLI package use.
 
 Recommended interface:
 
@@ -254,10 +231,44 @@ end
 Implementations:
 
 - `PosixSymlinkStrategy` for current macOS/Linux behavior.
-- `WindowsShimStrategy` for `.cmd` and `.ps1` executable shims, junctions where
-  safe, and metadata pointers for `opt`.
+- `WindowsShimStrategy` for native Windows behavior.
 
-### 8.5 Bottles and Binary Formats
+Windows shim examples:
+
+```cmd
+@echo off
+"%HOMEBREW_PREFIX%\Cellar\foo\1.0\bin\foo.exe" %*
+```
+
+```powershell
+& "$env:HOMEBREW_PREFIX\Cellar\foo\1.0\bin\foo.exe" @args
+exit $LASTEXITCODE
+```
+
+Directory linking can use junctions where safe. The first prototype should
+prefer executable shims and metadata over privileged symlinks.
+
+### Phase 6: First Native Package Install
+
+Start with portable CLI tools, not GUI apps or machine-wide installers.
+
+Package requirements:
+
+- downloadable archive;
+- SHA256 checksum;
+- no administrator rights;
+- no MSI/EXE installer side effects;
+- clean uninstall by removing the keg and shims;
+- basic `test do` equivalent.
+
+Success criteria:
+
+- `brew install <test-tool>` works on native Windows.
+- The tool can be run from PowerShell through the generated shim.
+- `brew uninstall <test-tool>` removes the keg and shims.
+- `brew doctor` reports no critical issues after install/uninstall.
+
+### Phase 7: Windows Bottles and Binary Inspection
 
 macOS uses Mach-O. Linux uses ELF. Windows uses PE/COFF and DLLs.
 
@@ -266,41 +277,112 @@ Needed components:
 - `PEPathname` equivalent to the existing Mach-O and ELF wrappers.
 - DLL dependency scanner.
 - Windows bottle tags.
-- Conservative relocation support, starting only with portable tools that are
-  explicitly relocatable.
+- Conservative relocation support.
+- Windows bottle metadata in the existing bottle model.
 
-### 8.6 Build Environment
+Initial bottle tags:
 
-Native Windows builds are the hardest part.
+- `x86_64_windows`
+- `arm64_windows`
+
+The first bottle support should be limited to packages that are clearly
+relocatable or built for the selected prefix.
+
+### Phase 8: Upstream Discussion and Pull Requests
+
+Only after the native prototype works should we ask Homebrew maintainers to
+consider upstream changes.
+
+The upstream discussion should include:
+
+- working native Windows demo;
+- scope and non-goals;
+- support tier proposal;
+- CI plan;
+- security model;
+- list of smallest upstreamable PRs;
+- explanation of how existing macOS/Linux behavior remains unchanged.
+
+Possible upstream PR order:
+
+1. Refactor bootstrap assumptions without changing macOS/Linux behavior.
+2. Add `OS.windows?` and tests while keeping Windows unsupported by default.
+3. Add path/executable abstractions used by existing platforms too.
+4. Add native PowerShell `shellenv` behavior.
+5. Add link strategy abstraction.
+6. Add experimental Windows shim strategy.
+7. Add Windows bottle tags only after installation works.
+
+## 7. Prefix and Filesystem Model
+
+The default prefix is a core product decision.
+
+Candidates:
+
+- `C:\Homebrew`
+- `%LOCALAPPDATA%\Homebrew`
+- `%USERPROFILE%\.homebrew`
+
+Recommendation for prototype:
+
+- Use `%LOCALAPPDATA%\Homebrew` for user-writable installs without elevation.
+- Keep the prefix overrideable for reproducible bottle experiments.
+- Do not require administrator rights.
+
+Suggested layout:
+
+```text
+%LOCALAPPDATA%\Homebrew\
+|-- bin\
+|-- Cellar\
+|-- opt\
+|-- var\
+|   `-- homebrew\
+|-- Library\
+`-- Caskroom\
+```
+
+Open question for upstream:
+
+- Official bottles may require a stable default prefix. If so, the prototype
+  should measure the tradeoff between user-writable installs and bottle
+  reproducibility.
+
+## 8. Build Environment
+
+Native Windows builds are harder than portable binary installs.
 
 Options:
 
-1. MSYS2/MinGW: closer to Unix formulae, but adds a compatibility layer.
-2. MSVC Build Tools: more native, but many formulae need patches.
-3. Portable binary first: fastest proof, but less representative of source
-   builds.
+1. MSVC Build Tools: most native, but many formulae need patches.
+2. MinGW/MSYS2 as build tools only: useful for some software, but should not be
+   the runtime identity of Brew Windows.
+3. Portable binary first: fastest path to proving install, shim, uninstall, and
+   doctor behavior.
 
 Recommendation:
 
-- Start with portable binary installation.
-- Use MinGW/MSYS2 only as a build dependency, not as a runtime requirement.
-- Add MSVC support later for formulae that already support it upstream.
+- Start with portable CLI packages.
+- Add MSVC support for software that supports Windows upstream.
+- Use MSYS2 only as an optional build dependency, not as the definition of the
+  platform.
 
-### 8.7 Installers and WinGet
+## 9. Installers and WinGet
 
-Do not start by wrapping MSI, EXE, or WinGet.
+Do not start by wrapping MSI, EXE, MSIX, or WinGet.
 
 Reasons:
 
 - Homebrew should not become a WinGet wrapper.
-- WinGet already has its own manifests, sources, and installer semantics.
-- Windows installers bring UAC, machine/user scope, Add/Remove Programs,
+- Windows installers bring UAC, user/machine scope, Add/Remove Programs,
   repair, product codes, silent switches, and rollback concerns.
+- Homebrew's first native Windows proof should be reversible and contained
+  inside the prefix.
 
-A later experiment could introduce a cask-like Windows app DSL in a separate
-tap, but it should not be part of the first native proof.
+Later experiments may add a Windows app DSL, but it should be separate from the
+first native CLI package manager proof.
 
-## 9. Security Model
+## 10. Security Model
 
 Minimum requirements:
 
@@ -311,7 +393,7 @@ Minimum requirements:
 - The install prefix is writable only by the installing user unless a machine
   install is explicitly chosen.
 - Shims quote paths safely and pass arguments correctly.
-- `brew doctor` detects Developer Mode, symlink policy, long-path policy,
+- `brew doctor` detects long-path policy, Developer Mode, symlink policy,
   execution policy, antivirus locking, and PATH conflicts.
 
 Future options:
@@ -320,94 +402,37 @@ Future options:
 - SBOM output for Windows bottles.
 - Artifact attestation for Windows bottles.
 
-## 10. Test Strategy
-
-Upstream unit tests:
-
-- `OS.windows?` detection through test doubles.
-- Windows bottle tag parsing.
-- Native PowerShell `shellenv` output.
-- Shim generation without requiring real Windows symlinks.
-- PATH formatting.
+## 11. Test Strategy
 
 Prototype CI:
 
 - GitHub Actions on `windows-latest`.
+- PowerShell 7 and Windows PowerShell checks where practical.
 - Ruby matching Homebrew's supported Ruby version.
 - `brew.ps1 --version`.
 - `brew.ps1 config`.
 - `brew.ps1 doctor`.
-- Install and uninstall of a small portable test package.
+- install/uninstall of a small portable test package.
+
+Upstream unit tests:
+
+- `OS.windows?` detection through test doubles.
+- Windows path list formatting.
+- executable suffix resolution.
+- native PowerShell `shellenv` output.
+- shim generation without real symlink privileges.
+- Windows bottle tag parsing.
 
 Later tests:
 
-- Bottle build CI.
-- DLL dependency scanning.
-- Relocation checks.
+- bottle build CI;
+- DLL dependency scanning;
+- relocation checks;
 - Windows ARM64 when runner availability is practical.
-
-## 11. Pull Request Roadmap
-
-### PR 1: WSL, PowerShell, and Windows Terminal Documentation
-
-Files likely touched:
-
-- `docs/Homebrew-on-Linux.md`
-- `docs/Shell-Completion.md`
-
-Goal:
-
-- Improve the supported Windows-hosted WSL route.
-- Avoid any native Windows support claim.
-
-### PR 2: Clear Unsupported Native Windows Message
-
-Goal:
-
-- If users try to run Homebrew natively on Windows before support exists, print
-  a clear message pointing them to WSL2.
-- Reduce maintainer support burden.
-
-### PR 3: Platform-Neutral PowerShell Helpers
-
-Files likely touched:
-
-- `Library/Homebrew/utils/shell.rb`
-- `Library/Homebrew/cmd/shellenv.sh` or a later Ruby shellenv layer.
-- Tests in `Library/Homebrew/test/utils`.
-
-Goal:
-
-- Improve PowerShell abstractions without claiming native Windows support.
-
-### PR 4: Homebrew Discussion for Native Windows Experiment
-
-Open a discussion before native Windows code lands upstream.
-
-Include:
-
-- Scope.
-- Non-goals.
-- Support tier.
-- Prototype results.
-- CI plan.
-- The smallest proposed reviewable slice.
-
-### PR 5 and Later: Native Slices
-
-Possible order:
-
-1. `OS.windows?` plus tests and unsupported status.
-2. `brew.ps1` bootstrap for read-only commands.
-3. Native PowerShell `brew shellenv`.
-4. Windows path and executable abstractions.
-5. Shim strategy.
-6. Portable formula install prototype.
-7. Windows bottle tags.
 
 ## 12. Risks
 
-- Homebrew maintainers may keep native Windows out of scope.
+- Homebrew maintainers may decide native Windows remains out of scope.
 - Removing Bash assumptions from bootstrap is substantial work.
 - Many formulae are Unix-first and will not build natively.
 - Symlink and junction behavior varies by Windows policy.
@@ -417,26 +442,28 @@ Possible order:
 
 Mitigations:
 
-- Start with WSL and PowerShell improvements upstream.
-- Prove native support outside upstream.
-- Avoid changing `homebrew/core` until the base is stable.
-- Keep every upstream pull request small and platform-neutral.
+- Prove native behavior here before upstreaming.
+- Keep upstream PRs small and abstraction-focused.
+- Start with portable CLI packages.
+- Avoid GUI installers and machine-wide side effects early.
+- Keep macOS/Linux behavior unchanged.
 
 ## 13. Recommended Decision
 
-Start with a pull request that improves Homebrew on WSL for Windows Terminal and
-PowerShell users. In parallel, build the native Windows prototype in this
-repository. Once the prototype proves the bootstrap, path, shim, and install
-model, open a Homebrew discussion before submitting native code.
+Proceed with native Windows only.
 
-This route is slower than a large Windows port, but it is much more likely to be
-accepted. Homebrew is critical infrastructure for many developers. The path to
-upstream acceptance is reducing maintenance risk, not increasing ambition.
+The first milestone should be a native `brew.ps1` proof that can run read-only
+Homebrew commands on Windows without Bash or WSL. The second milestone should be
+native installation and uninstallation of a portable CLI tool through a Windows
+shim strategy. Only then should we approach Homebrew upstream with a discussion
+and small pull requests.
+
+This is harder than a WSL bridge, but it is the only route that matches the
+actual product goal.
 
 ## 14. Sources
 
 - Homebrew homepage: https://brew.sh/
-- Homebrew on Linux and WSL: https://docs.brew.sh/Homebrew-on-Linux
 - Homebrew support tiers: https://docs.brew.sh/Support-Tiers
 - Homebrew external commands: https://docs.brew.sh/External-Commands
 - Homebrew pull request workflow: https://docs.brew.sh/How-To-Open-a-Homebrew-Pull-Request

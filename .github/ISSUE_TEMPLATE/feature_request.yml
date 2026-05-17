@@ -23,13 +23,14 @@ body:
     attributes:
       label: Area
       options:
-        - WSL integration
         - PowerShell integration
         - Windows Terminal integration
         - Native Windows bootstrap
         - Path handling
         - Shims and linking
         - Bottles
+        - Native package installation
+        - Windows CI
         - Documentation
         - Other
     validations:
