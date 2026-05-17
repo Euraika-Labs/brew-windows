@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "0",
+  "name": "oras",
+  "version": "1.3.2",
+  "description": "OCI Registry As Storage",
+  "homepage": "https://github.com/oras-project/oras",
+  "license": "Apache-2.0",
+  "type": "portable-cli",
+  "upstream": {
+    "source": "homebrew-formula-api",
+    "tap": "homebrew/core",
+    "formulaPath": "Formula/o/oras.rb",
+    "formulaSha256": "530fb27561cf4acd54d7fa75e584770cc5f12c351cdf360adf6a64cd09b59708",
+    "githubRepository": "oras-project/oras",
+    "githubReleaseTag": "v1.3.2"
+  },
+  "platforms": {
+    "windows": {
+      "arches": {
+        "x64": {
+          "url": "https://github.com/oras-project/oras/releases/download/v1.3.2/oras_1.3.2_windows_amd64.zip",
+          "sha256": "c896f26245f11e6385d52010bb0a65a4e500e1f3244680a6556ed05462fa1c0d",
+          "extract": {
+            "type": "zip",
+            "sourcePath": ""
+          }
+        }
+      }
+    }
+  },
+  "bin": [
+    {
+      "name": "oras",
+      "path": "oras.exe"
+    }
+  ],
+  "resources": [],
+  "conflicts": [],
+  "test": {
+    "command": "oras --version",
+    "match": "1\\.3\\.2"
+  },
+  "livecheck": {
+    "type": "github-release",
+    "repository": "oras-project/oras"
+  }
+}

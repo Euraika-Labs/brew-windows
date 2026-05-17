@@ -1,51 +1,47 @@
-﻿{
-    "schemaVersion":  "0",
-    "name":  "neovim",
-    "version":  "0.12.2",
-    "description":  "Ambitious Vim-fork focused on extensibility and agility",
-    "homepage":  "https://neovim.io/",
-    "license":  "Apache-2.0",
-    "type":  "portable-cli",
-    "upstream":  {
-                     "source":  "homebrew-formula-api",
-                     "tap":  "homebrew/core",
-                     "formulaPath":  "Formula/n/neovim.rb",
-                     "formulaSha256":  "9f9bbe331fcb2bfbfd19e84413c770602d878c0d7f9d1b04352a503b981a5b2d",
-                     "githubRepository":  "neovim/neovim",
-                     "githubReleaseTag":  "v0.12.2"
-                 },
-    "platforms":  {
-                      "windows":  {
-                                      "arches":  {
-                                                     "x64":  {
-                                                                 "url":  "https://github.com/neovim/neovim/releases/download/v0.12.2/nvim-win64.zip",
-                                                                 "sha256":  "23fe150edbcc976eabe55092e1e9d2e5e237afde69553d170e936f776b405d53",
-                                                                 "extract":  {
-                                                                                 "type":  "zip",
-                                                                                 "sourcePath":  "nvim-win64/bin"
-                                                                             }
-                                                             }
-                                                 }
-                                  }
-                  },
-    "bin":  [
-                {
-                    "name":  "nvim",
-                    "path":  "nvim.exe"
-                }
-            ],
-    "resources":  [
-
-                  ],
-    "conflicts":  [
-
-                  ],
-    "test":  {
-                 "command":  "nvim --version",
-                 "match":  "0\\.12\\.2"
-             },
-    "livecheck":  {
-                      "type":  "github-release",
-                      "repository":  "neovim/neovim"
-                  }
+{
+  "schemaVersion": "0",
+  "name": "neovim",
+  "version": "0.12.2",
+  "description": "Ambitious Vim-fork focused on extensibility and agility",
+  "homepage": "https://neovim.io/",
+  "license": "Apache-2.0",
+  "type": "portable-cli",
+  "upstream": {
+    "source": "homebrew-formula-api",
+    "tap": "homebrew/core",
+    "formulaPath": "Formula/n/neovim.rb",
+    "formulaSha256": "9f9bbe331fcb2bfbfd19e84413c770602d878c0d7f9d1b04352a503b981a5b2d",
+    "githubRepository": "neovim/neovim",
+    "githubReleaseTag": "v0.12.2"
+  },
+  "platforms": {
+    "windows": {
+      "arches": {
+        "x64": {
+          "url": "https://github.com/neovim/neovim/releases/download/v0.12.2/nvim-win64.zip",
+          "sha256": "23fe150edbcc976eabe55092e1e9d2e5e237afde69553d170e936f776b405d53",
+          "extract": {
+            "type": "zip",
+            "sourcePath": "nvim-win64/bin"
+          }
+        }
+      }
+    }
+  },
+  "bin": [
+    {
+      "name": "nvim",
+      "path": "nvim.exe"
+    }
+  ],
+  "resources": [],
+  "conflicts": [],
+  "test": {
+    "command": "nvim --version",
+    "match": "0\\.12\\.2"
+  },
+  "livecheck": {
+    "type": "github-release",
+    "repository": "neovim/neovim"
+  }
 }

@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "0",
+  "name": "golangci-lint",
+  "version": "2.12.2",
+  "description": "Fast linters runner for Go",
+  "homepage": "https://golangci-lint.run/",
+  "license": "GPL-3.0-only",
+  "type": "portable-cli",
+  "upstream": {
+    "source": "homebrew-formula-api",
+    "tap": "homebrew/core",
+    "formulaPath": "Formula/g/golangci-lint.rb",
+    "formulaSha256": "de01c23da05f6580cfe55987f18328318f4036ce4eaa476d7ed0f46bbbbea372",
+    "githubRepository": "golangci/golangci-lint",
+    "githubReleaseTag": "v2.12.2"
+  },
+  "platforms": {
+    "windows": {
+      "arches": {
+        "x64": {
+          "url": "https://github.com/golangci/golangci-lint/releases/download/v2.12.2/golangci-lint-2.12.2-windows-amd64.zip",
+          "sha256": "bd42e3ebc8cb4ececb86941983baaf1dc221bbb04d838e94ce63b49cc91e02bb",
+          "extract": {
+            "type": "zip",
+            "sourcePath": "golangci-lint-2.12.2-windows-amd64"
+          }
+        },
+        "arm64": {
+          "url": "https://github.com/golangci/golangci-lint/releases/download/v2.12.2/golangci-lint-2.12.2-windows-arm64.zip",
+          "sha256": "947b9a5bf762d465710b376c156f0184abb2168378b0826af1899e0ee7183742",
+          "extract": {
+            "type": "zip",
+            "sourcePath": "golangci-lint-2.12.2-windows-arm64"
+          }
+        }
+      }
+    }
+  },
+  "bin": [
+    {
+      "name": "golangci-lint",
+      "path": "golangci-lint.exe"
+    }
+  ],
+  "resources": [],
+  "conflicts": [],
+  "test": {
+    "command": "golangci-lint --version",
+    "match": "2\\.12\\.2"
+  },
+  "livecheck": {
+    "type": "github-release",
+    "repository": "golangci/golangci-lint"
+  }
+}

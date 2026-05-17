@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "0",
+  "name": "ruff",
+  "version": "0.15.13",
+  "description": "Extremely fast Python linter, written in Rust",
+  "homepage": "https://docs.astral.sh/ruff/",
+  "license": "MIT",
+  "type": "portable-cli",
+  "upstream": {
+    "source": "homebrew-formula-api",
+    "tap": "homebrew/core",
+    "formulaPath": "Formula/r/ruff.rb",
+    "formulaSha256": "396a2ec786ac485b1604581cd4251c8fbaf769d67119067321db9d50ef496fb7",
+    "githubRepository": "astral-sh/ruff",
+    "githubReleaseTag": "0.15.13"
+  },
+  "platforms": {
+    "windows": {
+      "arches": {
+        "x64": {
+          "url": "https://github.com/astral-sh/ruff/releases/download/0.15.13/ruff-x86_64-pc-windows-msvc.zip",
+          "sha256": "59892c6773df805effe7928e69796447585b42af54310cb6f1552536b746c39a",
+          "extract": {
+            "type": "zip",
+            "sourcePath": ""
+          }
+        },
+        "arm64": {
+          "url": "https://github.com/astral-sh/ruff/releases/download/0.15.13/ruff-aarch64-pc-windows-msvc.zip",
+          "sha256": "b16d436afac64f8032831d2f7874fe5fa6b1b238bfae97924d2233904372deed",
+          "extract": {
+            "type": "zip",
+            "sourcePath": ""
+          }
+        }
+      }
+    }
+  },
+  "bin": [
+    {
+      "name": "ruff",
+      "path": "ruff.exe"
+    }
+  ],
+  "resources": [],
+  "conflicts": [],
+  "test": {
+    "command": "ruff --version",
+    "match": "0\\.15\\.13"
+  },
+  "livecheck": {
+    "type": "github-release",
+    "repository": "astral-sh/ruff"
+  }
+}

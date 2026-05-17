@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "0",
+  "name": "eza",
+  "version": "0.23.4",
+  "description": "Modern, maintained replacement for ls",
+  "homepage": "https://github.com/eza-community/eza",
+  "license": "EUPL-1.2",
+  "type": "portable-cli",
+  "upstream": {
+    "source": "homebrew-formula-api",
+    "tap": "homebrew/core",
+    "formulaPath": "Formula/e/eza.rb",
+    "formulaSha256": "0bd52f6ac5c41eab6d55a8499ac8ac5255833958bed7b9c88771188861561bd2",
+    "githubRepository": "eza-community/eza",
+    "githubReleaseTag": "v0.23.4"
+  },
+  "platforms": {
+    "windows": {
+      "arches": {
+        "x64": {
+          "url": "https://github.com/eza-community/eza/releases/download/v0.23.4/eza.exe_x86_64-pc-windows-gnu.zip",
+          "sha256": "05677fd7c2d1b69ce71df53db74c29f6331ea0b2be5aa3a0fce6976200ee06fc",
+          "extract": {
+            "type": "zip",
+            "sourcePath": ""
+          }
+        }
+      }
+    }
+  },
+  "bin": [
+    {
+      "name": "eza",
+      "path": "eza.exe"
+    }
+  ],
+  "resources": [],
+  "conflicts": [],
+  "test": {
+    "command": "eza --version",
+    "match": "0\\.23\\.4"
+  },
+  "livecheck": {
+    "type": "github-release",
+    "repository": "eza-community/eza"
+  }
+}

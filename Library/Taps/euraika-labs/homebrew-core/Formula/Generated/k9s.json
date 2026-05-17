@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "0",
+  "name": "k9s",
+  "version": "0.50.18",
+  "description": "Kubernetes CLI To Manage Your Clusters In Style!",
+  "homepage": "https://k9scli.io/",
+  "license": "Apache-2.0",
+  "type": "portable-cli",
+  "upstream": {
+    "source": "homebrew-formula-api",
+    "tap": "homebrew/core",
+    "formulaPath": "Formula/k/k9s.rb",
+    "formulaSha256": "b9b552cdb7da98361ad7ede7715b1e480735a0d2fe8c180607a4a4af45eb8f8b",
+    "githubRepository": "derailed/k9s",
+    "githubReleaseTag": "v0.50.18"
+  },
+  "platforms": {
+    "windows": {
+      "arches": {
+        "x64": {
+          "url": "https://github.com/derailed/k9s/releases/download/v0.50.18/k9s_Windows_amd64.zip",
+          "sha256": "9d4e8672c4e55c04cb137475062bc88da7fc0878e04d53df181196449600da16",
+          "extract": {
+            "type": "zip",
+            "sourcePath": ""
+          }
+        },
+        "arm64": {
+          "url": "https://github.com/derailed/k9s/releases/download/v0.50.18/k9s_Windows_arm64.zip",
+          "sha256": "005bd1a54a52c914eb6cbf29403b572ab48e4345f0cb86614873ff56b9e80b0c",
+          "extract": {
+            "type": "zip",
+            "sourcePath": ""
+          }
+        }
+      }
+    }
+  },
+  "bin": [
+    {
+      "name": "k9s",
+      "path": "k9s.exe"
+    }
+  ],
+  "resources": [],
+  "conflicts": [],
+  "test": {
+    "command": "k9s --version",
+    "match": "0\\.50\\.18"
+  },
+  "livecheck": {
+    "type": "github-release",
+    "repository": "derailed/k9s"
+  }
+}

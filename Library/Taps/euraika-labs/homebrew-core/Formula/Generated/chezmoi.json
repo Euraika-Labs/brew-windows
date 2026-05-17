@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "0",
+  "name": "chezmoi",
+  "version": "2.70.3",
+  "description": "Manage your dotfiles across multiple diverse machines, securely",
+  "homepage": "https://chezmoi.io/",
+  "license": "MIT",
+  "type": "portable-cli",
+  "upstream": {
+    "source": "homebrew-formula-api",
+    "tap": "homebrew/core",
+    "formulaPath": "Formula/c/chezmoi.rb",
+    "formulaSha256": "fc0965ea19a419548d64e731dd2e7105937c620724685726451fd25947a73446",
+    "githubRepository": "twpayne/chezmoi",
+    "githubReleaseTag": "v2.70.3"
+  },
+  "platforms": {
+    "windows": {
+      "arches": {
+        "x64": {
+          "url": "https://github.com/twpayne/chezmoi/releases/download/v2.70.3/chezmoi_2.70.3_windows_amd64.zip",
+          "sha256": "d6985fd4cbbfda7fb50574a20b7f1fb1cf5c540da121cf1ebfd94461e861a3e3",
+          "extract": {
+            "type": "zip",
+            "sourcePath": ""
+          }
+        },
+        "arm64": {
+          "url": "https://github.com/twpayne/chezmoi/releases/download/v2.70.3/chezmoi_2.70.3_windows_arm64.zip",
+          "sha256": "ebd9dbedba12759314bc57c891c42000e3781c33d3a2e80f0008288fd979a2b4",
+          "extract": {
+            "type": "zip",
+            "sourcePath": ""
+          }
+        }
+      }
+    }
+  },
+  "bin": [
+    {
+      "name": "chezmoi",
+      "path": "chezmoi.exe"
+    }
+  ],
+  "resources": [],
+  "conflicts": [],
+  "test": {
+    "command": "chezmoi --version",
+    "match": "2\\.70\\.3"
+  },
+  "livecheck": {
+    "type": "github-release",
+    "repository": "twpayne/chezmoi"
+  }
+}
