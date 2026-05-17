@@ -68,7 +68,17 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\validate.ps1
 
 `.github/workflows/catalog-sync.yml` runs weekly and can also be triggered
 manually. It creates or updates an `automation/catalog-sync` pull request when
-the generated catalog changes.
+the generated catalog changes and the repository or organization allows
+GitHub Actions to create pull requests.
+
+If pull request creation is blocked by organization policy, the workflow still
+pushes `automation/catalog-sync`, completes successfully, and writes the manual
+pull request URL to the workflow summary. To make PR creation fully automatic
+in that case, configure either:
+
+- repository or organization Actions settings that allow workflows to create
+  pull requests; or
+- a `CATALOG_SYNC_PR_TOKEN` repository secret with pull request permissions.
 
 The workflow does not merge automatically. A maintainer should review generated
 packages, especially new command names and archive layouts.
