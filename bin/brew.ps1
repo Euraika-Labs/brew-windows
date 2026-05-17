@@ -35,6 +35,23 @@ $Script:Paths = [ordered]@{
     Receipts = Join-Path $Script:Prefix "var\homebrew\receipts"
 }
 
+function Resolve-BrewVersion {
+    $installManifestPath = Join-Path $Script:Prefix "install-manifest.json"
+    if (Test-Path -LiteralPath $installManifestPath -PathType Leaf) {
+        try {
+            $installManifest = Get-Content -LiteralPath $installManifestPath -Raw | ConvertFrom-Json
+            if (-not [string]::IsNullOrWhiteSpace($installManifest.version)) {
+                return $installManifest.version
+            }
+        } catch {
+        }
+    }
+
+    return $Script:BrewVersion
+}
+
+$Script:BrewVersion = Resolve-BrewVersion
+
 function ConvertTo-BrewJson {
     param([object]$Value)
     $Value | ConvertTo-Json -Depth 40
