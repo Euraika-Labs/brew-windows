@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "0",
+  "name": "hugo",
+  "version": "0.161.1",
+  "description": "Configurable static site generator",
+  "homepage": "https://gohugo.io/",
+  "license": "Apache-2.0",
+  "type": "portable-cli",
+  "upstream": {
+    "source": "homebrew-formula-api",
+    "tap": "homebrew/core",
+    "formulaPath": "Formula/h/hugo.rb",
+    "formulaSha256": "9c9893f4516ec23a8f1ebc71d42c5a41b7a265436c44ee0b28423fcfe66e6ab6",
+    "githubRepository": "gohugoio/hugo",
+    "githubReleaseTag": "v0.161.1"
+  },
+  "platforms": {
+    "windows": {
+      "arches": {
+        "x64": {
+          "url": "https://github.com/gohugoio/hugo/releases/download/v0.161.1/hugo_0.161.1_windows-amd64.zip",
+          "sha256": "7f8d030b37600c60bf2a782611257e6a768934fbe7724c1f3a1a501e6724cf0d",
+          "extract": {
+            "type": "zip",
+            "sourcePath": ""
+          }
+        },
+        "arm64": {
+          "url": "https://github.com/gohugoio/hugo/releases/download/v0.161.1/hugo_0.161.1_windows-arm64.zip",
+          "sha256": "6465311bceab1421eb91a54e9f0e6ed674977d8ec04d0292a3f2fe4d63d87a19",
+          "extract": {
+            "type": "zip",
+            "sourcePath": ""
+          }
+        }
+      }
+    }
+  },
+  "bin": [
+    {
+      "name": "hugo",
+      "path": "hugo.exe"
+    }
+  ],
+  "resources": [],
+  "conflicts": [],
+  "test": {
+    "command": "hugo --version",
+    "match": "0\\.161\\.1"
+  },
+  "livecheck": {
+    "type": "github-release",
+    "repository": "gohugoio/hugo"
+  }
+}

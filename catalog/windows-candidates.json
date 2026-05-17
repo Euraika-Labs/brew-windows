@@ -1,795 +1,2874 @@
-﻿{
-    "source":  {
-                   "homebrewFormulaApi":  "https://formulae.brew.sh/api/formula.json",
-                   "githubReleaseApi":  "https://docs.github.com/en/rest/releases/releases"
-               },
-    "policy":  {
-                   "minimumStatus":  "portable Windows CLI archive with SHA256 digest",
-                   "requiresWindowsX64":  true,
-                   "archives":  [
-                                    "zip",
-                                    "tgz",
-                                    "tar.gz"
-                                ],
-                   "generatedManifestRequiresZipInspection":  true
-               },
-    "candidates":  [
-                       {
-                           "name":  "gh",
-                           "status":  "candidate",
-                           "promotable":  true,
-                           "reason":  "sha256-windows-archives-and-layout-validated",
-                           "repository":  "cli/cli",
-                           "homebrew":  {
-                                            "tap":  "homebrew/core",
-                                            "sourcePath":  "Formula/g/gh.rb",
-                                            "sourceSha256":  "5cc11f37b9d590813a7d07df2802190924e4a255e00d139cd1f3cba01a4b4b00"
-                                        },
-                           "homebrewVersion":  "2.92.0",
-                           "latestReleaseTag":  "v2.92.0",
-                           "description":  "GitHub command-line tool",
-                           "homepage":  "https://cli.github.com/",
-                           "license":  "MIT",
-                           "executables":  [
-                                               "gh"
-                                           ],
-                           "dependencies":  [
-
-                                            ],
-                           "architectures":  {
-                                                 "x64":  {
-                                                             "name":  "gh_2.92.0_windows_amd64.zip",
-                                                             "url":  "https://github.com/cli/cli/releases/download/v2.92.0/gh_2.92.0_windows_amd64.zip",
-                                                             "sha256":  "b6a8df3c8c6b9c80f290906387673bc4d272840f3789c5650e0e4e6e75522785",
-                                                             "extractType":  "zip",
-                                                             "score":  30,
-                                                             "layout":  {
-                                                                            "ok":  true,
-                                                                            "sourcePath":  "bin",
-                                                                            "bins":  [
-                                                                                         {
-                                                                                             "name":  "gh",
-                                                                                             "path":  "gh.exe"
-                                                                                         }
-                                                                                     ]
-                                                                        }
-                                                         },
-                                                 "arm64":  {
-                                                               "name":  "gh_2.92.0_windows_arm64.zip",
-                                                               "url":  "https://github.com/cli/cli/releases/download/v2.92.0/gh_2.92.0_windows_arm64.zip",
-                                                               "sha256":  "fa4da50182f6d37a0555b4b48e828c57b1b23cbbd1a7e3a9ce6b65513f13836c",
-                                                               "extractType":  "zip",
-                                                               "score":  30,
-                                                               "layout":  {
-                                                                              "ok":  true,
-                                                                              "sourcePath":  "bin",
-                                                                              "bins":  [
-                                                                                           {
-                                                                                               "name":  "gh",
-                                                                                               "path":  "gh.exe"
-                                                                                           }
-                                                                                       ]
-                                                                          }
-                                                           }
-                                             }
-                       },
-                       {
-                           "name":  "node",
-                           "status":  "rejected",
-                           "reason":  "no-github-release-repository-detected"
-                       },
-                       {
-                           "name":  "ffmpeg",
-                           "status":  "rejected",
-                           "reason":  "no-github-release-repository-detected"
-                       },
-                       {
-                           "name":  "awscli",
-                           "status":  "rejected",
-                           "reason":  "github-release-not-readable",
-                           "repository":  "aws/aws-cli",
-                           "error":  "De externe server heeft een fout geretourneerd: (404) Niet gevonden."
-                       },
-                       {
-                           "name":  "uv",
-                           "status":  "candidate",
-                           "promotable":  true,
-                           "reason":  "sha256-windows-archives-and-layout-validated",
-                           "repository":  "astral-sh/uv",
-                           "homebrew":  {
-                                            "tap":  "homebrew/core",
-                                            "sourcePath":  "Formula/u/uv.rb",
-                                            "sourceSha256":  "4c1bf977f542383b67a6ccbfa18a8840a31dcc6304962ab2b2e4e85dff03b128"
-                                        },
-                           "homebrewVersion":  "0.11.14",
-                           "latestReleaseTag":  "0.11.14",
-                           "description":  "Extremely fast Python package installer and resolver, written in Rust",
-                           "homepage":  "https://docs.astral.sh/uv/",
-                           "license":  "Apache-2.0 OR MIT",
-                           "executables":  [
-                                               "uv",
-                                               "uvx"
-                                           ],
-                           "dependencies":  [
-
-                                            ],
-                           "architectures":  {
-                                                 "x64":  {
-                                                             "name":  "uv-x86_64-pc-windows-msvc.zip",
-                                                             "url":  "https://github.com/astral-sh/uv/releases/download/0.11.14/uv-x86_64-pc-windows-msvc.zip",
-                                                             "sha256":  "52ba5d19409aaa688a8a1a6ec8dfb6a4817230d20186e75f4006105c3e39a846",
-                                                             "extractType":  "zip",
-                                                             "score":  80,
-                                                             "layout":  {
-                                                                            "ok":  true,
-                                                                            "sourcePath":  "",
-                                                                            "bins":  [
-                                                                                         {
-                                                                                             "name":  "uv",
-                                                                                             "path":  "uv.exe"
-                                                                                         },
-                                                                                         {
-                                                                                             "name":  "uvx",
-                                                                                             "path":  "uvx.exe"
-                                                                                         }
-                                                                                     ]
-                                                                        }
-                                                         },
-                                                 "arm64":  {
-                                                               "name":  "uv-aarch64-pc-windows-msvc.zip",
-                                                               "url":  "https://github.com/astral-sh/uv/releases/download/0.11.14/uv-aarch64-pc-windows-msvc.zip",
-                                                               "sha256":  "d66c76ba912ba66fed011e0189dfbc4527dd9e620a2b5d5d5ecd2ad8936601b8",
-                                                               "extractType":  "zip",
-                                                               "score":  80,
-                                                               "layout":  {
-                                                                              "ok":  true,
-                                                                              "sourcePath":  "",
-                                                                              "bins":  [
-                                                                                           {
-                                                                                               "name":  "uv",
-                                                                                               "path":  "uv.exe"
-                                                                                           },
-                                                                                           {
-                                                                                               "name":  "uvx",
-                                                                                               "path":  "uvx.exe"
-                                                                                           }
-                                                                                       ]
-                                                                          }
-                                                           }
-                                             }
-                       },
-                       {
-                           "name":  "git",
-                           "status":  "rejected",
-                           "reason":  "no-github-release-repository-detected"
-                       },
-                       {
-                           "name":  "coreutils",
-                           "status":  "rejected",
-                           "reason":  "no-github-release-repository-detected"
-                       },
-                       {
-                           "name":  "cmake",
-                           "status":  "rejected",
-                           "reason":  "no-sha256-windows-x64-archive-asset",
-                           "repository":  "Kitware/CMake",
-                           "homebrewVersion":  "4.3.2",
-                           "latestReleaseTag":  "v4.3.2"
-                       },
-                       {
-                           "name":  "go",
-                           "status":  "rejected",
-                           "reason":  "no-github-release-repository-detected"
-                       },
-                       {
-                           "name":  "python@3.14",
-                           "status":  "rejected",
-                           "reason":  "no-github-release-repository-detected"
-                       },
-                       {
-                           "name":  "mise",
-                           "status":  "candidate",
-                           "promotable":  true,
-                           "reason":  "sha256-windows-archives-and-layout-validated",
-                           "repository":  "jdx/mise",
-                           "homebrew":  {
-                                            "tap":  "homebrew/core",
-                                            "sourcePath":  "Formula/m/mise.rb",
-                                            "sourceSha256":  "c82094e952bb6c55c3c97f5d31efcc67dd6c523091892ffe8e578aec698b7855"
-                                        },
-                           "homebrewVersion":  "2026.5.10",
-                           "latestReleaseTag":  "v2026.5.10",
-                           "description":  "Polyglot runtime manager (asdf rust clone)",
-                           "homepage":  "https://mise.jdx.dev/",
-                           "license":  "MIT",
-                           "executables":  [
-                                               "mise"
-                                           ],
-                           "dependencies":  [
-                                                "usage"
-                                            ],
-                           "architectures":  {
-                                                 "x64":  {
-                                                             "name":  "mise-v2026.5.10-windows-x64.zip",
-                                                             "url":  "https://github.com/jdx/mise/releases/download/v2026.5.10/mise-v2026.5.10-windows-x64.zip",
-                                                             "sha256":  "0c23d98ec8eafc5eb790188df68d402ad545913673cd40da41d183b6f3c5ae2b",
-                                                             "extractType":  "zip",
-                                                             "score":  30,
-                                                             "layout":  {
-                                                                            "ok":  true,
-                                                                            "sourcePath":  "mise/bin",
-                                                                            "bins":  [
-                                                                                         {
-                                                                                             "name":  "mise",
-                                                                                             "path":  "mise.exe"
-                                                                                         }
-                                                                                     ]
-                                                                        }
-                                                         },
-                                                 "arm64":  {
-                                                               "name":  "mise-v2026.5.10-windows-arm64.zip",
-                                                               "url":  "https://github.com/jdx/mise/releases/download/v2026.5.10/mise-v2026.5.10-windows-arm64.zip",
-                                                               "sha256":  "b2764f48f3c910f7a10cb540ea84c476e9ba79937bf7fde4e67826d7270b2c3e",
-                                                               "extractType":  "zip",
-                                                               "score":  30,
-                                                               "layout":  {
-                                                                              "ok":  true,
-                                                                              "sourcePath":  "mise/bin",
-                                                                              "bins":  [
-                                                                                           {
-                                                                                               "name":  "mise",
-                                                                                               "path":  "mise.exe"
-                                                                                           }
-                                                                                       ]
-                                                                          }
-                                                           }
-                                             }
-                       },
-                       {
-                           "name":  "ollama",
-                           "status":  "candidate",
-                           "promotable":  false,
-                           "reason":  "archive-layout-not-promotable",
-                           "layoutReasons":  [
-                                                 "x64: archive-inspection-failed"
-                                             ],
-                           "repository":  "ollama/ollama",
-                           "homebrewVersion":  "0.24.0",
-                           "latestReleaseTag":  "v0.24.0",
-                           "architectures":  {
-                                                 "x64":  {
-                                                             "name":  "ollama-windows-amd64-mlx.zip",
-                                                             "url":  "https://github.com/ollama/ollama/releases/download/v0.24.0/ollama-windows-amd64-mlx.zip",
-                                                             "sha256":  "8c8da4ebd663ed1ee8beb5508968ab2016308fbcf029e36af08f9dc88b95da4d",
-                                                             "extractType":  "zip",
-                                                             "score":  30,
-                                                             "layout":  {
-                                                                            "ok":  false,
-                                                                            "reason":  "archive-inspection-failed",
-                                                                            "error":  "The property \u0027entry\u0027 cannot be found on this object. Verify that the property exists."
-                                                                        }
-                                                         },
-                                                 "arm64":  {
-                                                               "name":  "ollama-windows-arm64.zip",
-                                                               "url":  "https://github.com/ollama/ollama/releases/download/v0.24.0/ollama-windows-arm64.zip",
-                                                               "sha256":  "f248475a81a7dcd841a32e1f6c06c83310c893c49c4bdf7da8c10f3eef27231a",
-                                                               "extractType":  "zip",
-                                                               "score":  30,
-                                                               "layout":  {
-                                                                              "ok":  true,
-                                                                              "sourcePath":  "",
-                                                                              "bins":  [
-                                                                                           {
-                                                                                               "name":  "ollama",
-                                                                                               "path":  "ollama.exe"
-                                                                                           }
-                                                                                       ]
-                                                                          }
-                                                           }
-                                             }
-                       },
-                       {
-                           "name":  "gemini-cli",
-                           "status":  "rejected",
-                           "reason":  "no-sha256-windows-x64-archive-asset",
-                           "repository":  "google-gemini/gemini-cli",
-                           "homebrewVersion":  "0.42.0",
-                           "latestReleaseTag":  "v0.42.0"
-                       },
-                       {
-                           "name":  "xcbeautify",
-                           "status":  "rejected",
-                           "reason":  "no-sha256-windows-x64-archive-asset",
-                           "repository":  "cpisciotta/xcbeautify",
-                           "homebrewVersion":  "3.2.1",
-                           "latestReleaseTag":  "3.2.1"
-                       },
-                       {
-                           "name":  "jq",
-                           "status":  "rejected",
-                           "reason":  "no-sha256-windows-x64-archive-asset",
-                           "repository":  "jqlang/jq",
-                           "homebrewVersion":  "1.8.1",
-                           "latestReleaseTag":  "jq-1.8.1"
-                       },
-                       {
-                           "name":  "docker",
-                           "status":  "rejected",
-                           "reason":  "github-release-not-readable",
-                           "repository":  "docker/cli",
-                           "error":  "De externe server heeft een fout geretourneerd: (404) Niet gevonden."
-                       },
-                       {
-                           "name":  "pnpm",
-                           "status":  "rejected",
-                           "reason":  "no-github-release-repository-detected"
-                       },
-                       {
-                           "name":  "xz",
-                           "status":  "rejected",
-                           "reason":  "no-sha256-windows-x64-archive-asset",
-                           "repository":  "tukaani-project/xz",
-                           "homebrewVersion":  "5.8.3",
-                           "latestReleaseTag":  "v5.8.3"
-                       },
-                       {
-                           "name":  "pyenv",
-                           "status":  "rejected",
-                           "reason":  "no-sha256-windows-x64-archive-asset",
-                           "repository":  "pyenv/pyenv",
-                           "homebrewVersion":  "2.6.31",
-                           "latestReleaseTag":  "v2.6.31"
-                       },
-                       {
-                           "name":  "python@3.12",
-                           "status":  "rejected",
-                           "reason":  "no-github-release-repository-detected"
-                       },
-                       {
-                           "name":  "imagemagick",
-                           "status":  "rejected",
-                           "reason":  "no-sha256-windows-x64-archive-asset",
-                           "repository":  "ImageMagick/ImageMagick",
-                           "homebrewVersion":  "7.1.2-23",
-                           "latestReleaseTag":  "7.1.2-23"
-                       },
-                       {
-                           "name":  "gnupg",
-                           "status":  "rejected",
-                           "reason":  "no-github-release-repository-detected"
-                       },
-                       {
-                           "name":  "openssl@3",
-                           "status":  "rejected",
-                           "reason":  "github-release-version-does-not-match-homebrew-stable",
-                           "repository":  "openssl/openssl",
-                           "homebrewVersion":  "3.6.2",
-                           "latestReleaseTag":  "openssl-4.0.0"
-                       },
-                       {
-                           "name":  "poppler",
-                           "status":  "rejected",
-                           "reason":  "no-github-release-repository-detected"
-                       },
-                       {
-                           "name":  "pipx",
-                           "status":  "rejected",
-                           "reason":  "no-github-release-repository-detected"
-                       },
-                       {
-                           "name":  "fzf",
-                           "status":  "candidate",
-                           "promotable":  false,
-                           "reason":  "archive-layout-not-promotable",
-                           "layoutReasons":  [
-                                                 "x64: archive-inspection-failed",
-                                                 "arm64: archive-inspection-failed"
-                                             ],
-                           "repository":  "junegunn/fzf",
-                           "homebrewVersion":  "0.72.0",
-                           "latestReleaseTag":  "v0.72.0",
-                           "architectures":  {
-                                                 "x64":  {
-                                                             "name":  "fzf-0.72.0-windows_amd64.zip",
-                                                             "url":  "https://github.com/junegunn/fzf/releases/download/v0.72.0/fzf-0.72.0-windows_amd64.zip",
-                                                             "sha256":  "cce66ae7e442030334927bfbfd917690713e63d215aba93027f99807828fe239",
-                                                             "extractType":  "zip",
-                                                             "score":  30,
-                                                             "layout":  {
-                                                                            "ok":  false,
-                                                                            "reason":  "archive-inspection-failed",
-                                                                            "error":  "The property \u0027entry\u0027 cannot be found on this object. Verify that the property exists."
-                                                                        }
-                                                         },
-                                                 "arm64":  {
-                                                               "name":  "fzf-0.72.0-windows_arm64.zip",
-                                                               "url":  "https://github.com/junegunn/fzf/releases/download/v0.72.0/fzf-0.72.0-windows_arm64.zip",
-                                                               "sha256":  "186af4f9d30434b4eb34d670312d96fb7886a10c4c1ce9c64453dd0fa19aedec",
-                                                               "extractType":  "zip",
-                                                               "score":  30,
-                                                               "layout":  {
-                                                                              "ok":  false,
-                                                                              "reason":  "archive-inspection-failed",
-                                                                              "error":  "The property \u0027entry\u0027 cannot be found on this object. Verify that the property exists."
-                                                                          }
-                                                           }
-                                             }
-                       },
-                       {
-                           "name":  "kubernetes-cli",
-                           "status":  "rejected",
-                           "reason":  "no-sha256-windows-x64-archive-asset",
-                           "repository":  "kubernetes/kubernetes",
-                           "homebrewVersion":  "1.36.1",
-                           "latestReleaseTag":  "v1.36.1"
-                       },
-                       {
-                           "name":  "ripgrep",
-                           "status":  "candidate",
-                           "promotable":  true,
-                           "reason":  "sha256-windows-archives-and-layout-validated",
-                           "repository":  "BurntSushi/ripgrep",
-                           "homebrew":  {
-                                            "tap":  "homebrew/core",
-                                            "sourcePath":  "Formula/r/ripgrep.rb",
-                                            "sourceSha256":  "477b5ac440bae34815c588a96642f800cb9a7fee236bcdeb7880de7396bdcdf7"
-                                        },
-                           "homebrewVersion":  "15.1.0",
-                           "latestReleaseTag":  "15.1.0",
-                           "description":  "Search tool like grep and The Silver Searcher",
-                           "homepage":  "https://github.com/BurntSushi/ripgrep",
-                           "license":  "Unlicense",
-                           "executables":  [
-                                               "rg"
-                                           ],
-                           "dependencies":  [
-                                                "pcre2"
-                                            ],
-                           "architectures":  {
-                                                 "x64":  {
-                                                             "name":  "ripgrep-15.1.0-x86_64-pc-windows-msvc.zip",
-                                                             "url":  "https://github.com/BurntSushi/ripgrep/releases/download/15.1.0/ripgrep-15.1.0-x86_64-pc-windows-msvc.zip",
-                                                             "sha256":  "124510b94b6baa3380d051fdf4650eaa80a302c876d611e9dba0b2e18d87493a",
-                                                             "extractType":  "zip",
-                                                             "score":  80,
-                                                             "layout":  {
-                                                                            "ok":  true,
-                                                                            "sourcePath":  "ripgrep-15.1.0-x86_64-pc-windows-msvc",
-                                                                            "bins":  [
-                                                                                         {
-                                                                                             "name":  "rg",
-                                                                                             "path":  "rg.exe"
-                                                                                         }
-                                                                                     ]
-                                                                        }
-                                                         },
-                                                 "arm64":  {
-                                                               "name":  "ripgrep-15.1.0-aarch64-pc-windows-msvc.zip",
-                                                               "url":  "https://github.com/BurntSushi/ripgrep/releases/download/15.1.0/ripgrep-15.1.0-aarch64-pc-windows-msvc.zip",
-                                                               "sha256":  "00d931fb5237c9696ca49308818edb76d8eb6fc132761cb2a1bd616b2df02f8e",
-                                                               "extractType":  "zip",
-                                                               "score":  80,
-                                                               "layout":  {
-                                                                              "ok":  true,
-                                                                              "sourcePath":  "ripgrep-15.1.0-aarch64-pc-windows-msvc",
-                                                                              "bins":  [
-                                                                                           {
-                                                                                               "name":  "rg",
-                                                                                               "path":  "rg.exe"
-                                                                                           }
-                                                                                       ]
-                                                                          }
-                                                           }
-                                             }
-                       },
-                       {
-                           "name":  "yq",
-                           "status":  "candidate",
-                           "promotable":  false,
-                           "reason":  "archive-layout-not-promotable",
-                           "layoutReasons":  [
-                                                 "x64: archive-inspection-failed",
-                                                 "arm64: archive-inspection-failed"
-                                             ],
-                           "repository":  "mikefarah/yq",
-                           "homebrewVersion":  "4.53.2",
-                           "latestReleaseTag":  "v4.53.2",
-                           "architectures":  {
-                                                 "x64":  {
-                                                             "name":  "yq_windows_amd64.zip",
-                                                             "url":  "https://github.com/mikefarah/yq/releases/download/v4.53.2/yq_windows_amd64.zip",
-                                                             "sha256":  "63e24aac0a75b760a491002b4bbeb7078f5ec1a0c868ec60fa0f525abecd6037",
-                                                             "extractType":  "zip",
-                                                             "score":  30,
-                                                             "layout":  {
-                                                                            "ok":  false,
-                                                                            "reason":  "archive-inspection-failed",
-                                                                            "error":  "The property \u0027entry\u0027 cannot be found on this object. Verify that the property exists."
-                                                                        }
-                                                         },
-                                                 "arm64":  {
-                                                               "name":  "yq_windows_arm64.zip",
-                                                               "url":  "https://github.com/mikefarah/yq/releases/download/v4.53.2/yq_windows_arm64.zip",
-                                                               "sha256":  "56d0bdb53369d0f04bc3d769fa6de60d030f2f0f83463b3072518472d7ab1346",
-                                                               "extractType":  "zip",
-                                                               "score":  30,
-                                                               "layout":  {
-                                                                              "ok":  false,
-                                                                              "reason":  "archive-inspection-failed",
-                                                                              "error":  "The property \u0027entry\u0027 cannot be found on this object. Verify that the property exists."
-                                                                          }
-                                                           }
-                                             }
-                       },
-                       {
-                           "name":  "pkgconf",
-                           "status":  "rejected",
-                           "reason":  "github-release-not-readable",
-                           "repository":  "pkgconf/pkgconf",
-                           "error":  "De externe server heeft een fout geretourneerd: (404) Niet gevonden."
-                       },
-                       {
-                           "name":  "python@3.11",
-                           "status":  "rejected",
-                           "reason":  "no-github-release-repository-detected"
-                       },
-                       {
-                           "name":  "starship",
-                           "status":  "candidate",
-                           "promotable":  true,
-                           "reason":  "sha256-windows-archives-and-layout-validated",
-                           "repository":  "starship/starship",
-                           "homebrew":  {
-                                            "tap":  "homebrew/core",
-                                            "sourcePath":  "Formula/s/starship.rb",
-                                            "sourceSha256":  "309a09a2aaafaf5d7c6e33c2acd68af6abc1bfc732bf20f91bc095db8caa33cb"
-                                        },
-                           "homebrewVersion":  "1.25.1",
-                           "latestReleaseTag":  "v1.25.1",
-                           "description":  "Cross-shell prompt for astronauts",
-                           "homepage":  "https://starship.rs/",
-                           "license":  "ISC",
-                           "executables":  [
-                                               "starship"
-                                           ],
-                           "dependencies":  [
-
-                                            ],
-                           "architectures":  {
-                                                 "x64":  {
-                                                             "name":  "starship-x86_64-pc-windows-msvc.zip",
-                                                             "url":  "https://github.com/starship/starship/releases/download/v1.25.1/starship-x86_64-pc-windows-msvc.zip",
-                                                             "sha256":  "a07cf3e428afab09324e510fb786041ebcc491a68b1ca6fba044c5a461f9b017",
-                                                             "extractType":  "zip",
-                                                             "score":  80,
-                                                             "layout":  {
-                                                                            "ok":  true,
-                                                                            "sourcePath":  "",
-                                                                            "bins":  [
-                                                                                         {
-                                                                                             "name":  "starship",
-                                                                                             "path":  "starship.exe"
-                                                                                         }
-                                                                                     ]
-                                                                        }
-                                                         },
-                                                 "arm64":  {
-                                                               "name":  "starship-aarch64-pc-windows-msvc.zip",
-                                                               "url":  "https://github.com/starship/starship/releases/download/v1.25.1/starship-aarch64-pc-windows-msvc.zip",
-                                                               "sha256":  "d5b3598cb1392be74508b5e5fe3583cbcad307e7788dad804c7bf2e9ab84b663",
-                                                               "extractType":  "zip",
-                                                               "score":  80,
-                                                               "layout":  {
-                                                                              "ok":  true,
-                                                                              "sourcePath":  "",
-                                                                              "bins":  [
-                                                                                           {
-                                                                                               "name":  "starship",
-                                                                                               "path":  "starship.exe"
-                                                                                           }
-                                                                                       ]
-                                                                          }
-                                                           }
-                                             }
-                       },
-                       {
-                           "name":  "neovim",
-                           "status":  "candidate",
-                           "promotable":  true,
-                           "reason":  "sha256-windows-archives-and-layout-validated",
-                           "repository":  "neovim/neovim",
-                           "homebrew":  {
-                                            "tap":  "homebrew/core",
-                                            "sourcePath":  "Formula/n/neovim.rb",
-                                            "sourceSha256":  "9f9bbe331fcb2bfbfd19e84413c770602d878c0d7f9d1b04352a503b981a5b2d"
-                                        },
-                           "homebrewVersion":  "0.12.2",
-                           "latestReleaseTag":  "v0.12.2",
-                           "description":  "Ambitious Vim-fork focused on extensibility and agility",
-                           "homepage":  "https://neovim.io/",
-                           "license":  "Apache-2.0",
-                           "executables":  [
-                                               "nvim"
-                                           ],
-                           "dependencies":  [
-                                                "libuv",
-                                                "lpeg",
-                                                "luajit",
-                                                "luv",
-                                                "tree-sitter",
-                                                "unibilium",
-                                                "utf8proc",
-                                                "gettext"
-                                            ],
-                           "architectures":  {
-                                                 "x64":  {
-                                                             "name":  "nvim-win64.zip",
-                                                             "url":  "https://github.com/neovim/neovim/releases/download/v0.12.2/nvim-win64.zip",
-                                                             "sha256":  "23fe150edbcc976eabe55092e1e9d2e5e237afde69553d170e936f776b405d53",
-                                                             "extractType":  "zip",
-                                                             "score":  30,
-                                                             "layout":  {
-                                                                            "ok":  true,
-                                                                            "sourcePath":  "nvim-win64/bin",
-                                                                            "bins":  [
-                                                                                         {
-                                                                                             "name":  "nvim",
-                                                                                             "path":  "nvim.exe"
-                                                                                         }
-                                                                                     ]
-                                                                        }
-                                                         }
-                                             }
-                       },
-                       {
-                           "name":  "gcc",
-                           "status":  "rejected",
-                           "reason":  "no-github-release-repository-detected"
-                       },
-                       {
-                           "name":  "htop",
-                           "status":  "rejected",
-                           "reason":  "no-sha256-windows-x64-archive-asset",
-                           "repository":  "htop-dev/htop",
-                           "homebrewVersion":  "3.5.1",
-                           "latestReleaseTag":  "3.5.1"
-                       },
-                       {
-                           "name":  "python@3.13",
-                           "status":  "rejected",
-                           "reason":  "no-github-release-repository-detected"
-                       },
-                       {
-                           "name":  "just",
-                           "status":  "candidate",
-                           "promotable":  true,
-                           "reason":  "sha256-windows-archives-and-layout-validated",
-                           "repository":  "casey/just",
-                           "homebrew":  {
-                                            "tap":  "homebrew/core",
-                                            "sourcePath":  "Formula/j/just.rb",
-                                            "sourceSha256":  "661b48de4f895073068c65a7d1ea3f87bdd20d636c78a832f2669796e14c98ae"
-                                        },
-                           "homebrewVersion":  "1.51.0",
-                           "latestReleaseTag":  "1.51.0",
-                           "description":  "Handy way to save and run project-specific commands",
-                           "homepage":  "https://github.com/casey/just",
-                           "license":  "CC0-1.0",
-                           "executables":  [
-                                               "just"
-                                           ],
-                           "dependencies":  [
-
-                                            ],
-                           "architectures":  {
-                                                 "x64":  {
-                                                             "name":  "just-1.51.0-x86_64-pc-windows-msvc.zip",
-                                                             "url":  "https://github.com/casey/just/releases/download/1.51.0/just-1.51.0-x86_64-pc-windows-msvc.zip",
-                                                             "sha256":  "09d1138b6845e73f04bff5e26be3f57663bddca25e36fe6241d28a5aa310b64e",
-                                                             "extractType":  "zip",
-                                                             "score":  80,
-                                                             "layout":  {
-                                                                            "ok":  true,
-                                                                            "sourcePath":  "",
-                                                                            "bins":  [
-                                                                                         {
-                                                                                             "name":  "just",
-                                                                                             "path":  "just.exe"
-                                                                                         }
-                                                                                     ]
-                                                                        }
-                                                         },
-                                                 "arm64":  {
-                                                               "name":  "just-1.51.0-aarch64-pc-windows-msvc.zip",
-                                                               "url":  "https://github.com/casey/just/releases/download/1.51.0/just-1.51.0-aarch64-pc-windows-msvc.zip",
-                                                               "sha256":  "12bf56b5b3463e20a1dbb61e3d14748efaefb49231223ef465fbec4d442e2d20",
-                                                               "extractType":  "zip",
-                                                               "score":  80,
-                                                               "layout":  {
-                                                                              "ok":  true,
-                                                                              "sourcePath":  "",
-                                                                              "bins":  [
-                                                                                           {
-                                                                                               "name":  "just",
-                                                                                               "path":  "just.exe"
-                                                                                           }
-                                                                                       ]
-                                                                          }
-                                                           }
-                                             }
-                       },
-                       {
-                           "name":  "nvm",
-                           "status":  "rejected",
-                           "reason":  "no-declared-executables"
-                       },
-                       {
-                           "name":  "helm",
-                           "status":  "rejected",
-                           "reason":  "no-sha256-windows-x64-archive-asset",
-                           "repository":  "helm/helm",
-                           "homebrewVersion":  "4.2.0",
-                           "latestReleaseTag":  "v4.2.0"
-                       },
-                       {
-                           "name":  "tmux",
-                           "status":  "rejected",
-                           "reason":  "no-sha256-windows-x64-archive-asset",
-                           "repository":  "tmux/tmux",
-                           "homebrewVersion":  "3.6a",
-                           "latestReleaseTag":  "3.6a"
-                       },
-                       {
-                           "name":  "opencode",
-                           "status":  "rejected",
-                           "reason":  "no-github-release-repository-detected"
-                       },
-                       {
-                           "name":  "yt-dlp",
-                           "status":  "rejected",
-                           "reason":  "github-release-version-does-not-match-homebrew-stable",
-                           "repository":  "yt-dlp/yt-dlp",
-                           "homebrewVersion":  "2026.3.17",
-                           "latestReleaseTag":  "2026.03.17"
-                       },
-                       {
-                           "name":  "mole",
-                           "status":  "rejected",
-                           "reason":  "no-sha256-windows-x64-archive-asset",
-                           "repository":  "tw93/Mole",
-                           "homebrewVersion":  "1.39.0",
-                           "latestReleaseTag":  "V1.39.0"
-                       },
-                       {
-                           "name":  "glab",
-                           "status":  "rejected",
-                           "reason":  "no-github-release-repository-detected"
-                       },
-                       {
-                           "name":  "llama.cpp",
-                           "status":  "rejected",
-                           "reason":  "github-release-version-does-not-match-homebrew-stable",
-                           "repository":  "ggml-org/llama.cpp",
-                           "homebrewVersion":  "9190",
-                           "latestReleaseTag":  "b9198"
-                       },
-                       {
-                           "name":  "ninja",
-                           "status":  "rejected",
-                           "reason":  "no-sha256-windows-x64-archive-asset",
-                           "repository":  "ninja-build/ninja",
-                           "homebrewVersion":  "1.13.2",
-                           "latestReleaseTag":  "v1.13.2"
-                       },
-                       {
-                           "name":  "redis",
-                           "status":  "rejected",
-                           "reason":  "no-github-release-repository-detected"
-                       },
-                       {
-                           "name":  "maven",
-                           "status":  "rejected",
-                           "reason":  "no-github-release-repository-detected"
-                       }
-                   ]
+{
+  "source": {
+    "homebrewFormulaApi": "https://formulae.brew.sh/api/formula.json",
+    "githubReleaseApi": "https://docs.github.com/en/rest/releases/releases"
+  },
+  "policy": {
+    "minimumStatus": "portable Windows CLI archive with SHA256 digest",
+    "requiresWindowsX64": true,
+    "archives": [
+      "zip",
+      "tgz",
+      "tar.gz"
+    ],
+    "generatedManifestRequiresZipInspection": true
+  },
+  "candidates": [
+    {
+      "name": "gh",
+      "status": "candidate",
+      "promotable": true,
+      "reason": "sha256-windows-archives-and-layout-validated",
+      "repository": "cli/cli",
+      "homebrew": {
+        "tap": "homebrew/core",
+        "sourcePath": "Formula/g/gh.rb",
+        "sourceSha256": "5cc11f37b9d590813a7d07df2802190924e4a255e00d139cd1f3cba01a4b4b00"
+      },
+      "homebrewVersion": "2.92.0",
+      "latestReleaseTag": "v2.92.0",
+      "description": "GitHub command-line tool",
+      "homepage": "https://cli.github.com/",
+      "license": "MIT",
+      "executables": [
+        "gh"
+      ],
+      "dependencies": [],
+      "architectures": {
+        "x64": {
+          "name": "gh_2.92.0_windows_amd64.zip",
+          "url": "https://github.com/cli/cli/releases/download/v2.92.0/gh_2.92.0_windows_amd64.zip",
+          "sha256": "b6a8df3c8c6b9c80f290906387673bc4d272840f3789c5650e0e4e6e75522785",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": true,
+            "sourcePath": "bin",
+            "bins": [
+              {
+                "name": "gh",
+                "path": "gh.exe"
+              }
+            ]
+          }
+        },
+        "arm64": {
+          "name": "gh_2.92.0_windows_arm64.zip",
+          "url": "https://github.com/cli/cli/releases/download/v2.92.0/gh_2.92.0_windows_arm64.zip",
+          "sha256": "fa4da50182f6d37a0555b4b48e828c57b1b23cbbd1a7e3a9ce6b65513f13836c",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": true,
+            "sourcePath": "bin",
+            "bins": [
+              {
+                "name": "gh",
+                "path": "gh.exe"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "node",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "ffmpeg",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "awscli",
+      "status": "rejected",
+      "reason": "github-release-not-readable",
+      "repository": "aws/aws-cli",
+      "error": "Response status code does not indicate success: 404 (Not Found)."
+    },
+    {
+      "name": "uv",
+      "status": "candidate",
+      "promotable": true,
+      "reason": "sha256-windows-archives-and-layout-validated",
+      "repository": "astral-sh/uv",
+      "homebrew": {
+        "tap": "homebrew/core",
+        "sourcePath": "Formula/u/uv.rb",
+        "sourceSha256": "4c1bf977f542383b67a6ccbfa18a8840a31dcc6304962ab2b2e4e85dff03b128"
+      },
+      "homebrewVersion": "0.11.14",
+      "latestReleaseTag": "0.11.14",
+      "description": "Extremely fast Python package installer and resolver, written in Rust",
+      "homepage": "https://docs.astral.sh/uv/",
+      "license": "Apache-2.0 OR MIT",
+      "executables": [
+        "uv",
+        "uvx"
+      ],
+      "dependencies": [],
+      "architectures": {
+        "x64": {
+          "name": "uv-x86_64-pc-windows-msvc.zip",
+          "url": "https://github.com/astral-sh/uv/releases/download/0.11.14/uv-x86_64-pc-windows-msvc.zip",
+          "sha256": "52ba5d19409aaa688a8a1a6ec8dfb6a4817230d20186e75f4006105c3e39a846",
+          "extractType": "zip",
+          "score": 80,
+          "layout": {
+            "ok": true,
+            "sourcePath": "",
+            "bins": [
+              {
+                "name": "uv",
+                "path": "uv.exe"
+              },
+              {
+                "name": "uvx",
+                "path": "uvx.exe"
+              }
+            ]
+          }
+        },
+        "arm64": {
+          "name": "uv-aarch64-pc-windows-msvc.zip",
+          "url": "https://github.com/astral-sh/uv/releases/download/0.11.14/uv-aarch64-pc-windows-msvc.zip",
+          "sha256": "d66c76ba912ba66fed011e0189dfbc4527dd9e620a2b5d5d5ecd2ad8936601b8",
+          "extractType": "zip",
+          "score": 80,
+          "layout": {
+            "ok": true,
+            "sourcePath": "",
+            "bins": [
+              {
+                "name": "uv",
+                "path": "uv.exe"
+              },
+              {
+                "name": "uvx",
+                "path": "uvx.exe"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "git",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "coreutils",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "cmake",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "Kitware/CMake",
+      "homebrewVersion": "4.3.2",
+      "latestReleaseTag": "v4.3.2"
+    },
+    {
+      "name": "go",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "python@3.14",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "mise",
+      "status": "candidate",
+      "promotable": true,
+      "reason": "sha256-windows-archives-and-layout-validated",
+      "repository": "jdx/mise",
+      "homebrew": {
+        "tap": "homebrew/core",
+        "sourcePath": "Formula/m/mise.rb",
+        "sourceSha256": "c82094e952bb6c55c3c97f5d31efcc67dd6c523091892ffe8e578aec698b7855"
+      },
+      "homebrewVersion": "2026.5.10",
+      "latestReleaseTag": "v2026.5.10",
+      "description": "Polyglot runtime manager (asdf rust clone)",
+      "homepage": "https://mise.jdx.dev/",
+      "license": "MIT",
+      "executables": [
+        "mise"
+      ],
+      "dependencies": [
+        "usage"
+      ],
+      "architectures": {
+        "x64": {
+          "name": "mise-v2026.5.10-windows-x64.zip",
+          "url": "https://github.com/jdx/mise/releases/download/v2026.5.10/mise-v2026.5.10-windows-x64.zip",
+          "sha256": "0c23d98ec8eafc5eb790188df68d402ad545913673cd40da41d183b6f3c5ae2b",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": true,
+            "sourcePath": "mise/bin",
+            "bins": [
+              {
+                "name": "mise",
+                "path": "mise.exe"
+              }
+            ]
+          }
+        },
+        "arm64": {
+          "name": "mise-v2026.5.10-windows-arm64.zip",
+          "url": "https://github.com/jdx/mise/releases/download/v2026.5.10/mise-v2026.5.10-windows-arm64.zip",
+          "sha256": "b2764f48f3c910f7a10cb540ea84c476e9ba79937bf7fde4e67826d7270b2c3e",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": true,
+            "sourcePath": "mise/bin",
+            "bins": [
+              {
+                "name": "mise",
+                "path": "mise.exe"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "ollama",
+      "status": "candidate",
+      "promotable": false,
+      "reason": "archive-layout-not-promotable",
+      "layoutReasons": [
+        "x64: archive-inspection-failed"
+      ],
+      "repository": "ollama/ollama",
+      "homebrewVersion": "0.24.0",
+      "latestReleaseTag": "v0.24.0",
+      "architectures": {
+        "x64": {
+          "name": "ollama-windows-amd64-mlx.zip",
+          "url": "https://github.com/ollama/ollama/releases/download/v0.24.0/ollama-windows-amd64-mlx.zip",
+          "sha256": "8c8da4ebd663ed1ee8beb5508968ab2016308fbcf029e36af08f9dc88b95da4d",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": false,
+            "reason": "archive-inspection-failed",
+            "error": "The property 'entry' cannot be found on this object. Verify that the property exists."
+          }
+        },
+        "arm64": {
+          "name": "ollama-windows-arm64.zip",
+          "url": "https://github.com/ollama/ollama/releases/download/v0.24.0/ollama-windows-arm64.zip",
+          "sha256": "f248475a81a7dcd841a32e1f6c06c83310c893c49c4bdf7da8c10f3eef27231a",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": true,
+            "sourcePath": "",
+            "bins": [
+              {
+                "name": "ollama",
+                "path": "ollama.exe"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "gemini-cli",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "google-gemini/gemini-cli",
+      "homebrewVersion": "0.42.0",
+      "latestReleaseTag": "v0.42.0"
+    },
+    {
+      "name": "xcbeautify",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "cpisciotta/xcbeautify",
+      "homebrewVersion": "3.2.1",
+      "latestReleaseTag": "3.2.1"
+    },
+    {
+      "name": "jq",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "jqlang/jq",
+      "homebrewVersion": "1.8.1",
+      "latestReleaseTag": "jq-1.8.1"
+    },
+    {
+      "name": "docker",
+      "status": "rejected",
+      "reason": "github-release-not-readable",
+      "repository": "docker/cli",
+      "error": "Response status code does not indicate success: 404 (Not Found)."
+    },
+    {
+      "name": "pnpm",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "xz",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "tukaani-project/xz",
+      "homebrewVersion": "5.8.3",
+      "latestReleaseTag": "v5.8.3"
+    },
+    {
+      "name": "pyenv",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "pyenv/pyenv",
+      "homebrewVersion": "2.6.31",
+      "latestReleaseTag": "v2.6.31"
+    },
+    {
+      "name": "python@3.12",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "imagemagick",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "ImageMagick/ImageMagick",
+      "homebrewVersion": "7.1.2-23",
+      "latestReleaseTag": "7.1.2-23"
+    },
+    {
+      "name": "gnupg",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "openssl@3",
+      "status": "rejected",
+      "reason": "github-release-version-does-not-match-homebrew-stable",
+      "repository": "openssl/openssl",
+      "homebrewVersion": "3.6.2",
+      "latestReleaseTag": "openssl-4.0.0"
+    },
+    {
+      "name": "poppler",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "pipx",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "fzf",
+      "status": "candidate",
+      "promotable": false,
+      "reason": "archive-layout-not-promotable",
+      "layoutReasons": [
+        "x64: archive-inspection-failed",
+        "arm64: archive-inspection-failed"
+      ],
+      "repository": "junegunn/fzf",
+      "homebrewVersion": "0.72.0",
+      "latestReleaseTag": "v0.72.0",
+      "architectures": {
+        "x64": {
+          "name": "fzf-0.72.0-windows_amd64.zip",
+          "url": "https://github.com/junegunn/fzf/releases/download/v0.72.0/fzf-0.72.0-windows_amd64.zip",
+          "sha256": "cce66ae7e442030334927bfbfd917690713e63d215aba93027f99807828fe239",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": false,
+            "reason": "archive-inspection-failed",
+            "error": "The property 'entry' cannot be found on this object. Verify that the property exists."
+          }
+        },
+        "arm64": {
+          "name": "fzf-0.72.0-windows_arm64.zip",
+          "url": "https://github.com/junegunn/fzf/releases/download/v0.72.0/fzf-0.72.0-windows_arm64.zip",
+          "sha256": "186af4f9d30434b4eb34d670312d96fb7886a10c4c1ce9c64453dd0fa19aedec",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": false,
+            "reason": "archive-inspection-failed",
+            "error": "The property 'entry' cannot be found on this object. Verify that the property exists."
+          }
+        }
+      }
+    },
+    {
+      "name": "kubernetes-cli",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "kubernetes/kubernetes",
+      "homebrewVersion": "1.36.1",
+      "latestReleaseTag": "v1.36.1"
+    },
+    {
+      "name": "ripgrep",
+      "status": "candidate",
+      "promotable": true,
+      "reason": "sha256-windows-archives-and-layout-validated",
+      "repository": "BurntSushi/ripgrep",
+      "homebrew": {
+        "tap": "homebrew/core",
+        "sourcePath": "Formula/r/ripgrep.rb",
+        "sourceSha256": "477b5ac440bae34815c588a96642f800cb9a7fee236bcdeb7880de7396bdcdf7"
+      },
+      "homebrewVersion": "15.1.0",
+      "latestReleaseTag": "15.1.0",
+      "description": "Search tool like grep and The Silver Searcher",
+      "homepage": "https://github.com/BurntSushi/ripgrep",
+      "license": "Unlicense",
+      "executables": [
+        "rg"
+      ],
+      "dependencies": [
+        "pcre2"
+      ],
+      "architectures": {
+        "x64": {
+          "name": "ripgrep-15.1.0-x86_64-pc-windows-msvc.zip",
+          "url": "https://github.com/BurntSushi/ripgrep/releases/download/15.1.0/ripgrep-15.1.0-x86_64-pc-windows-msvc.zip",
+          "sha256": "124510b94b6baa3380d051fdf4650eaa80a302c876d611e9dba0b2e18d87493a",
+          "extractType": "zip",
+          "score": 80,
+          "layout": {
+            "ok": true,
+            "sourcePath": "ripgrep-15.1.0-x86_64-pc-windows-msvc",
+            "bins": [
+              {
+                "name": "rg",
+                "path": "rg.exe"
+              }
+            ]
+          }
+        },
+        "arm64": {
+          "name": "ripgrep-15.1.0-aarch64-pc-windows-msvc.zip",
+          "url": "https://github.com/BurntSushi/ripgrep/releases/download/15.1.0/ripgrep-15.1.0-aarch64-pc-windows-msvc.zip",
+          "sha256": "00d931fb5237c9696ca49308818edb76d8eb6fc132761cb2a1bd616b2df02f8e",
+          "extractType": "zip",
+          "score": 80,
+          "layout": {
+            "ok": true,
+            "sourcePath": "ripgrep-15.1.0-aarch64-pc-windows-msvc",
+            "bins": [
+              {
+                "name": "rg",
+                "path": "rg.exe"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "yq",
+      "status": "candidate",
+      "promotable": false,
+      "reason": "archive-layout-not-promotable",
+      "layoutReasons": [
+        "x64: archive-inspection-failed",
+        "arm64: archive-inspection-failed"
+      ],
+      "repository": "mikefarah/yq",
+      "homebrewVersion": "4.53.2",
+      "latestReleaseTag": "v4.53.2",
+      "architectures": {
+        "x64": {
+          "name": "yq_windows_amd64.zip",
+          "url": "https://github.com/mikefarah/yq/releases/download/v4.53.2/yq_windows_amd64.zip",
+          "sha256": "63e24aac0a75b760a491002b4bbeb7078f5ec1a0c868ec60fa0f525abecd6037",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": false,
+            "reason": "archive-inspection-failed",
+            "error": "The property 'entry' cannot be found on this object. Verify that the property exists."
+          }
+        },
+        "arm64": {
+          "name": "yq_windows_arm64.zip",
+          "url": "https://github.com/mikefarah/yq/releases/download/v4.53.2/yq_windows_arm64.zip",
+          "sha256": "56d0bdb53369d0f04bc3d769fa6de60d030f2f0f83463b3072518472d7ab1346",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": false,
+            "reason": "archive-inspection-failed",
+            "error": "The property 'entry' cannot be found on this object. Verify that the property exists."
+          }
+        }
+      }
+    },
+    {
+      "name": "pkgconf",
+      "status": "rejected",
+      "reason": "github-release-not-readable",
+      "repository": "pkgconf/pkgconf",
+      "error": "Response status code does not indicate success: 404 (Not Found)."
+    },
+    {
+      "name": "python@3.11",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "starship",
+      "status": "candidate",
+      "promotable": true,
+      "reason": "sha256-windows-archives-and-layout-validated",
+      "repository": "starship/starship",
+      "homebrew": {
+        "tap": "homebrew/core",
+        "sourcePath": "Formula/s/starship.rb",
+        "sourceSha256": "309a09a2aaafaf5d7c6e33c2acd68af6abc1bfc732bf20f91bc095db8caa33cb"
+      },
+      "homebrewVersion": "1.25.1",
+      "latestReleaseTag": "v1.25.1",
+      "description": "Cross-shell prompt for astronauts",
+      "homepage": "https://starship.rs/",
+      "license": "ISC",
+      "executables": [
+        "starship"
+      ],
+      "dependencies": [],
+      "architectures": {
+        "x64": {
+          "name": "starship-x86_64-pc-windows-msvc.zip",
+          "url": "https://github.com/starship/starship/releases/download/v1.25.1/starship-x86_64-pc-windows-msvc.zip",
+          "sha256": "a07cf3e428afab09324e510fb786041ebcc491a68b1ca6fba044c5a461f9b017",
+          "extractType": "zip",
+          "score": 80,
+          "layout": {
+            "ok": true,
+            "sourcePath": "",
+            "bins": [
+              {
+                "name": "starship",
+                "path": "starship.exe"
+              }
+            ]
+          }
+        },
+        "arm64": {
+          "name": "starship-aarch64-pc-windows-msvc.zip",
+          "url": "https://github.com/starship/starship/releases/download/v1.25.1/starship-aarch64-pc-windows-msvc.zip",
+          "sha256": "d5b3598cb1392be74508b5e5fe3583cbcad307e7788dad804c7bf2e9ab84b663",
+          "extractType": "zip",
+          "score": 80,
+          "layout": {
+            "ok": true,
+            "sourcePath": "",
+            "bins": [
+              {
+                "name": "starship",
+                "path": "starship.exe"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "neovim",
+      "status": "candidate",
+      "promotable": true,
+      "reason": "sha256-windows-archives-and-layout-validated",
+      "repository": "neovim/neovim",
+      "homebrew": {
+        "tap": "homebrew/core",
+        "sourcePath": "Formula/n/neovim.rb",
+        "sourceSha256": "9f9bbe331fcb2bfbfd19e84413c770602d878c0d7f9d1b04352a503b981a5b2d"
+      },
+      "homebrewVersion": "0.12.2",
+      "latestReleaseTag": "v0.12.2",
+      "description": "Ambitious Vim-fork focused on extensibility and agility",
+      "homepage": "https://neovim.io/",
+      "license": "Apache-2.0",
+      "executables": [
+        "nvim"
+      ],
+      "dependencies": [
+        "libuv",
+        "lpeg",
+        "luajit",
+        "luv",
+        "tree-sitter",
+        "unibilium",
+        "utf8proc",
+        "gettext"
+      ],
+      "architectures": {
+        "x64": {
+          "name": "nvim-win64.zip",
+          "url": "https://github.com/neovim/neovim/releases/download/v0.12.2/nvim-win64.zip",
+          "sha256": "23fe150edbcc976eabe55092e1e9d2e5e237afde69553d170e936f776b405d53",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": true,
+            "sourcePath": "nvim-win64/bin",
+            "bins": [
+              {
+                "name": "nvim",
+                "path": "nvim.exe"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "gcc",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "htop",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "htop-dev/htop",
+      "homebrewVersion": "3.5.1",
+      "latestReleaseTag": "3.5.1"
+    },
+    {
+      "name": "python@3.13",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "just",
+      "status": "candidate",
+      "promotable": true,
+      "reason": "sha256-windows-archives-and-layout-validated",
+      "repository": "casey/just",
+      "homebrew": {
+        "tap": "homebrew/core",
+        "sourcePath": "Formula/j/just.rb",
+        "sourceSha256": "661b48de4f895073068c65a7d1ea3f87bdd20d636c78a832f2669796e14c98ae"
+      },
+      "homebrewVersion": "1.51.0",
+      "latestReleaseTag": "1.51.0",
+      "description": "Handy way to save and run project-specific commands",
+      "homepage": "https://github.com/casey/just",
+      "license": "CC0-1.0",
+      "executables": [
+        "just"
+      ],
+      "dependencies": [],
+      "architectures": {
+        "x64": {
+          "name": "just-1.51.0-x86_64-pc-windows-msvc.zip",
+          "url": "https://github.com/casey/just/releases/download/1.51.0/just-1.51.0-x86_64-pc-windows-msvc.zip",
+          "sha256": "09d1138b6845e73f04bff5e26be3f57663bddca25e36fe6241d28a5aa310b64e",
+          "extractType": "zip",
+          "score": 80,
+          "layout": {
+            "ok": true,
+            "sourcePath": "",
+            "bins": [
+              {
+                "name": "just",
+                "path": "just.exe"
+              }
+            ]
+          }
+        },
+        "arm64": {
+          "name": "just-1.51.0-aarch64-pc-windows-msvc.zip",
+          "url": "https://github.com/casey/just/releases/download/1.51.0/just-1.51.0-aarch64-pc-windows-msvc.zip",
+          "sha256": "12bf56b5b3463e20a1dbb61e3d14748efaefb49231223ef465fbec4d442e2d20",
+          "extractType": "zip",
+          "score": 80,
+          "layout": {
+            "ok": true,
+            "sourcePath": "",
+            "bins": [
+              {
+                "name": "just",
+                "path": "just.exe"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "nvm",
+      "status": "rejected",
+      "reason": "no-declared-executables"
+    },
+    {
+      "name": "helm",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "helm/helm",
+      "homebrewVersion": "4.2.0",
+      "latestReleaseTag": "v4.2.0"
+    },
+    {
+      "name": "tmux",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "tmux/tmux",
+      "homebrewVersion": "3.6a",
+      "latestReleaseTag": "3.6a"
+    },
+    {
+      "name": "opencode",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "yt-dlp",
+      "status": "rejected",
+      "reason": "github-release-version-does-not-match-homebrew-stable",
+      "repository": "yt-dlp/yt-dlp",
+      "homebrewVersion": "2026.3.17",
+      "latestReleaseTag": "2026.03.17"
+    },
+    {
+      "name": "mole",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "tw93/Mole",
+      "homebrewVersion": "1.39.0",
+      "latestReleaseTag": "V1.39.0"
+    },
+    {
+      "name": "llama.cpp",
+      "status": "rejected",
+      "reason": "github-release-version-does-not-match-homebrew-stable",
+      "repository": "ggml-org/llama.cpp",
+      "homebrewVersion": "9190",
+      "latestReleaseTag": "b9198"
+    },
+    {
+      "name": "glab",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "ninja",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "ninja-build/ninja",
+      "homebrewVersion": "1.13.2",
+      "latestReleaseTag": "v1.13.2"
+    },
+    {
+      "name": "redis",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "maven",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "openjdk@17",
+      "status": "rejected",
+      "reason": "github-release-not-readable",
+      "repository": "openjdk/jdk17u",
+      "error": "Response status code does not indicate success: 404 (Not Found)."
+    },
+    {
+      "name": "curl",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "ruby",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "pandoc",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "jgm/pandoc",
+      "homebrewVersion": "3.9.0.2",
+      "latestReleaseTag": "3.9.0.2"
+    },
+    {
+      "name": "glib",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "hello",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "azure-cli",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "Azure/azure-cli",
+      "homebrewVersion": "2.86.0",
+      "latestReleaseTag": "azure-cli-2.86.0"
+    },
+    {
+      "name": "graphviz",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "swiftlint",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "realm/SwiftLint",
+      "homebrewVersion": "0.63.2",
+      "latestReleaseTag": "0.63.2"
+    },
+    {
+      "name": "protobuf",
+      "status": "candidate",
+      "promotable": false,
+      "reason": "archive-layout-not-promotable",
+      "layoutReasons": [
+        "x64: archive-inspection-failed"
+      ],
+      "repository": "protocolbuffers/protobuf",
+      "homebrewVersion": "34.1",
+      "latestReleaseTag": "v34.1",
+      "architectures": {
+        "x64": {
+          "name": "protoc-34.1-win64.zip",
+          "url": "https://github.com/protocolbuffers/protobuf/releases/download/v34.1/protoc-34.1-win64.zip",
+          "sha256": "6d7ebdc75e9c1f0026d4fb28f17ef1d0aae77d36744d83a9e052d79ba493724f",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": false,
+            "reason": "archive-inspection-failed",
+            "error": "The property 'entry' cannot be found on this object. Verify that the property exists."
+          }
+        }
+      }
+    },
+    {
+      "name": "llvm",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "llvm/llvm-project",
+      "homebrewVersion": "22.1.5",
+      "latestReleaseTag": "llvmorg-22.1.5"
+    },
+    {
+      "name": "harfbuzz",
+      "status": "candidate",
+      "promotable": true,
+      "reason": "sha256-windows-archives-and-layout-validated",
+      "repository": "harfbuzz/harfbuzz",
+      "homebrew": {
+        "tap": "homebrew/core",
+        "sourcePath": "Formula/h/harfbuzz.rb",
+        "sourceSha256": "c39296988ea756feb3cab37e60ee6b7572bfe81ef814100ef342a9a82da2d9c4"
+      },
+      "homebrewVersion": "14.2.0",
+      "latestReleaseTag": "14.2.0",
+      "description": "OpenType text shaping engine",
+      "homepage": "https://github.com/harfbuzz/harfbuzz",
+      "license": "MIT",
+      "executables": [
+        "hb-info",
+        "hb-raster",
+        "hb-shape",
+        "hb-subset",
+        "hb-vector",
+        "hb-view"
+      ],
+      "dependencies": [
+        "cairo",
+        "freetype",
+        "glib",
+        "graphite2",
+        "icu4c@78",
+        "libpng"
+      ],
+      "architectures": {
+        "x64": {
+          "name": "harfbuzz-win64-14.2.0.zip",
+          "url": "https://github.com/harfbuzz/harfbuzz/releases/download/14.2.0/harfbuzz-win64-14.2.0.zip",
+          "sha256": "fd43365c4951437d11233b015ab299a08499a3a87e9ebb13ba6a54f9fb4c8596",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": true,
+            "sourcePath": "harfbuzz-win64",
+            "bins": [
+              {
+                "name": "hb-info",
+                "path": "hb-info.exe"
+              },
+              {
+                "name": "hb-raster",
+                "path": "hb-raster.exe"
+              },
+              {
+                "name": "hb-shape",
+                "path": "hb-shape.exe"
+              },
+              {
+                "name": "hb-subset",
+                "path": "hb-subset.exe"
+              },
+              {
+                "name": "hb-vector",
+                "path": "hb-vector.exe"
+              },
+              {
+                "name": "hb-view",
+                "path": "hb-view.exe"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "node@22",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "tree",
+      "status": "rejected",
+      "reason": "github-release-not-readable",
+      "repository": "Old-Man-Programmer/tree",
+      "error": "Response status code does not indicate success: 404 (Not Found)."
+    },
+    {
+      "name": "cocoapods",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "CocoaPods/CocoaPods",
+      "homebrewVersion": "1.16.2",
+      "latestReleaseTag": "1.16.2"
+    },
+    {
+      "name": "openjdk@21",
+      "status": "rejected",
+      "reason": "github-release-not-readable",
+      "repository": "openjdk/jdk21u",
+      "error": "Response status code does not indicate success: 404 (Not Found)."
+    },
+    {
+      "name": "telnet",
+      "status": "rejected",
+      "reason": "github-release-not-readable",
+      "repository": "apple-oss-distributions/remote_cmds",
+      "error": "Response status code does not indicate success: 404 (Not Found)."
+    },
+    {
+      "name": "ccache",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "ccache/ccache",
+      "homebrewVersion": "4.13.6",
+      "latestReleaseTag": "v4.13.6"
+    },
+    {
+      "name": "python@3.10",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "rclone",
+      "status": "candidate",
+      "promotable": true,
+      "reason": "sha256-windows-archives-and-layout-validated",
+      "repository": "rclone/rclone",
+      "homebrew": {
+        "tap": "homebrew/core",
+        "sourcePath": "Formula/r/rclone.rb",
+        "sourceSha256": "1de8f5a4abedfb5dcc99e926ea893e57da145734645ea1195b7a399b2987e625"
+      },
+      "homebrewVersion": "1.74.1",
+      "latestReleaseTag": "v1.74.1",
+      "description": "Rsync for cloud storage",
+      "homepage": "https://rclone.org/",
+      "license": "MIT",
+      "executables": [
+        "rclone"
+      ],
+      "dependencies": [],
+      "architectures": {
+        "x64": {
+          "name": "rclone-v1.74.1-windows-amd64.zip",
+          "url": "https://github.com/rclone/rclone/releases/download/v1.74.1/rclone-v1.74.1-windows-amd64.zip",
+          "sha256": "51326acc0d9cf60234aa5787d8da66a621430aa373542a6b35bad8a4a26ca43e",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": true,
+            "sourcePath": "rclone-v1.74.1-windows-amd64",
+            "bins": [
+              {
+                "name": "rclone",
+                "path": "rclone.exe"
+              }
+            ]
+          }
+        },
+        "arm64": {
+          "name": "rclone-v1.74.1-windows-arm64.zip",
+          "url": "https://github.com/rclone/rclone/releases/download/v1.74.1/rclone-v1.74.1-windows-arm64.zip",
+          "sha256": "317d2080debf0d941b12efb3a327d06e5cc1815c1dc4d79cb3665811b29ed12f",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": true,
+            "sourcePath": "rclone-v1.74.1-windows-arm64",
+            "bins": [
+              {
+                "name": "rclone",
+                "path": "rclone.exe"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "fastfetch",
+      "status": "candidate",
+      "promotable": true,
+      "reason": "sha256-windows-archives-and-layout-validated",
+      "repository": "fastfetch-cli/fastfetch",
+      "homebrew": {
+        "tap": "homebrew/core",
+        "sourcePath": "Formula/f/fastfetch.rb",
+        "sourceSha256": "34ad6dc690e74bc6af89c0952a02f6be2dafdd85ac1f5eeccefa10665bd78c0d"
+      },
+      "homebrewVersion": "2.63.1",
+      "latestReleaseTag": "2.63.1",
+      "description": "Like neofetch, but much faster because written mostly in C",
+      "homepage": "https://github.com/fastfetch-cli/fastfetch",
+      "license": "MIT",
+      "executables": [
+        "fastfetch"
+      ],
+      "dependencies": [
+        "yyjson"
+      ],
+      "architectures": {
+        "x64": {
+          "name": "fastfetch-windows-amd64.zip",
+          "url": "https://github.com/fastfetch-cli/fastfetch/releases/download/2.63.1/fastfetch-windows-amd64.zip",
+          "sha256": "2de11119cbd874c7ecc82ecf4c09711f397a7407c85a1857256c5bf1139fc6f6",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": true,
+            "sourcePath": "",
+            "bins": [
+              {
+                "name": "fastfetch",
+                "path": "fastfetch.exe"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "docker-compose",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "docker/compose",
+      "homebrewVersion": "5.1.3",
+      "latestReleaseTag": "v5.1.3"
+    },
+    {
+      "name": "xcodegen",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "yonaskolb/XcodeGen",
+      "homebrewVersion": "2.45.4",
+      "latestReleaseTag": "2.45.4"
+    },
+    {
+      "name": "btop",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "aristocratos/btop",
+      "homebrewVersion": "1.4.7",
+      "latestReleaseTag": "v1.4.7"
+    },
+    {
+      "name": "gnu-tar",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "rtk",
+      "status": "candidate",
+      "promotable": true,
+      "reason": "sha256-windows-archives-and-layout-validated",
+      "repository": "rtk-ai/rtk",
+      "homebrew": {
+        "tap": "homebrew/core",
+        "sourcePath": "Formula/r/rtk.rb",
+        "sourceSha256": "a951a4de3a330784a7a0aeba0e3eaaeb88713fb755db41d1450d5f74f2901e35"
+      },
+      "homebrewVersion": "0.40.0",
+      "latestReleaseTag": "v0.40.0",
+      "description": "CLI proxy to minimize LLM token consumption",
+      "homepage": "https://www.rtk-ai.app/",
+      "license": "Apache-2.0",
+      "executables": [
+        "rtk"
+      ],
+      "dependencies": [],
+      "architectures": {
+        "x64": {
+          "name": "rtk-x86_64-pc-windows-msvc.zip",
+          "url": "https://github.com/rtk-ai/rtk/releases/download/v0.40.0/rtk-x86_64-pc-windows-msvc.zip",
+          "sha256": "7fc90190f76f55dc170898d0ac755e89f405fc2d1d89f717ad8600640ab0f1ed",
+          "extractType": "zip",
+          "score": 80,
+          "layout": {
+            "ok": true,
+            "sourcePath": "",
+            "bins": [
+              {
+                "name": "rtk",
+                "path": "rtk.exe"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "wget",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "watchman",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "facebook/watchman",
+      "homebrewVersion": "2026.05.11.00",
+      "latestReleaseTag": "v2026.05.11.00"
+    },
+    {
+      "name": "rust",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "cloudflared",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "cloudflare/cloudflared",
+      "homebrewVersion": "2026.5.0",
+      "latestReleaseTag": "2026.5.0"
+    },
+    {
+      "name": "php",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "gnutls",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "actionlint",
+      "status": "candidate",
+      "promotable": true,
+      "reason": "sha256-windows-archives-and-layout-validated",
+      "repository": "rhysd/actionlint",
+      "homebrew": {
+        "tap": "homebrew/core",
+        "sourcePath": "Formula/a/actionlint.rb",
+        "sourceSha256": "6296c22185799ce1c197a549054be47d4c067ecccb4c80098544be282cd3fb93"
+      },
+      "homebrewVersion": "1.7.12",
+      "latestReleaseTag": "v1.7.12",
+      "description": "Static checker for GitHub Actions workflow files",
+      "homepage": "https://rhysd.github.io/actionlint/",
+      "license": "MIT",
+      "executables": [
+        "actionlint"
+      ],
+      "dependencies": [
+        "shellcheck"
+      ],
+      "architectures": {
+        "x64": {
+          "name": "actionlint_1.7.12_windows_amd64.zip",
+          "url": "https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_windows_amd64.zip",
+          "sha256": "6e7241b51e6817ea6a047693d8e6fed13b31819c9a0dd6c5a726e1592d22f6e9",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": true,
+            "sourcePath": "",
+            "bins": [
+              {
+                "name": "actionlint",
+                "path": "actionlint.exe"
+              }
+            ]
+          }
+        },
+        "arm64": {
+          "name": "actionlint_1.7.12_windows_arm64.zip",
+          "url": "https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_windows_arm64.zip",
+          "sha256": "cadcf7ea4efe3a68728893813643cebe1185e5b1d4be5b96245f65c9a4d5ea41",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": true,
+            "sourcePath": "",
+            "bins": [
+              {
+                "name": "actionlint",
+                "path": "actionlint.exe"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "flyctl",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "superfly/flyctl",
+      "homebrewVersion": "0.4.52",
+      "latestReleaseTag": "v0.4.52"
+    },
+    {
+      "name": "mint",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "yonaskolb/Mint",
+      "homebrewVersion": "0.18.0",
+      "latestReleaseTag": "0.18.0"
+    },
+    {
+      "name": "powershell",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "PowerShell/PowerShell",
+      "homebrewVersion": "7.6.1",
+      "latestReleaseTag": "v7.6.1"
+    },
+    {
+      "name": "atuin",
+      "status": "candidate",
+      "promotable": false,
+      "reason": "archive-layout-not-promotable",
+      "layoutReasons": [
+        "x64: archive-inspection-failed"
+      ],
+      "repository": "atuinsh/atuin",
+      "homebrewVersion": "18.16.1",
+      "latestReleaseTag": "v18.16.1",
+      "architectures": {
+        "x64": {
+          "name": "atuin-server-x86_64-pc-windows-msvc.zip",
+          "url": "https://github.com/atuinsh/atuin/releases/download/v18.16.1/atuin-server-x86_64-pc-windows-msvc.zip",
+          "sha256": "f64f0838fa248063d6ef16a35c586c6e82d2b641008f77caf3db353676bc6f5f",
+          "extractType": "zip",
+          "score": 80,
+          "layout": {
+            "ok": false,
+            "reason": "archive-inspection-failed",
+            "error": "The property 'entry' cannot be found on this object. Verify that the property exists."
+          }
+        }
+      }
+    },
+    {
+      "name": "libomp",
+      "status": "rejected",
+      "reason": "no-declared-executables"
+    },
+    {
+      "name": "libpq",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "kubeconform",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "yannh/kubeconform",
+      "homebrewVersion": "0.7.0",
+      "latestReleaseTag": "v0.7.0"
+    },
+    {
+      "name": "vim",
+      "status": "rejected",
+      "reason": "github-release-not-readable",
+      "repository": "vim/vim",
+      "error": "Response status code does not indicate success: 404 (Not Found)."
+    },
+    {
+      "name": "fd",
+      "status": "candidate",
+      "promotable": true,
+      "reason": "sha256-windows-archives-and-layout-validated",
+      "repository": "sharkdp/fd",
+      "homebrew": {
+        "tap": "homebrew/core",
+        "sourcePath": "Formula/f/fd.rb",
+        "sourceSha256": "aa911f2b1201caeaa27bc678bfa198369bf5f8965fb9486110e99b2986a0ebfa"
+      },
+      "homebrewVersion": "10.4.2",
+      "latestReleaseTag": "v10.4.2",
+      "description": "Simple, fast and user-friendly alternative to find",
+      "homepage": "https://github.com/sharkdp/fd",
+      "license": "Apache-2.0 OR MIT",
+      "executables": [
+        "fd"
+      ],
+      "dependencies": [],
+      "architectures": {
+        "x64": {
+          "name": "fd-v10.4.2-x86_64-pc-windows-msvc.zip",
+          "url": "https://github.com/sharkdp/fd/releases/download/v10.4.2/fd-v10.4.2-x86_64-pc-windows-msvc.zip",
+          "sha256": "b2816e506390a89941c63c9187d58a3cc10e9a55f2ef0685f9ea0eccaf7c98c8",
+          "extractType": "zip",
+          "score": 80,
+          "layout": {
+            "ok": true,
+            "sourcePath": "fd-v10.4.2-x86_64-pc-windows-msvc",
+            "bins": [
+              {
+                "name": "fd",
+                "path": "fd.exe"
+              }
+            ]
+          }
+        },
+        "arm64": {
+          "name": "fd-v10.4.2-aarch64-pc-windows-msvc.zip",
+          "url": "https://github.com/sharkdp/fd/releases/download/v10.4.2/fd-v10.4.2-aarch64-pc-windows-msvc.zip",
+          "sha256": "4f9110c2d5b33a7f760bfa5510f4c113d828109f7277d421b1053a9943c0fc92",
+          "extractType": "zip",
+          "score": 80,
+          "layout": {
+            "ok": true,
+            "sourcePath": "fd-v10.4.2-aarch64-pc-windows-msvc",
+            "bins": [
+              {
+                "name": "fd",
+                "path": "fd.exe"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "lazygit",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "jesseduffield/lazygit",
+      "homebrewVersion": "0.61.1",
+      "latestReleaseTag": "v0.61.1"
+    },
+    {
+      "name": "ansible",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "gradle",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "nmap",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "tesseract",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "tesseract-ocr/tesseract",
+      "homebrewVersion": "5.5.2",
+      "latestReleaseTag": "5.5.2"
+    },
+    {
+      "name": "qemu",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "terragrunt",
+      "status": "candidate",
+      "promotable": false,
+      "reason": "archive-layout-not-promotable",
+      "layoutReasons": [
+        "x64: archive-inspection-failed"
+      ],
+      "repository": "gruntwork-io/terragrunt",
+      "homebrewVersion": "1.0.4",
+      "latestReleaseTag": "v1.0.4",
+      "architectures": {
+        "x64": {
+          "name": "terragrunt_windows_amd64.exe.zip",
+          "url": "https://github.com/gruntwork-io/terragrunt/releases/download/v1.0.4/terragrunt_windows_amd64.exe.zip",
+          "sha256": "897e10ed7c440b3c8999ca312150b1f74e99371a2e9eb958003aaf46a17ae668",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": false,
+            "reason": "archive-inspection-failed",
+            "error": "The property 'entry' cannot be found on this object. Verify that the property exists."
+          }
+        }
+      }
+    },
+    {
+      "name": "git-lfs",
+      "status": "candidate",
+      "promotable": true,
+      "reason": "sha256-windows-archives-and-layout-validated",
+      "repository": "git-lfs/git-lfs",
+      "homebrew": {
+        "tap": "homebrew/core",
+        "sourcePath": "Formula/g/git-lfs.rb",
+        "sourceSha256": "4733852ff5553925b7987b7b24b42c65603f3601f9c0ab1f2c8435cc59175db5"
+      },
+      "homebrewVersion": "3.7.1",
+      "latestReleaseTag": "v3.7.1",
+      "description": "Git extension for versioning large files",
+      "homepage": "https://git-lfs.com/",
+      "license": "MIT",
+      "executables": [
+        "git-lfs"
+      ],
+      "dependencies": [],
+      "architectures": {
+        "x64": {
+          "name": "git-lfs-windows-amd64-v3.7.1.zip",
+          "url": "https://github.com/git-lfs/git-lfs/releases/download/v3.7.1/git-lfs-windows-amd64-v3.7.1.zip",
+          "sha256": "8683cdc3d6c029b49393dcebbaa6265bd6efd9abdcf837be855b4cd42e5e80b6",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": true,
+            "sourcePath": "git-lfs-3.7.1",
+            "bins": [
+              {
+                "name": "git-lfs",
+                "path": "git-lfs.exe"
+              }
+            ]
+          }
+        },
+        "arm64": {
+          "name": "git-lfs-windows-arm64-v3.7.1.zip",
+          "url": "https://github.com/git-lfs/git-lfs/releases/download/v3.7.1/git-lfs-windows-arm64-v3.7.1.zip",
+          "sha256": "9441383a3928a7f387223711929292a46ace95580ceed443d61e7b8a4d9615c3",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": true,
+            "sourcePath": "git-lfs-3.7.1",
+            "bins": [
+              {
+                "name": "git-lfs",
+                "path": "git-lfs.exe"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "bash",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "aria2",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "aria2/aria2",
+      "homebrewVersion": "1.37.0",
+      "latestReleaseTag": "release-1.37.0"
+    },
+    {
+      "name": "postgresql@16",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "fastlane",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "fastlane/fastlane",
+      "homebrewVersion": "2.234.0",
+      "latestReleaseTag": "2.234.0"
+    },
+    {
+      "name": "colima",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "abiosoft/colima",
+      "homebrewVersion": "0.10.1",
+      "latestReleaseTag": "v0.10.1"
+    },
+    {
+      "name": "bat",
+      "status": "candidate",
+      "promotable": true,
+      "reason": "sha256-windows-archives-and-layout-validated",
+      "repository": "sharkdp/bat",
+      "homebrew": {
+        "tap": "homebrew/core",
+        "sourcePath": "Formula/b/bat.rb",
+        "sourceSha256": "aae38b82073fba7c26b6d5afa6a628f047678cf28c9a9d406d7872884aa99848"
+      },
+      "homebrewVersion": "0.26.1",
+      "latestReleaseTag": "v0.26.1",
+      "description": "Clone of cat(1) with syntax highlighting and Git integration",
+      "homepage": "https://github.com/sharkdp/bat",
+      "license": "Apache-2.0 OR MIT",
+      "executables": [
+        "bat"
+      ],
+      "dependencies": [
+        "libgit2",
+        "oniguruma"
+      ],
+      "architectures": {
+        "x64": {
+          "name": "bat-v0.26.1-x86_64-pc-windows-msvc.zip",
+          "url": "https://github.com/sharkdp/bat/releases/download/v0.26.1/bat-v0.26.1-x86_64-pc-windows-msvc.zip",
+          "sha256": "0f729b4b6f5f28d395c641eacc2e9ff68d0096b85aa0eec344aa62425144b69b",
+          "extractType": "zip",
+          "score": 80,
+          "layout": {
+            "ok": true,
+            "sourcePath": "bat-v0.26.1-x86_64-pc-windows-msvc",
+            "bins": [
+              {
+                "name": "bat",
+                "path": "bat.exe"
+              }
+            ]
+          }
+        },
+        "arm64": {
+          "name": "bat-v0.26.1-aarch64-pc-windows-msvc.zip",
+          "url": "https://github.com/sharkdp/bat/releases/download/v0.26.1/bat-v0.26.1-aarch64-pc-windows-msvc.zip",
+          "sha256": "af07dd1939e99f7f5892d197fc5653cb8cb6c5999552731135ad156eca7e38a5",
+          "extractType": "zip",
+          "score": 80,
+          "layout": {
+            "ok": true,
+            "sourcePath": "bat-v0.26.1-aarch64-pc-windows-msvc",
+            "bins": [
+              {
+                "name": "bat",
+                "path": "bat.exe"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "fish",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "fish-shell/fish-shell",
+      "homebrewVersion": "4.7.1",
+      "latestReleaseTag": "4.7.1"
+    },
+    {
+      "name": "librsvg",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "postgresql@18",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "pango",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "gnu-sed",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "argocd",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "argoproj/argo-cd",
+      "homebrewVersion": "3.4.2",
+      "latestReleaseTag": "v3.4.2"
+    },
+    {
+      "name": "mkcert",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "FiloSottile/mkcert",
+      "homebrewVersion": "1.4.4",
+      "latestReleaseTag": "v1.4.4"
+    },
+    {
+      "name": "ruby-build",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "rbenv/ruby-build",
+      "homebrewVersion": "20260512",
+      "latestReleaseTag": "v20260512"
+    },
+    {
+      "name": "unbound",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "openjdk",
+      "status": "rejected",
+      "reason": "github-release-not-readable",
+      "repository": "openjdk/jdk25u",
+      "error": "Response status code does not indicate success: 404 (Not Found)."
+    },
+    {
+      "name": "automake",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "zoxide",
+      "status": "candidate",
+      "promotable": true,
+      "reason": "sha256-windows-archives-and-layout-validated",
+      "repository": "ajeetdsouza/zoxide",
+      "homebrew": {
+        "tap": "homebrew/core",
+        "sourcePath": "Formula/z/zoxide.rb",
+        "sourceSha256": "e8f7b33d5a990a5035d68b2263d4cacbf08646723ef1ad6f4e37ce9996e1e5ec"
+      },
+      "homebrewVersion": "0.9.9",
+      "latestReleaseTag": "v0.9.9",
+      "description": "Shell extension to navigate your filesystem faster",
+      "homepage": "https://github.com/ajeetdsouza/zoxide",
+      "license": "MIT",
+      "executables": [
+        "zoxide"
+      ],
+      "dependencies": [],
+      "architectures": {
+        "x64": {
+          "name": "zoxide-0.9.9-x86_64-pc-windows-msvc.zip",
+          "url": "https://github.com/ajeetdsouza/zoxide/releases/download/v0.9.9/zoxide-0.9.9-x86_64-pc-windows-msvc.zip",
+          "sha256": "5af00d0916f05631e3030537289eac56605e7c1733318c4d525c8e847f12496d",
+          "extractType": "zip",
+          "score": 80,
+          "layout": {
+            "ok": true,
+            "sourcePath": "",
+            "bins": [
+              {
+                "name": "zoxide",
+                "path": "zoxide.exe"
+              }
+            ]
+          }
+        },
+        "arm64": {
+          "name": "zoxide-0.9.9-aarch64-pc-windows-msvc.zip",
+          "url": "https://github.com/ajeetdsouza/zoxide/releases/download/v0.9.9/zoxide-0.9.9-aarch64-pc-windows-msvc.zip",
+          "sha256": "58c55ef6f0ead099fbb31ed69566118d7c7c7a4e16c858bbdb4f7def40cd534b",
+          "extractType": "zip",
+          "score": 80,
+          "layout": {
+            "ok": true,
+            "sourcePath": "",
+            "bins": [
+              {
+                "name": "zoxide",
+                "path": "zoxide.exe"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "kustomize",
+      "status": "candidate",
+      "promotable": true,
+      "reason": "sha256-windows-archives-and-layout-validated",
+      "repository": "kubernetes-sigs/kustomize",
+      "homebrew": {
+        "tap": "homebrew/core",
+        "sourcePath": "Formula/k/kustomize.rb",
+        "sourceSha256": "44ae59e0fa50492f81f864b9f2a038c5ab0881e1a41e639e1614cb2dc8a17d5b"
+      },
+      "homebrewVersion": "5.8.1",
+      "latestReleaseTag": "kustomize/v5.8.1",
+      "description": "Template-free customization of Kubernetes YAML manifests",
+      "homepage": "https://github.com/kubernetes-sigs/kustomize",
+      "license": "Apache-2.0",
+      "executables": [
+        "kustomize"
+      ],
+      "dependencies": [],
+      "architectures": {
+        "x64": {
+          "name": "kustomize_v5.8.1_windows_amd64.zip",
+          "url": "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/v5.8.1/kustomize_v5.8.1_windows_amd64.zip",
+          "sha256": "8ec7f5e815e526d4622c06df0a7793d8cfb6eb1c74f816b46166097fef8b26c6",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": true,
+            "sourcePath": "",
+            "bins": [
+              {
+                "name": "kustomize",
+                "path": "kustomize.exe"
+              }
+            ]
+          }
+        },
+        "arm64": {
+          "name": "kustomize_v5.8.1_windows_arm64.zip",
+          "url": "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/v5.8.1/kustomize_v5.8.1_windows_arm64.zip",
+          "sha256": "f6f5090c373965760a30a59af84c81853b80d2c7dbb3236424f440e47eed3f5a",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": true,
+            "sourcePath": "",
+            "bins": [
+              {
+                "name": "kustomize",
+                "path": "kustomize.exe"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "rsync",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "chezmoi",
+      "status": "candidate",
+      "promotable": true,
+      "reason": "sha256-windows-archives-and-layout-validated",
+      "repository": "twpayne/chezmoi",
+      "homebrew": {
+        "tap": "homebrew/core",
+        "sourcePath": "Formula/c/chezmoi.rb",
+        "sourceSha256": "fc0965ea19a419548d64e731dd2e7105937c620724685726451fd25947a73446"
+      },
+      "homebrewVersion": "2.70.3",
+      "latestReleaseTag": "v2.70.3",
+      "description": "Manage your dotfiles across multiple diverse machines, securely",
+      "homepage": "https://chezmoi.io/",
+      "license": "MIT",
+      "executables": [
+        "chezmoi"
+      ],
+      "dependencies": [],
+      "architectures": {
+        "x64": {
+          "name": "chezmoi_2.70.3_windows_amd64.zip",
+          "url": "https://github.com/twpayne/chezmoi/releases/download/v2.70.3/chezmoi_2.70.3_windows_amd64.zip",
+          "sha256": "d6985fd4cbbfda7fb50574a20b7f1fb1cf5c540da121cf1ebfd94461e861a3e3",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": true,
+            "sourcePath": "",
+            "bins": [
+              {
+                "name": "chezmoi",
+                "path": "chezmoi.exe"
+              }
+            ]
+          }
+        },
+        "arm64": {
+          "name": "chezmoi_2.70.3_windows_arm64.zip",
+          "url": "https://github.com/twpayne/chezmoi/releases/download/v2.70.3/chezmoi_2.70.3_windows_arm64.zip",
+          "sha256": "ebd9dbedba12759314bc57c891c42000e3781c33d3a2e80f0008288fd979a2b4",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": true,
+            "sourcePath": "",
+            "bins": [
+              {
+                "name": "chezmoi",
+                "path": "chezmoi.exe"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "composer",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "podman",
+      "status": "candidate",
+      "promotable": false,
+      "reason": "archive-layout-not-promotable",
+      "layoutReasons": [
+        "x64: archive-inspection-failed",
+        "arm64: archive-inspection-failed"
+      ],
+      "repository": "containers/podman",
+      "homebrewVersion": "5.8.2",
+      "latestReleaseTag": "v5.8.2",
+      "architectures": {
+        "x64": {
+          "name": "podman-remote-release-windows_amd64.zip",
+          "url": "https://github.com/containers/podman/releases/download/v5.8.2/podman-remote-release-windows_amd64.zip",
+          "sha256": "1b60aae4bd4879c3932c283d2070bb87116ec1f0ab3a4a98eff7e65f318f9e4e",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": false,
+            "reason": "archive-inspection-failed",
+            "error": "The property 'entry' cannot be found on this object. Verify that the property exists."
+          }
+        },
+        "arm64": {
+          "name": "podman-remote-release-windows_arm64.zip",
+          "url": "https://github.com/containers/podman/releases/download/v5.8.2/podman-remote-release-windows_arm64.zip",
+          "sha256": "06c64d11267232ba21d3e43962c0e9036f24550d87fb811bc995195d82c32fca",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": false,
+            "reason": "archive-inspection-failed",
+            "error": "The property 'entry' cannot be found on this object. Verify that the property exists."
+          }
+        }
+      }
+    },
+    {
+      "name": "pre-commit",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "tfenv",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "tfutils/tfenv",
+      "homebrewVersion": "3.2.2",
+      "latestReleaseTag": "v3.2.2"
+    },
+    {
+      "name": "xclogparser",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "MobileNativeFoundation/XCLogParser",
+      "homebrewVersion": "0.2.47",
+      "latestReleaseTag": "v0.2.47"
+    },
+    {
+      "name": "ghostscript",
+      "status": "rejected",
+      "reason": "github-release-version-does-not-match-homebrew-stable",
+      "repository": "ArtifexSoftware/ghostpdl-downloads",
+      "homebrewVersion": "10.07.0",
+      "latestReleaseTag": "gs10070"
+    },
+    {
+      "name": "k9s",
+      "status": "candidate",
+      "promotable": true,
+      "reason": "sha256-windows-archives-and-layout-validated",
+      "repository": "derailed/k9s",
+      "homebrew": {
+        "tap": "homebrew/core",
+        "sourcePath": "Formula/k/k9s.rb",
+        "sourceSha256": "b9b552cdb7da98361ad7ede7715b1e480735a0d2fe8c180607a4a4af45eb8f8b"
+      },
+      "homebrewVersion": "0.50.18",
+      "latestReleaseTag": "v0.50.18",
+      "description": "Kubernetes CLI To Manage Your Clusters In Style!",
+      "homepage": "https://k9scli.io/",
+      "license": "Apache-2.0",
+      "executables": [
+        "k9s"
+      ],
+      "dependencies": [],
+      "architectures": {
+        "x64": {
+          "name": "k9s_Windows_amd64.zip",
+          "url": "https://github.com/derailed/k9s/releases/download/v0.50.18/k9s_Windows_amd64.zip",
+          "sha256": "9d4e8672c4e55c04cb137475062bc88da7fc0878e04d53df181196449600da16",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": true,
+            "sourcePath": "",
+            "bins": [
+              {
+                "name": "k9s",
+                "path": "k9s.exe"
+              }
+            ]
+          }
+        },
+        "arm64": {
+          "name": "k9s_Windows_arm64.zip",
+          "url": "https://github.com/derailed/k9s/releases/download/v0.50.18/k9s_Windows_arm64.zip",
+          "sha256": "005bd1a54a52c914eb6cbf29403b572ab48e4345f0cb86614873ff56b9e80b0c",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": true,
+            "sourcePath": "",
+            "bins": [
+              {
+                "name": "k9s",
+                "path": "k9s.exe"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "mysql",
+      "status": "rejected",
+      "reason": "github-release-not-readable",
+      "repository": "mysql/mysql-server",
+      "error": "Response status code does not indicate success: 404 (Not Found)."
+    },
+    {
+      "name": "llmfit",
+      "status": "rejected",
+      "reason": "github-release-version-does-not-match-homebrew-stable",
+      "repository": "AlexsJones/llmfit",
+      "homebrewVersion": "0.9.23",
+      "latestReleaseTag": "v0.9.25"
+    },
+    {
+      "name": "yazi",
+      "status": "candidate",
+      "promotable": true,
+      "reason": "sha256-windows-archives-and-layout-validated",
+      "repository": "sxyazi/yazi",
+      "homebrew": {
+        "tap": "homebrew/core",
+        "sourcePath": "Formula/y/yazi.rb",
+        "sourceSha256": "143cf609fa54510e87b7cf0b03f647338ac1917b26ac3027ebeadf65ed72ca95"
+      },
+      "homebrewVersion": "26.5.6",
+      "latestReleaseTag": "v26.5.6",
+      "description": "Blazing fast terminal file manager written in Rust, based on async I/O",
+      "homepage": "https://github.com/sxyazi/yazi",
+      "license": "MIT",
+      "executables": [
+        "ya",
+        "yazi"
+      ],
+      "dependencies": [],
+      "architectures": {
+        "x64": {
+          "name": "yazi-x86_64-pc-windows-msvc.zip",
+          "url": "https://github.com/sxyazi/yazi/releases/download/v26.5.6/yazi-x86_64-pc-windows-msvc.zip",
+          "sha256": "6c6c52a4b2648e179f917bdaa7c57e793d18561b380a8bfa025f10cd1b9b2ad1",
+          "extractType": "zip",
+          "score": 80,
+          "layout": {
+            "ok": true,
+            "sourcePath": "yazi-x86_64-pc-windows-msvc",
+            "bins": [
+              {
+                "name": "ya",
+                "path": "ya.exe"
+              },
+              {
+                "name": "yazi",
+                "path": "yazi.exe"
+              }
+            ]
+          }
+        },
+        "arm64": {
+          "name": "yazi-aarch64-pc-windows-msvc.zip",
+          "url": "https://github.com/sxyazi/yazi/releases/download/v26.5.6/yazi-aarch64-pc-windows-msvc.zip",
+          "sha256": "797abc8965c07d903f3cd263512fe4114b2fc36f03fc62011300787f28a48f1e",
+          "extractType": "zip",
+          "score": 80,
+          "layout": {
+            "ok": true,
+            "sourcePath": "yazi-aarch64-pc-windows-msvc",
+            "bins": [
+              {
+                "name": "ya",
+                "path": "ya.exe"
+              },
+              {
+                "name": "yazi",
+                "path": "yazi.exe"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "golangci-lint",
+      "status": "candidate",
+      "promotable": true,
+      "reason": "sha256-windows-archives-and-layout-validated",
+      "repository": "golangci/golangci-lint",
+      "homebrew": {
+        "tap": "homebrew/core",
+        "sourcePath": "Formula/g/golangci-lint.rb",
+        "sourceSha256": "de01c23da05f6580cfe55987f18328318f4036ce4eaa476d7ed0f46bbbbea372"
+      },
+      "homebrewVersion": "2.12.2",
+      "latestReleaseTag": "v2.12.2",
+      "description": "Fast linters runner for Go",
+      "homepage": "https://golangci-lint.run/",
+      "license": "GPL-3.0-only",
+      "executables": [
+        "golangci-lint"
+      ],
+      "dependencies": [
+        "go"
+      ],
+      "architectures": {
+        "x64": {
+          "name": "golangci-lint-2.12.2-windows-amd64.zip",
+          "url": "https://github.com/golangci/golangci-lint/releases/download/v2.12.2/golangci-lint-2.12.2-windows-amd64.zip",
+          "sha256": "bd42e3ebc8cb4ececb86941983baaf1dc221bbb04d838e94ce63b49cc91e02bb",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": true,
+            "sourcePath": "golangci-lint-2.12.2-windows-amd64",
+            "bins": [
+              {
+                "name": "golangci-lint",
+                "path": "golangci-lint.exe"
+              }
+            ]
+          }
+        },
+        "arm64": {
+          "name": "golangci-lint-2.12.2-windows-arm64.zip",
+          "url": "https://github.com/golangci/golangci-lint/releases/download/v2.12.2/golangci-lint-2.12.2-windows-arm64.zip",
+          "sha256": "947b9a5bf762d465710b376c156f0184abb2168378b0826af1899e0ee7183742",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": true,
+            "sourcePath": "golangci-lint-2.12.2-windows-arm64",
+            "bins": [
+              {
+                "name": "golangci-lint",
+                "path": "golangci-lint.exe"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "autoconf",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "eza",
+      "status": "candidate",
+      "promotable": true,
+      "reason": "sha256-windows-archives-and-layout-validated",
+      "repository": "eza-community/eza",
+      "homebrew": {
+        "tap": "homebrew/core",
+        "sourcePath": "Formula/e/eza.rb",
+        "sourceSha256": "0bd52f6ac5c41eab6d55a8499ac8ac5255833958bed7b9c88771188861561bd2"
+      },
+      "homebrewVersion": "0.23.4",
+      "latestReleaseTag": "v0.23.4",
+      "description": "Modern, maintained replacement for ls",
+      "homepage": "https://github.com/eza-community/eza",
+      "license": "EUPL-1.2",
+      "executables": [
+        "eza"
+      ],
+      "dependencies": [
+        "libgit2"
+      ],
+      "architectures": {
+        "x64": {
+          "name": "eza.exe_x86_64-pc-windows-gnu.zip",
+          "url": "https://github.com/eza-community/eza/releases/download/v0.23.4/eza.exe_x86_64-pc-windows-gnu.zip",
+          "sha256": "05677fd7c2d1b69ce71df53db74c29f6331ea0b2be5aa3a0fce6976200ee06fc",
+          "extractType": "zip",
+          "score": 20,
+          "layout": {
+            "ok": true,
+            "sourcePath": "",
+            "bins": [
+              {
+                "name": "eza",
+                "path": "eza.exe"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "sops",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "getsops/sops",
+      "homebrewVersion": "3.13.1",
+      "latestReleaseTag": "v3.13.1"
+    },
+    {
+      "name": "ugrep",
+      "status": "rejected",
+      "reason": "github-release-version-does-not-match-homebrew-stable",
+      "repository": "Genivia/ugrep",
+      "homebrewVersion": "7.8.1",
+      "latestReleaseTag": "v7.8.2"
+    },
+    {
+      "name": "iperf3",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "esnet/iperf",
+      "homebrewVersion": "3.21",
+      "latestReleaseTag": "3.21"
+    },
+    {
+      "name": "gobject-introspection",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "zstd",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "facebook/zstd",
+      "homebrewVersion": "1.5.7",
+      "latestReleaseTag": "v1.5.7"
+    },
+    {
+      "name": "sqlite",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "zsh",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "hugo",
+      "status": "candidate",
+      "promotable": true,
+      "reason": "sha256-windows-archives-and-layout-validated",
+      "repository": "gohugoio/hugo",
+      "homebrew": {
+        "tap": "homebrew/core",
+        "sourcePath": "Formula/h/hugo.rb",
+        "sourceSha256": "9c9893f4516ec23a8f1ebc71d42c5a41b7a265436c44ee0b28423fcfe66e6ab6"
+      },
+      "homebrewVersion": "0.161.1",
+      "latestReleaseTag": "v0.161.1",
+      "description": "Configurable static site generator",
+      "homepage": "https://gohugo.io/",
+      "license": "Apache-2.0",
+      "executables": [
+        "hugo"
+      ],
+      "dependencies": [],
+      "architectures": {
+        "x64": {
+          "name": "hugo_0.161.1_windows-amd64.zip",
+          "url": "https://github.com/gohugoio/hugo/releases/download/v0.161.1/hugo_0.161.1_windows-amd64.zip",
+          "sha256": "7f8d030b37600c60bf2a782611257e6a768934fbe7724c1f3a1a501e6724cf0d",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": true,
+            "sourcePath": "",
+            "bins": [
+              {
+                "name": "hugo",
+                "path": "hugo.exe"
+              }
+            ]
+          }
+        },
+        "arm64": {
+          "name": "hugo_0.161.1_windows-arm64.zip",
+          "url": "https://github.com/gohugoio/hugo/releases/download/v0.161.1/hugo_0.161.1_windows-arm64.zip",
+          "sha256": "6465311bceab1421eb91a54e9f0e6ed674977d8ec04d0292a3f2fe4d63d87a19",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": true,
+            "sourcePath": "",
+            "bins": [
+              {
+                "name": "hugo",
+                "path": "hugo.exe"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "sevenzip",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "deno",
+      "status": "candidate",
+      "promotable": false,
+      "reason": "archive-layout-not-promotable",
+      "layoutReasons": [
+        "x64: archive-inspection-failed",
+        "arm64: archive-inspection-failed"
+      ],
+      "repository": "denoland/deno",
+      "homebrewVersion": "2.7.14",
+      "latestReleaseTag": "v2.7.14",
+      "architectures": {
+        "x64": {
+          "name": "deno-x86_64-pc-windows-msvc.zip",
+          "url": "https://github.com/denoland/deno/releases/download/v2.7.14/deno-x86_64-pc-windows-msvc.zip",
+          "sha256": "25f9871f5c1d9e999d60071f8069767134495fd601d2e2c7ce1e8c641487bda0",
+          "extractType": "zip",
+          "score": 80,
+          "layout": {
+            "ok": false,
+            "reason": "archive-inspection-failed",
+            "error": "The property 'entry' cannot be found on this object. Verify that the property exists."
+          }
+        },
+        "arm64": {
+          "name": "deno-aarch64-pc-windows-msvc.zip",
+          "url": "https://github.com/denoland/deno/releases/download/v2.7.14/deno-aarch64-pc-windows-msvc.zip",
+          "sha256": "7f3a4a2568f8b4551bf0bff377652161365c5ce3f594c70ee2ef37edd733e942",
+          "extractType": "zip",
+          "score": 80,
+          "layout": {
+            "ok": false,
+            "reason": "archive-inspection-failed",
+            "error": "The property 'entry' cannot be found on this object. Verify that the property exists."
+          }
+        }
+      }
+    },
+    {
+      "name": "mas",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "mas-cli/mas",
+      "homebrewVersion": "7.0.0",
+      "latestReleaseTag": "v7.0.0"
+    },
+    {
+      "name": "postgresql@17",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "libpng",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "direnv",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "direnv/direnv",
+      "homebrewVersion": "2.37.1",
+      "latestReleaseTag": "v2.37.1"
+    },
+    {
+      "name": "asdf",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "asdf-vm/asdf",
+      "homebrewVersion": "0.19.0",
+      "latestReleaseTag": "v0.19.0"
+    },
+    {
+      "name": "zellij",
+      "status": "candidate",
+      "promotable": true,
+      "reason": "sha256-windows-archives-and-layout-validated",
+      "repository": "zellij-org/zellij",
+      "homebrew": {
+        "tap": "homebrew/core",
+        "sourcePath": "Formula/z/zellij.rb",
+        "sourceSha256": "ab56ea148a51f96caa0fa6d6c56ec32cb907ebd1574efa12d809c8700c4f1e58"
+      },
+      "homebrewVersion": "0.44.3",
+      "latestReleaseTag": "v0.44.3",
+      "description": "Pluggable terminal workspace, with terminal multiplexer as the base feature",
+      "homepage": "https://zellij.dev",
+      "license": "MIT",
+      "executables": [
+        "zellij"
+      ],
+      "dependencies": [
+        "openssl@3"
+      ],
+      "architectures": {
+        "x64": {
+          "name": "zellij-no-web-x86_64-pc-windows-msvc.zip",
+          "url": "https://github.com/zellij-org/zellij/releases/download/v0.44.3/zellij-no-web-x86_64-pc-windows-msvc.zip",
+          "sha256": "2a192ead623d326458b058f235a5c9ca6f955cece8b3787ce744c07ba9f11e34",
+          "extractType": "zip",
+          "score": 80,
+          "layout": {
+            "ok": true,
+            "sourcePath": "",
+            "bins": [
+              {
+                "name": "zellij",
+                "path": "zellij.exe"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "exiftool",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "aom",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "node@24",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "boost",
+      "status": "rejected",
+      "reason": "no-declared-executables"
+    },
+    {
+      "name": "openai-whisper",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "openai/whisper",
+      "homebrewVersion": "20250625",
+      "latestReleaseTag": "v20250625"
+    },
+    {
+      "name": "freetype",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "zlib",
+      "status": "rejected",
+      "reason": "no-declared-executables"
+    },
+    {
+      "name": "tilt",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "tilt-dev/tilt",
+      "homebrewVersion": "0.37.3",
+      "latestReleaseTag": "v0.37.3"
+    },
+    {
+      "name": "ca-certificates",
+      "status": "rejected",
+      "reason": "no-declared-executables"
+    },
+    {
+      "name": "k3d",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "k3d-io/k3d",
+      "homebrewVersion": "5.8.3",
+      "latestReleaseTag": "v5.8.3"
+    },
+    {
+      "name": "poetry",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "hf",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "trivy",
+      "status": "rejected",
+      "reason": "github-release-not-readable",
+      "repository": "aquasecurity/trivy",
+      "error": "Response status code does not indicate success: 403 (Forbidden)."
+    },
+    {
+      "name": "jupyterlab",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "rbenv",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "rbenv/rbenv",
+      "homebrewVersion": "1.3.2",
+      "latestReleaseTag": "v1.3.2"
+    },
+    {
+      "name": "p7zip",
+      "status": "rejected",
+      "reason": "github-release-version-does-not-match-homebrew-stable",
+      "repository": "p7zip-project/p7zip",
+      "homebrewVersion": "17.06",
+      "latestReleaseTag": "v17.05"
+    },
+    {
+      "name": "shellcheck",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "koalaman/shellcheck",
+      "homebrewVersion": "0.11.0",
+      "latestReleaseTag": "v0.11.0"
+    },
+    {
+      "name": "libxml2",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "gomplate",
+      "status": "candidate",
+      "promotable": false,
+      "reason": "archive-layout-not-promotable",
+      "layoutReasons": [
+        "x64: archive-inspection-failed"
+      ],
+      "repository": "hairyhenderson/gomplate",
+      "homebrewVersion": "5.1.0",
+      "latestReleaseTag": "v5.1.0",
+      "architectures": {
+        "x64": {
+          "name": "gomplate_windows-amd64.zip",
+          "url": "https://github.com/hairyhenderson/gomplate/releases/download/v5.1.0/gomplate_windows-amd64.zip",
+          "sha256": "7686e1158a37ee6d2db8cc90637f40d6d44d7822e3387f88c6d0d58e35e55f8d",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": false,
+            "reason": "archive-inspection-failed",
+            "error": "The property 'entry' cannot be found on this object. Verify that the property exists."
+          }
+        }
+      }
+    },
+    {
+      "name": "terraform-docs",
+      "status": "candidate",
+      "promotable": true,
+      "reason": "sha256-windows-archives-and-layout-validated",
+      "repository": "terraform-docs/terraform-docs",
+      "homebrew": {
+        "tap": "homebrew/core",
+        "sourcePath": "Formula/t/terraform-docs.rb",
+        "sourceSha256": "a6531fe1f4f47d04e5eba5b470811821b7bbe2fcaf4f9934d5fc2b53e53354e6"
+      },
+      "homebrewVersion": "0.24.0",
+      "latestReleaseTag": "v0.24.0",
+      "description": "Tool to generate documentation from Terraform modules",
+      "homepage": "https://terraform-docs.io/",
+      "license": "MIT",
+      "executables": [
+        "terraform-docs"
+      ],
+      "dependencies": [],
+      "architectures": {
+        "x64": {
+          "name": "terraform-docs-v0.24.0-windows-amd64.zip",
+          "url": "https://github.com/terraform-docs/terraform-docs/releases/download/v0.24.0/terraform-docs-v0.24.0-windows-amd64.zip",
+          "sha256": "afc02cbdf63726d3e5fb26a077ca1f24acd4820d7e44c21b03a3e030f9266490",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": true,
+            "sourcePath": "",
+            "bins": [
+              {
+                "name": "terraform-docs",
+                "path": "terraform-docs.exe"
+              }
+            ]
+          }
+        },
+        "arm64": {
+          "name": "terraform-docs-v0.24.0-windows-arm64.zip",
+          "url": "https://github.com/terraform-docs/terraform-docs/releases/download/v0.24.0/terraform-docs-v0.24.0-windows-arm64.zip",
+          "sha256": "1168c12929531ac9132c97fff794ef531ebb2a5b54c41870b9e19911950b6fd4",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": true,
+            "sourcePath": "",
+            "bins": [
+              {
+                "name": "terraform-docs",
+                "path": "terraform-docs.exe"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "nss",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "cliclick",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "BlueM/cliclick",
+      "homebrewVersion": "5.1",
+      "latestReleaseTag": "5.1"
+    },
+    {
+      "name": "gitleaks",
+      "status": "candidate",
+      "promotable": true,
+      "reason": "sha256-windows-archives-and-layout-validated",
+      "repository": "gitleaks/gitleaks",
+      "homebrew": {
+        "tap": "homebrew/core",
+        "sourcePath": "Formula/g/gitleaks.rb",
+        "sourceSha256": "36fc9071fb58453dd29a42921176e2d53dfbed8192cff167a82d38cb76d6da7d"
+      },
+      "homebrewVersion": "8.30.1",
+      "latestReleaseTag": "v8.30.1",
+      "description": "Audit git repos for secrets",
+      "homepage": "https://gitleaks.io/",
+      "license": "MIT",
+      "executables": [
+        "gitleaks"
+      ],
+      "dependencies": [],
+      "architectures": {
+        "x64": {
+          "name": "gitleaks_8.30.1_windows_x64.zip",
+          "url": "https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_windows_x64.zip",
+          "sha256": "d29144deff3a68aa93ced33dddf84b7fdc26070add4aa0f4513094c8332afc4e",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": true,
+            "sourcePath": "",
+            "bins": [
+              {
+                "name": "gitleaks",
+                "path": "gitleaks.exe"
+              }
+            ]
+          }
+        },
+        "arm64": {
+          "name": "gitleaks_8.30.1_windows_arm64.zip",
+          "url": "https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_windows_arm64.zip",
+          "sha256": "b95f5e4f5c425cedca7ee203d9afd29597e692c4924a12ed42f970537c72cc0f",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": true,
+            "sourcePath": "",
+            "bins": [
+              {
+                "name": "gitleaks",
+                "path": "gitleaks.exe"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "xcresultparser",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "a7ex/xcresultparser",
+      "homebrewVersion": "2.0.1",
+      "latestReleaseTag": "2.0.1"
+    },
+    {
+      "name": "oras",
+      "status": "candidate",
+      "promotable": true,
+      "reason": "sha256-windows-archives-and-layout-validated",
+      "repository": "oras-project/oras",
+      "homebrew": {
+        "tap": "homebrew/core",
+        "sourcePath": "Formula/o/oras.rb",
+        "sourceSha256": "530fb27561cf4acd54d7fa75e584770cc5f12c351cdf360adf6a64cd09b59708"
+      },
+      "homebrewVersion": "1.3.2",
+      "latestReleaseTag": "v1.3.2",
+      "description": "OCI Registry As Storage",
+      "homepage": "https://github.com/oras-project/oras",
+      "license": "Apache-2.0",
+      "executables": [
+        "oras"
+      ],
+      "dependencies": [],
+      "architectures": {
+        "x64": {
+          "name": "oras_1.3.2_windows_amd64.zip",
+          "url": "https://github.com/oras-project/oras/releases/download/v1.3.2/oras_1.3.2_windows_amd64.zip",
+          "sha256": "c896f26245f11e6385d52010bb0a65a4e500e1f3244680a6556ed05462fa1c0d",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": true,
+            "sourcePath": "",
+            "bins": [
+              {
+                "name": "oras",
+                "path": "oras.exe"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "node@20",
+      "status": "rejected",
+      "reason": "homebrew-formula-deprecated"
+    },
+    {
+      "name": "python-tk@3.14",
+      "status": "rejected",
+      "reason": "no-declared-executables"
+    },
+    {
+      "name": "python-yq",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "sshpass",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "tailscale",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "tailscale/tailscale",
+      "homebrewVersion": "1.96.4",
+      "latestReleaseTag": "v1.96.4"
+    },
+    {
+      "name": "ruff",
+      "status": "candidate",
+      "promotable": true,
+      "reason": "sha256-windows-archives-and-layout-validated",
+      "repository": "astral-sh/ruff",
+      "homebrew": {
+        "tap": "homebrew/core",
+        "sourcePath": "Formula/r/ruff.rb",
+        "sourceSha256": "396a2ec786ac485b1604581cd4251c8fbaf769d67119067321db9d50ef496fb7"
+      },
+      "homebrewVersion": "0.15.13",
+      "latestReleaseTag": "0.15.13",
+      "description": "Extremely fast Python linter, written in Rust",
+      "homepage": "https://docs.astral.sh/ruff/",
+      "license": "MIT",
+      "executables": [
+        "ruff"
+      ],
+      "dependencies": [],
+      "architectures": {
+        "x64": {
+          "name": "ruff-x86_64-pc-windows-msvc.zip",
+          "url": "https://github.com/astral-sh/ruff/releases/download/0.15.13/ruff-x86_64-pc-windows-msvc.zip",
+          "sha256": "59892c6773df805effe7928e69796447585b42af54310cb6f1552536b746c39a",
+          "extractType": "zip",
+          "score": 80,
+          "layout": {
+            "ok": true,
+            "sourcePath": "",
+            "bins": [
+              {
+                "name": "ruff",
+                "path": "ruff.exe"
+              }
+            ]
+          }
+        },
+        "arm64": {
+          "name": "ruff-aarch64-pc-windows-msvc.zip",
+          "url": "https://github.com/astral-sh/ruff/releases/download/0.15.13/ruff-aarch64-pc-windows-msvc.zip",
+          "sha256": "b16d436afac64f8032831d2f7874fe5fa6b1b238bfae97924d2233904372deed",
+          "extractType": "zip",
+          "score": 80,
+          "layout": {
+            "ok": true,
+            "sourcePath": "",
+            "bins": [
+              {
+                "name": "ruff",
+                "path": "ruff.exe"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "little-cms2",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "virtualenv",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "nginx",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "libheif",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "strukturag/libheif",
+      "homebrewVersion": "1.21.2",
+      "latestReleaseTag": "v1.21.2"
+    },
+    {
+      "name": "git-filter-repo",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "newren/git-filter-repo",
+      "homebrewVersion": "2.47.0",
+      "latestReleaseTag": "v2.47.0"
+    },
+    {
+      "name": "go-task",
+      "status": "candidate",
+      "promotable": true,
+      "reason": "sha256-windows-archives-and-layout-validated",
+      "repository": "go-task/task",
+      "homebrew": {
+        "tap": "homebrew/core",
+        "sourcePath": "Formula/g/go-task.rb",
+        "sourceSha256": "e1ed2d906c43b666c4c7cb50b9dbdc374032d1ddaf030a0c21d0e2c97ba113d4"
+      },
+      "homebrewVersion": "3.51.1",
+      "latestReleaseTag": "v3.51.1",
+      "description": "Task is a task runner/build tool that aims to be simpler and easier to use",
+      "homepage": "https://taskfile.dev/",
+      "license": "MIT",
+      "executables": [
+        "task"
+      ],
+      "dependencies": [],
+      "architectures": {
+        "x64": {
+          "name": "task_windows_amd64.zip",
+          "url": "https://github.com/go-task/task/releases/download/v3.51.1/task_windows_amd64.zip",
+          "sha256": "422d79dff5afd5a55fb46ae1cfacc7350ec96d4ef27a63a3ec77a5c30a7b0f03",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": true,
+            "sourcePath": "",
+            "bins": [
+              {
+                "name": "task",
+                "path": "task.exe"
+              }
+            ]
+          }
+        },
+        "arm64": {
+          "name": "task_windows_arm64.zip",
+          "url": "https://github.com/go-task/task/releases/download/v3.51.1/task_windows_arm64.zip",
+          "sha256": "d92bf9561a8a1db591487995eb76a08951de15134c40299a98d77460be4e4e1d",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": true,
+            "sourcePath": "",
+            "bins": [
+              {
+                "name": "task",
+                "path": "task.exe"
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
 }

@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "0",
+  "name": "rtk",
+  "version": "0.40.0",
+  "description": "CLI proxy to minimize LLM token consumption",
+  "homepage": "https://www.rtk-ai.app/",
+  "license": "Apache-2.0",
+  "type": "portable-cli",
+  "upstream": {
+    "source": "homebrew-formula-api",
+    "tap": "homebrew/core",
+    "formulaPath": "Formula/r/rtk.rb",
+    "formulaSha256": "a951a4de3a330784a7a0aeba0e3eaaeb88713fb755db41d1450d5f74f2901e35",
+    "githubRepository": "rtk-ai/rtk",
+    "githubReleaseTag": "v0.40.0"
+  },
+  "platforms": {
+    "windows": {
+      "arches": {
+        "x64": {
+          "url": "https://github.com/rtk-ai/rtk/releases/download/v0.40.0/rtk-x86_64-pc-windows-msvc.zip",
+          "sha256": "7fc90190f76f55dc170898d0ac755e89f405fc2d1d89f717ad8600640ab0f1ed",
+          "extract": {
+            "type": "zip",
+            "sourcePath": ""
+          }
+        }
+      }
+    }
+  },
+  "bin": [
+    {
+      "name": "rtk",
+      "path": "rtk.exe"
+    }
+  ],
+  "resources": [],
+  "conflicts": [],
+  "test": {
+    "command": "rtk --version",
+    "match": "0\\.40\\.0"
+  },
+  "livecheck": {
+    "type": "github-release",
+    "repository": "rtk-ai/rtk"
+  }
+}

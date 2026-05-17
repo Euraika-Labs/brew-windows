@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "0",
+  "name": "git-lfs",
+  "version": "3.7.1",
+  "description": "Git extension for versioning large files",
+  "homepage": "https://git-lfs.com/",
+  "license": "MIT",
+  "type": "portable-cli",
+  "upstream": {
+    "source": "homebrew-formula-api",
+    "tap": "homebrew/core",
+    "formulaPath": "Formula/g/git-lfs.rb",
+    "formulaSha256": "4733852ff5553925b7987b7b24b42c65603f3601f9c0ab1f2c8435cc59175db5",
+    "githubRepository": "git-lfs/git-lfs",
+    "githubReleaseTag": "v3.7.1"
+  },
+  "platforms": {
+    "windows": {
+      "arches": {
+        "x64": {
+          "url": "https://github.com/git-lfs/git-lfs/releases/download/v3.7.1/git-lfs-windows-amd64-v3.7.1.zip",
+          "sha256": "8683cdc3d6c029b49393dcebbaa6265bd6efd9abdcf837be855b4cd42e5e80b6",
+          "extract": {
+            "type": "zip",
+            "sourcePath": "git-lfs-3.7.1"
+          }
+        },
+        "arm64": {
+          "url": "https://github.com/git-lfs/git-lfs/releases/download/v3.7.1/git-lfs-windows-arm64-v3.7.1.zip",
+          "sha256": "9441383a3928a7f387223711929292a46ace95580ceed443d61e7b8a4d9615c3",
+          "extract": {
+            "type": "zip",
+            "sourcePath": "git-lfs-3.7.1"
+          }
+        }
+      }
+    }
+  },
+  "bin": [
+    {
+      "name": "git-lfs",
+      "path": "git-lfs.exe"
+    }
+  ],
+  "resources": [],
+  "conflicts": [],
+  "test": {
+    "command": "git-lfs --version",
+    "match": "3\\.7\\.1"
+  },
+  "livecheck": {
+    "type": "github-release",
+    "repository": "git-lfs/git-lfs"
+  }
+}

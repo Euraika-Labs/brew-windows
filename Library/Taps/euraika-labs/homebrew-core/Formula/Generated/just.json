@@ -1,59 +1,55 @@
-﻿{
-    "schemaVersion":  "0",
-    "name":  "just",
-    "version":  "1.51.0",
-    "description":  "Handy way to save and run project-specific commands",
-    "homepage":  "https://github.com/casey/just",
-    "license":  "CC0-1.0",
-    "type":  "portable-cli",
-    "upstream":  {
-                     "source":  "homebrew-formula-api",
-                     "tap":  "homebrew/core",
-                     "formulaPath":  "Formula/j/just.rb",
-                     "formulaSha256":  "661b48de4f895073068c65a7d1ea3f87bdd20d636c78a832f2669796e14c98ae",
-                     "githubRepository":  "casey/just",
-                     "githubReleaseTag":  "1.51.0"
-                 },
-    "platforms":  {
-                      "windows":  {
-                                      "arches":  {
-                                                     "x64":  {
-                                                                 "url":  "https://github.com/casey/just/releases/download/1.51.0/just-1.51.0-x86_64-pc-windows-msvc.zip",
-                                                                 "sha256":  "09d1138b6845e73f04bff5e26be3f57663bddca25e36fe6241d28a5aa310b64e",
-                                                                 "extract":  {
-                                                                                 "type":  "zip",
-                                                                                 "sourcePath":  ""
-                                                                             }
-                                                             },
-                                                     "arm64":  {
-                                                                   "url":  "https://github.com/casey/just/releases/download/1.51.0/just-1.51.0-aarch64-pc-windows-msvc.zip",
-                                                                   "sha256":  "12bf56b5b3463e20a1dbb61e3d14748efaefb49231223ef465fbec4d442e2d20",
-                                                                   "extract":  {
-                                                                                   "type":  "zip",
-                                                                                   "sourcePath":  ""
-                                                                               }
-                                                               }
-                                                 }
-                                  }
-                  },
-    "bin":  [
-                {
-                    "name":  "just",
-                    "path":  "just.exe"
-                }
-            ],
-    "resources":  [
-
-                  ],
-    "conflicts":  [
-
-                  ],
-    "test":  {
-                 "command":  "just --version",
-                 "match":  "1\\.51\\.0"
-             },
-    "livecheck":  {
-                      "type":  "github-release",
-                      "repository":  "casey/just"
-                  }
+{
+  "schemaVersion": "0",
+  "name": "just",
+  "version": "1.51.0",
+  "description": "Handy way to save and run project-specific commands",
+  "homepage": "https://github.com/casey/just",
+  "license": "CC0-1.0",
+  "type": "portable-cli",
+  "upstream": {
+    "source": "homebrew-formula-api",
+    "tap": "homebrew/core",
+    "formulaPath": "Formula/j/just.rb",
+    "formulaSha256": "661b48de4f895073068c65a7d1ea3f87bdd20d636c78a832f2669796e14c98ae",
+    "githubRepository": "casey/just",
+    "githubReleaseTag": "1.51.0"
+  },
+  "platforms": {
+    "windows": {
+      "arches": {
+        "x64": {
+          "url": "https://github.com/casey/just/releases/download/1.51.0/just-1.51.0-x86_64-pc-windows-msvc.zip",
+          "sha256": "09d1138b6845e73f04bff5e26be3f57663bddca25e36fe6241d28a5aa310b64e",
+          "extract": {
+            "type": "zip",
+            "sourcePath": ""
+          }
+        },
+        "arm64": {
+          "url": "https://github.com/casey/just/releases/download/1.51.0/just-1.51.0-aarch64-pc-windows-msvc.zip",
+          "sha256": "12bf56b5b3463e20a1dbb61e3d14748efaefb49231223ef465fbec4d442e2d20",
+          "extract": {
+            "type": "zip",
+            "sourcePath": ""
+          }
+        }
+      }
+    }
+  },
+  "bin": [
+    {
+      "name": "just",
+      "path": "just.exe"
+    }
+  ],
+  "resources": [],
+  "conflicts": [],
+  "test": {
+    "command": "just --version",
+    "match": "1\\.51\\.0"
+  },
+  "livecheck": {
+    "type": "github-release",
+    "repository": "casey/just"
+  }
 }

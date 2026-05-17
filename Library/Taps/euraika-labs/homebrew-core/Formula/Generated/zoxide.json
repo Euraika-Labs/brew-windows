@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "0",
+  "name": "zoxide",
+  "version": "0.9.9",
+  "description": "Shell extension to navigate your filesystem faster",
+  "homepage": "https://github.com/ajeetdsouza/zoxide",
+  "license": "MIT",
+  "type": "portable-cli",
+  "upstream": {
+    "source": "homebrew-formula-api",
+    "tap": "homebrew/core",
+    "formulaPath": "Formula/z/zoxide.rb",
+    "formulaSha256": "e8f7b33d5a990a5035d68b2263d4cacbf08646723ef1ad6f4e37ce9996e1e5ec",
+    "githubRepository": "ajeetdsouza/zoxide",
+    "githubReleaseTag": "v0.9.9"
+  },
+  "platforms": {
+    "windows": {
+      "arches": {
+        "x64": {
+          "url": "https://github.com/ajeetdsouza/zoxide/releases/download/v0.9.9/zoxide-0.9.9-x86_64-pc-windows-msvc.zip",
+          "sha256": "5af00d0916f05631e3030537289eac56605e7c1733318c4d525c8e847f12496d",
+          "extract": {
+            "type": "zip",
+            "sourcePath": ""
+          }
+        },
+        "arm64": {
+          "url": "https://github.com/ajeetdsouza/zoxide/releases/download/v0.9.9/zoxide-0.9.9-aarch64-pc-windows-msvc.zip",
+          "sha256": "58c55ef6f0ead099fbb31ed69566118d7c7c7a4e16c858bbdb4f7def40cd534b",
+          "extract": {
+            "type": "zip",
+            "sourcePath": ""
+          }
+        }
+      }
+    }
+  },
+  "bin": [
+    {
+      "name": "zoxide",
+      "path": "zoxide.exe"
+    }
+  ],
+  "resources": [],
+  "conflicts": [],
+  "test": {
+    "command": "zoxide --version",
+    "match": "0\\.9\\.9"
+  },
+  "livecheck": {
+    "type": "github-release",
+    "repository": "ajeetdsouza/zoxide"
+  }
+}

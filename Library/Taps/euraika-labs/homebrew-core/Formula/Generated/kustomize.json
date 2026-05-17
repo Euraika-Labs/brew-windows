@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "0",
+  "name": "kustomize",
+  "version": "5.8.1",
+  "description": "Template-free customization of Kubernetes YAML manifests",
+  "homepage": "https://github.com/kubernetes-sigs/kustomize",
+  "license": "Apache-2.0",
+  "type": "portable-cli",
+  "upstream": {
+    "source": "homebrew-formula-api",
+    "tap": "homebrew/core",
+    "formulaPath": "Formula/k/kustomize.rb",
+    "formulaSha256": "44ae59e0fa50492f81f864b9f2a038c5ab0881e1a41e639e1614cb2dc8a17d5b",
+    "githubRepository": "kubernetes-sigs/kustomize",
+    "githubReleaseTag": "kustomize/v5.8.1"
+  },
+  "platforms": {
+    "windows": {
+      "arches": {
+        "x64": {
+          "url": "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/v5.8.1/kustomize_v5.8.1_windows_amd64.zip",
+          "sha256": "8ec7f5e815e526d4622c06df0a7793d8cfb6eb1c74f816b46166097fef8b26c6",
+          "extract": {
+            "type": "zip",
+            "sourcePath": ""
+          }
+        },
+        "arm64": {
+          "url": "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/v5.8.1/kustomize_v5.8.1_windows_arm64.zip",
+          "sha256": "f6f5090c373965760a30a59af84c81853b80d2c7dbb3236424f440e47eed3f5a",
+          "extract": {
+            "type": "zip",
+            "sourcePath": ""
+          }
+        }
+      }
+    }
+  },
+  "bin": [
+    {
+      "name": "kustomize",
+      "path": "kustomize.exe"
+    }
+  ],
+  "resources": [],
+  "conflicts": [],
+  "test": {
+    "command": "kustomize --version",
+    "match": "5\\.8\\.1"
+  },
+  "livecheck": {
+    "type": "github-release",
+    "repository": "kubernetes-sigs/kustomize"
+  }
+}

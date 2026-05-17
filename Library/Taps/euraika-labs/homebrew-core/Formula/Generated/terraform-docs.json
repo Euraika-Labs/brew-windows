@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "0",
+  "name": "terraform-docs",
+  "version": "0.24.0",
+  "description": "Tool to generate documentation from Terraform modules",
+  "homepage": "https://terraform-docs.io/",
+  "license": "MIT",
+  "type": "portable-cli",
+  "upstream": {
+    "source": "homebrew-formula-api",
+    "tap": "homebrew/core",
+    "formulaPath": "Formula/t/terraform-docs.rb",
+    "formulaSha256": "a6531fe1f4f47d04e5eba5b470811821b7bbe2fcaf4f9934d5fc2b53e53354e6",
+    "githubRepository": "terraform-docs/terraform-docs",
+    "githubReleaseTag": "v0.24.0"
+  },
+  "platforms": {
+    "windows": {
+      "arches": {
+        "x64": {
+          "url": "https://github.com/terraform-docs/terraform-docs/releases/download/v0.24.0/terraform-docs-v0.24.0-windows-amd64.zip",
+          "sha256": "afc02cbdf63726d3e5fb26a077ca1f24acd4820d7e44c21b03a3e030f9266490",
+          "extract": {
+            "type": "zip",
+            "sourcePath": ""
+          }
+        },
+        "arm64": {
+          "url": "https://github.com/terraform-docs/terraform-docs/releases/download/v0.24.0/terraform-docs-v0.24.0-windows-arm64.zip",
+          "sha256": "1168c12929531ac9132c97fff794ef531ebb2a5b54c41870b9e19911950b6fd4",
+          "extract": {
+            "type": "zip",
+            "sourcePath": ""
+          }
+        }
+      }
+    }
+  },
+  "bin": [
+    {
+      "name": "terraform-docs",
+      "path": "terraform-docs.exe"
+    }
+  ],
+  "resources": [],
+  "conflicts": [],
+  "test": {
+    "command": "terraform-docs --version",
+    "match": "0\\.24\\.0"
+  },
+  "livecheck": {
+    "type": "github-release",
+    "repository": "terraform-docs/terraform-docs"
+  }
+}

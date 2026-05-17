@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "0",
+  "name": "bat",
+  "version": "0.26.1",
+  "description": "Clone of cat(1) with syntax highlighting and Git integration",
+  "homepage": "https://github.com/sharkdp/bat",
+  "license": "Apache-2.0 OR MIT",
+  "type": "portable-cli",
+  "upstream": {
+    "source": "homebrew-formula-api",
+    "tap": "homebrew/core",
+    "formulaPath": "Formula/b/bat.rb",
+    "formulaSha256": "aae38b82073fba7c26b6d5afa6a628f047678cf28c9a9d406d7872884aa99848",
+    "githubRepository": "sharkdp/bat",
+    "githubReleaseTag": "v0.26.1"
+  },
+  "platforms": {
+    "windows": {
+      "arches": {
+        "x64": {
+          "url": "https://github.com/sharkdp/bat/releases/download/v0.26.1/bat-v0.26.1-x86_64-pc-windows-msvc.zip",
+          "sha256": "0f729b4b6f5f28d395c641eacc2e9ff68d0096b85aa0eec344aa62425144b69b",
+          "extract": {
+            "type": "zip",
+            "sourcePath": "bat-v0.26.1-x86_64-pc-windows-msvc"
+          }
+        },
+        "arm64": {
+          "url": "https://github.com/sharkdp/bat/releases/download/v0.26.1/bat-v0.26.1-aarch64-pc-windows-msvc.zip",
+          "sha256": "af07dd1939e99f7f5892d197fc5653cb8cb6c5999552731135ad156eca7e38a5",
+          "extract": {
+            "type": "zip",
+            "sourcePath": "bat-v0.26.1-aarch64-pc-windows-msvc"
+          }
+        }
+      }
+    }
+  },
+  "bin": [
+    {
+      "name": "bat",
+      "path": "bat.exe"
+    }
+  ],
+  "resources": [],
+  "conflicts": [],
+  "test": {
+    "command": "bat --version",
+    "match": "0\\.26\\.1"
+  },
+  "livecheck": {
+    "type": "github-release",
+    "repository": "sharkdp/bat"
+  }
+}

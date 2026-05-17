@@ -1,0 +1,67 @@
+{
+  "schemaVersion": "0",
+  "name": "harfbuzz",
+  "version": "14.2.0",
+  "description": "OpenType text shaping engine",
+  "homepage": "https://github.com/harfbuzz/harfbuzz",
+  "license": "MIT",
+  "type": "portable-cli",
+  "upstream": {
+    "source": "homebrew-formula-api",
+    "tap": "homebrew/core",
+    "formulaPath": "Formula/h/harfbuzz.rb",
+    "formulaSha256": "c39296988ea756feb3cab37e60ee6b7572bfe81ef814100ef342a9a82da2d9c4",
+    "githubRepository": "harfbuzz/harfbuzz",
+    "githubReleaseTag": "14.2.0"
+  },
+  "platforms": {
+    "windows": {
+      "arches": {
+        "x64": {
+          "url": "https://github.com/harfbuzz/harfbuzz/releases/download/14.2.0/harfbuzz-win64-14.2.0.zip",
+          "sha256": "fd43365c4951437d11233b015ab299a08499a3a87e9ebb13ba6a54f9fb4c8596",
+          "extract": {
+            "type": "zip",
+            "sourcePath": "harfbuzz-win64"
+          }
+        }
+      }
+    }
+  },
+  "bin": [
+    {
+      "name": "hb-info",
+      "path": "hb-info.exe"
+    },
+    {
+      "name": "hb-raster",
+      "path": "hb-raster.exe"
+    },
+    {
+      "name": "hb-shape",
+      "path": "hb-shape.exe"
+    },
+    {
+      "name": "hb-subset",
+      "path": "hb-subset.exe"
+    },
+    {
+      "name": "hb-vector",
+      "path": "hb-vector.exe"
+    },
+    {
+      "name": "hb-view",
+      "path": "hb-view.exe"
+    }
+  ],
+  "resources": [],
+  "conflicts": [],
+  "test": {
+    "command": "hb-info --version",
+    "match": "14\\.2\\.0"
+  },
+  "livecheck": {
+    "type": "github-release",
+    "repository": "harfbuzz/harfbuzz"
+  }
+}

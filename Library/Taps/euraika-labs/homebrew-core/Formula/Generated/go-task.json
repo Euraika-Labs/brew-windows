@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "0",
+  "name": "go-task",
+  "version": "3.51.1",
+  "description": "Task is a task runner/build tool that aims to be simpler and easier to use",
+  "homepage": "https://taskfile.dev/",
+  "license": "MIT",
+  "type": "portable-cli",
+  "upstream": {
+    "source": "homebrew-formula-api",
+    "tap": "homebrew/core",
+    "formulaPath": "Formula/g/go-task.rb",
+    "formulaSha256": "e1ed2d906c43b666c4c7cb50b9dbdc374032d1ddaf030a0c21d0e2c97ba113d4",
+    "githubRepository": "go-task/task",
+    "githubReleaseTag": "v3.51.1"
+  },
+  "platforms": {
+    "windows": {
+      "arches": {
+        "x64": {
+          "url": "https://github.com/go-task/task/releases/download/v3.51.1/task_windows_amd64.zip",
+          "sha256": "422d79dff5afd5a55fb46ae1cfacc7350ec96d4ef27a63a3ec77a5c30a7b0f03",
+          "extract": {
+            "type": "zip",
+            "sourcePath": ""
+          }
+        },
+        "arm64": {
+          "url": "https://github.com/go-task/task/releases/download/v3.51.1/task_windows_arm64.zip",
+          "sha256": "d92bf9561a8a1db591487995eb76a08951de15134c40299a98d77460be4e4e1d",
+          "extract": {
+            "type": "zip",
+            "sourcePath": ""
+          }
+        }
+      }
+    }
+  },
+  "bin": [
+    {
+      "name": "task",
+      "path": "task.exe"
+    }
+  ],
+  "resources": [],
+  "conflicts": [],
+  "test": {
+    "command": "task --version",
+    "match": "3\\.51\\.1"
+  },
+  "livecheck": {
+    "type": "github-release",
+    "repository": "go-task/task"
+  }
+}

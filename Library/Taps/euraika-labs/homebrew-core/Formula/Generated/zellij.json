@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "0",
+  "name": "zellij",
+  "version": "0.44.3",
+  "description": "Pluggable terminal workspace, with terminal multiplexer as the base feature",
+  "homepage": "https://zellij.dev",
+  "license": "MIT",
+  "type": "portable-cli",
+  "upstream": {
+    "source": "homebrew-formula-api",
+    "tap": "homebrew/core",
+    "formulaPath": "Formula/z/zellij.rb",
+    "formulaSha256": "ab56ea148a51f96caa0fa6d6c56ec32cb907ebd1574efa12d809c8700c4f1e58",
+    "githubRepository": "zellij-org/zellij",
+    "githubReleaseTag": "v0.44.3"
+  },
+  "platforms": {
+    "windows": {
+      "arches": {
+        "x64": {
+          "url": "https://github.com/zellij-org/zellij/releases/download/v0.44.3/zellij-no-web-x86_64-pc-windows-msvc.zip",
+          "sha256": "2a192ead623d326458b058f235a5c9ca6f955cece8b3787ce744c07ba9f11e34",
+          "extract": {
+            "type": "zip",
+            "sourcePath": ""
+          }
+        }
+      }
+    }
+  },
+  "bin": [
+    {
+      "name": "zellij",
+      "path": "zellij.exe"
+    }
+  ],
+  "resources": [],
+  "conflicts": [],
+  "test": {
+    "command": "zellij --version",
+    "match": "0\\.44\\.3"
+  },
+  "livecheck": {
+    "type": "github-release",
+    "repository": "zellij-org/zellij"
+  }
+}

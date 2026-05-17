@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "0",
+  "name": "rclone",
+  "version": "1.74.1",
+  "description": "Rsync for cloud storage",
+  "homepage": "https://rclone.org/",
+  "license": "MIT",
+  "type": "portable-cli",
+  "upstream": {
+    "source": "homebrew-formula-api",
+    "tap": "homebrew/core",
+    "formulaPath": "Formula/r/rclone.rb",
+    "formulaSha256": "1de8f5a4abedfb5dcc99e926ea893e57da145734645ea1195b7a399b2987e625",
+    "githubRepository": "rclone/rclone",
+    "githubReleaseTag": "v1.74.1"
+  },
+  "platforms": {
+    "windows": {
+      "arches": {
+        "x64": {
+          "url": "https://github.com/rclone/rclone/releases/download/v1.74.1/rclone-v1.74.1-windows-amd64.zip",
+          "sha256": "51326acc0d9cf60234aa5787d8da66a621430aa373542a6b35bad8a4a26ca43e",
+          "extract": {
+            "type": "zip",
+            "sourcePath": "rclone-v1.74.1-windows-amd64"
+          }
+        },
+        "arm64": {
+          "url": "https://github.com/rclone/rclone/releases/download/v1.74.1/rclone-v1.74.1-windows-arm64.zip",
+          "sha256": "317d2080debf0d941b12efb3a327d06e5cc1815c1dc4d79cb3665811b29ed12f",
+          "extract": {
+            "type": "zip",
+            "sourcePath": "rclone-v1.74.1-windows-arm64"
+          }
+        }
+      }
+    }
+  },
+  "bin": [
+    {
+      "name": "rclone",
+      "path": "rclone.exe"
+    }
+  ],
+  "resources": [],
+  "conflicts": [],
+  "test": {
+    "command": "rclone --version",
+    "match": "1\\.74\\.1"
+  },
+  "livecheck": {
+    "type": "github-release",
+    "repository": "rclone/rclone"
+  }
+}

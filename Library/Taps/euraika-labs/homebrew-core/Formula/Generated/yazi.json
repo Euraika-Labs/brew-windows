@@ -1,0 +1,59 @@
+{
+  "schemaVersion": "0",
+  "name": "yazi",
+  "version": "26.5.6",
+  "description": "Blazing fast terminal file manager written in Rust, based on async I/O",
+  "homepage": "https://github.com/sxyazi/yazi",
+  "license": "MIT",
+  "type": "portable-cli",
+  "upstream": {
+    "source": "homebrew-formula-api",
+    "tap": "homebrew/core",
+    "formulaPath": "Formula/y/yazi.rb",
+    "formulaSha256": "143cf609fa54510e87b7cf0b03f647338ac1917b26ac3027ebeadf65ed72ca95",
+    "githubRepository": "sxyazi/yazi",
+    "githubReleaseTag": "v26.5.6"
+  },
+  "platforms": {
+    "windows": {
+      "arches": {
+        "x64": {
+          "url": "https://github.com/sxyazi/yazi/releases/download/v26.5.6/yazi-x86_64-pc-windows-msvc.zip",
+          "sha256": "6c6c52a4b2648e179f917bdaa7c57e793d18561b380a8bfa025f10cd1b9b2ad1",
+          "extract": {
+            "type": "zip",
+            "sourcePath": "yazi-x86_64-pc-windows-msvc"
+          }
+        },
+        "arm64": {
+          "url": "https://github.com/sxyazi/yazi/releases/download/v26.5.6/yazi-aarch64-pc-windows-msvc.zip",
+          "sha256": "797abc8965c07d903f3cd263512fe4114b2fc36f03fc62011300787f28a48f1e",
+          "extract": {
+            "type": "zip",
+            "sourcePath": "yazi-aarch64-pc-windows-msvc"
+          }
+        }
+      }
+    }
+  },
+  "bin": [
+    {
+      "name": "ya",
+      "path": "ya.exe"
+    },
+    {
+      "name": "yazi",
+      "path": "yazi.exe"
+    }
+  ],
+  "resources": [],
+  "conflicts": [],
+  "test": {
+    "command": "ya --version",
+    "match": "26\\.5\\.6"
+  },
+  "livecheck": {
+    "type": "github-release",
+    "repository": "sxyazi/yazi"
+  }
+}

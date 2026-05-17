@@ -1,59 +1,55 @@
-﻿{
-    "schemaVersion":  "0",
-    "name":  "starship",
-    "version":  "1.25.1",
-    "description":  "Cross-shell prompt for astronauts",
-    "homepage":  "https://starship.rs/",
-    "license":  "ISC",
-    "type":  "portable-cli",
-    "upstream":  {
-                     "source":  "homebrew-formula-api",
-                     "tap":  "homebrew/core",
-                     "formulaPath":  "Formula/s/starship.rb",
-                     "formulaSha256":  "309a09a2aaafaf5d7c6e33c2acd68af6abc1bfc732bf20f91bc095db8caa33cb",
-                     "githubRepository":  "starship/starship",
-                     "githubReleaseTag":  "v1.25.1"
-                 },
-    "platforms":  {
-                      "windows":  {
-                                      "arches":  {
-                                                     "x64":  {
-                                                                 "url":  "https://github.com/starship/starship/releases/download/v1.25.1/starship-x86_64-pc-windows-msvc.zip",
-                                                                 "sha256":  "a07cf3e428afab09324e510fb786041ebcc491a68b1ca6fba044c5a461f9b017",
-                                                                 "extract":  {
-                                                                                 "type":  "zip",
-                                                                                 "sourcePath":  ""
-                                                                             }
-                                                             },
-                                                     "arm64":  {
-                                                                   "url":  "https://github.com/starship/starship/releases/download/v1.25.1/starship-aarch64-pc-windows-msvc.zip",
-                                                                   "sha256":  "d5b3598cb1392be74508b5e5fe3583cbcad307e7788dad804c7bf2e9ab84b663",
-                                                                   "extract":  {
-                                                                                   "type":  "zip",
-                                                                                   "sourcePath":  ""
-                                                                               }
-                                                               }
-                                                 }
-                                  }
-                  },
-    "bin":  [
-                {
-                    "name":  "starship",
-                    "path":  "starship.exe"
-                }
-            ],
-    "resources":  [
-
-                  ],
-    "conflicts":  [
-
-                  ],
-    "test":  {
-                 "command":  "starship --version",
-                 "match":  "1\\.25\\.1"
-             },
-    "livecheck":  {
-                      "type":  "github-release",
-                      "repository":  "starship/starship"
-                  }
+{
+  "schemaVersion": "0",
+  "name": "starship",
+  "version": "1.25.1",
+  "description": "Cross-shell prompt for astronauts",
+  "homepage": "https://starship.rs/",
+  "license": "ISC",
+  "type": "portable-cli",
+  "upstream": {
+    "source": "homebrew-formula-api",
+    "tap": "homebrew/core",
+    "formulaPath": "Formula/s/starship.rb",
+    "formulaSha256": "309a09a2aaafaf5d7c6e33c2acd68af6abc1bfc732bf20f91bc095db8caa33cb",
+    "githubRepository": "starship/starship",
+    "githubReleaseTag": "v1.25.1"
+  },
+  "platforms": {
+    "windows": {
+      "arches": {
+        "x64": {
+          "url": "https://github.com/starship/starship/releases/download/v1.25.1/starship-x86_64-pc-windows-msvc.zip",
+          "sha256": "a07cf3e428afab09324e510fb786041ebcc491a68b1ca6fba044c5a461f9b017",
+          "extract": {
+            "type": "zip",
+            "sourcePath": ""
+          }
+        },
+        "arm64": {
+          "url": "https://github.com/starship/starship/releases/download/v1.25.1/starship-aarch64-pc-windows-msvc.zip",
+          "sha256": "d5b3598cb1392be74508b5e5fe3583cbcad307e7788dad804c7bf2e9ab84b663",
+          "extract": {
+            "type": "zip",
+            "sourcePath": ""
+          }
+        }
+      }
+    }
+  },
+  "bin": [
+    {
+      "name": "starship",
+      "path": "starship.exe"
+    }
+  ],
+  "resources": [],
+  "conflicts": [],
+  "test": {
+    "command": "starship --version",
+    "match": "1\\.25\\.1"
+  },
+  "livecheck": {
+    "type": "github-release",
+    "repository": "starship/starship"
+  }
 }

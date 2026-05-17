@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "0",
+  "name": "gitleaks",
+  "version": "8.30.1",
+  "description": "Audit git repos for secrets",
+  "homepage": "https://gitleaks.io/",
+  "license": "MIT",
+  "type": "portable-cli",
+  "upstream": {
+    "source": "homebrew-formula-api",
+    "tap": "homebrew/core",
+    "formulaPath": "Formula/g/gitleaks.rb",
+    "formulaSha256": "36fc9071fb58453dd29a42921176e2d53dfbed8192cff167a82d38cb76d6da7d",
+    "githubRepository": "gitleaks/gitleaks",
+    "githubReleaseTag": "v8.30.1"
+  },
+  "platforms": {
+    "windows": {
+      "arches": {
+        "x64": {
+          "url": "https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_windows_x64.zip",
+          "sha256": "d29144deff3a68aa93ced33dddf84b7fdc26070add4aa0f4513094c8332afc4e",
+          "extract": {
+            "type": "zip",
+            "sourcePath": ""
+          }
+        },
+        "arm64": {
+          "url": "https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_windows_arm64.zip",
+          "sha256": "b95f5e4f5c425cedca7ee203d9afd29597e692c4924a12ed42f970537c72cc0f",
+          "extract": {
+            "type": "zip",
+            "sourcePath": ""
+          }
+        }
+      }
+    }
+  },
+  "bin": [
+    {
+      "name": "gitleaks",
+      "path": "gitleaks.exe"
+    }
+  ],
+  "resources": [],
+  "conflicts": [],
+  "test": {
+    "command": "gitleaks --version",
+    "match": "8\\.30\\.1"
+  },
+  "livecheck": {
+    "type": "github-release",
+    "repository": "gitleaks/gitleaks"
+  }
+}
