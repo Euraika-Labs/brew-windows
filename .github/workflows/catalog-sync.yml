@@ -36,7 +36,7 @@ jobs:
       - name: Create or update catalog sync pull request
         shell: pwsh
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.CATALOG_SYNC_PR_TOKEN || github.token }}
         run: |
           if (-not (git status --short)) {
             Write-Host "No catalog changes."
@@ -57,8 +57,35 @@ jobs:
               --body "Automated update from Homebrew formula metadata and verified Windows GitHub release assets." `
               --base main `
               --head automation/catalog-sync
+            if ($LASTEXITCODE -ne 0) {
+              Write-Warning "Catalog branch was pushed, but GitHub refused automatic PR creation."
+              Write-Warning "Enable 'Allow GitHub Actions to create and approve pull requests' or add a CATALOG_SYNC_PR_TOKEN secret."
+              @(
+                "### Catalog sync branch pushed",
+                "",
+                "The generated catalog changes were pushed to ``automation/catalog-sync``, but this repository does not currently allow the workflow token to create pull requests.",
+                "",
+                "Open the PR manually from:",
+                "",
+                "https://github.com/${{ github.repository }}/pull/new/automation/catalog-sync",
+                "",
+                "To make this fully automatic, enable **Allow GitHub Actions to create and approve pull requests** in repository Actions settings, or provide a ``CATALOG_SYNC_PR_TOKEN`` secret with pull request permissions."
+              ) | Add-Content -LiteralPath $env:GITHUB_STEP_SUMMARY
+              exit 0
+            }
           } else {
             gh pr edit $existing `
               --title "Sync Windows-compatible Homebrew catalog" `
               --body "Automated update from Homebrew formula metadata and verified Windows GitHub release assets."
+            if ($LASTEXITCODE -ne 0) {
+              Write-Warning "Catalog branch was pushed, but GitHub refused automatic PR update for #$existing."
+              @(
+                "### Catalog sync branch pushed",
+                "",
+                "The generated catalog changes were pushed to ``automation/catalog-sync``, but the workflow could not update pull request #$existing.",
+                "",
+                "Review the pushed branch manually, or provide a ``CATALOG_SYNC_PR_TOKEN`` secret with pull request permissions."
+              ) | Add-Content -LiteralPath $env:GITHUB_STEP_SUMMARY
+              exit 0
+            }
           }
