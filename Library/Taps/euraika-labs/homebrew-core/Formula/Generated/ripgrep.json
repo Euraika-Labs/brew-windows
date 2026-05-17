@@ -1,0 +1,59 @@
+﻿{
+    "schemaVersion":  "0",
+    "name":  "ripgrep",
+    "version":  "15.1.0",
+    "description":  "Search tool like grep and The Silver Searcher",
+    "homepage":  "https://github.com/BurntSushi/ripgrep",
+    "license":  "Unlicense",
+    "type":  "portable-cli",
+    "upstream":  {
+                     "source":  "homebrew-formula-api",
+                     "tap":  "homebrew/core",
+                     "formulaPath":  "Formula/r/ripgrep.rb",
+                     "formulaSha256":  "477b5ac440bae34815c588a96642f800cb9a7fee236bcdeb7880de7396bdcdf7",
+                     "githubRepository":  "BurntSushi/ripgrep",
+                     "githubReleaseTag":  "15.1.0"
+                 },
+    "platforms":  {
+                      "windows":  {
+                                      "arches":  {
+                                                     "x64":  {
+                                                                 "url":  "https://github.com/BurntSushi/ripgrep/releases/download/15.1.0/ripgrep-15.1.0-x86_64-pc-windows-msvc.zip",
+                                                                 "sha256":  "124510b94b6baa3380d051fdf4650eaa80a302c876d611e9dba0b2e18d87493a",
+                                                                 "extract":  {
+                                                                                 "type":  "zip",
+                                                                                 "sourcePath":  "ripgrep-15.1.0-x86_64-pc-windows-msvc"
+                                                                             }
+                                                             },
+                                                     "arm64":  {
+                                                                   "url":  "https://github.com/BurntSushi/ripgrep/releases/download/15.1.0/ripgrep-15.1.0-aarch64-pc-windows-msvc.zip",
+                                                                   "sha256":  "00d931fb5237c9696ca49308818edb76d8eb6fc132761cb2a1bd616b2df02f8e",
+                                                                   "extract":  {
+                                                                                   "type":  "zip",
+                                                                                   "sourcePath":  "ripgrep-15.1.0-aarch64-pc-windows-msvc"
+                                                                               }
+                                                               }
+                                                 }
+                                  }
+                  },
+    "bin":  [
+                {
+                    "name":  "rg",
+                    "path":  "rg.exe"
+                }
+            ],
+    "resources":  [
+
+                  ],
+    "conflicts":  [
+
+                  ],
+    "test":  {
+                 "command":  "rg --version",
+                 "match":  "15\\.1\\.0"
+             },
+    "livecheck":  {
+                      "type":  "github-release",
+                      "repository":  "BurntSushi/ripgrep"
+                  }
+}

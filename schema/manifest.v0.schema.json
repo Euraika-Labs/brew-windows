@@ -43,6 +43,33 @@
         "portable-cli"
       ]
     },
+    "upstream": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "type": "string"
+        },
+        "tap": {
+          "type": "string"
+        },
+        "formulaPath": {
+          "type": "string"
+        },
+        "formulaSha256": {
+          "type": "string"
+        },
+        "githubRepository": {
+          "type": "string"
+        },
+        "githubReleaseTag": {
+          "type": "string"
+        },
+        "generatedAt": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    },
     "platforms": {
       "type": "object",
       "required": [

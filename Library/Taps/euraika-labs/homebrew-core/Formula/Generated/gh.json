@@ -1,0 +1,59 @@
+﻿{
+    "schemaVersion":  "0",
+    "name":  "gh",
+    "version":  "2.92.0",
+    "description":  "GitHub command-line tool",
+    "homepage":  "https://cli.github.com/",
+    "license":  "MIT",
+    "type":  "portable-cli",
+    "upstream":  {
+                     "source":  "homebrew-formula-api",
+                     "tap":  "homebrew/core",
+                     "formulaPath":  "Formula/g/gh.rb",
+                     "formulaSha256":  "5cc11f37b9d590813a7d07df2802190924e4a255e00d139cd1f3cba01a4b4b00",
+                     "githubRepository":  "cli/cli",
+                     "githubReleaseTag":  "v2.92.0"
+                 },
+    "platforms":  {
+                      "windows":  {
+                                      "arches":  {
+                                                     "x64":  {
+                                                                 "url":  "https://github.com/cli/cli/releases/download/v2.92.0/gh_2.92.0_windows_amd64.zip",
+                                                                 "sha256":  "b6a8df3c8c6b9c80f290906387673bc4d272840f3789c5650e0e4e6e75522785",
+                                                                 "extract":  {
+                                                                                 "type":  "zip",
+                                                                                 "sourcePath":  "bin"
+                                                                             }
+                                                             },
+                                                     "arm64":  {
+                                                                   "url":  "https://github.com/cli/cli/releases/download/v2.92.0/gh_2.92.0_windows_arm64.zip",
+                                                                   "sha256":  "fa4da50182f6d37a0555b4b48e828c57b1b23cbbd1a7e3a9ce6b65513f13836c",
+                                                                   "extract":  {
+                                                                                   "type":  "zip",
+                                                                                   "sourcePath":  "bin"
+                                                                               }
+                                                               }
+                                                 }
+                                  }
+                  },
+    "bin":  [
+                {
+                    "name":  "gh",
+                    "path":  "gh.exe"
+                }
+            ],
+    "resources":  [
+
+                  ],
+    "conflicts":  [
+
+                  ],
+    "test":  {
+                 "command":  "gh --version",
+                 "match":  "2\\.92\\.0"
+             },
+    "livecheck":  {
+                      "type":  "github-release",
+                      "repository":  "cli/cli"
+                  }
+}

@@ -19,9 +19,9 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Run Brew Windows tests
+      - name: Run validation
         shell: pwsh
-        run: ./tests/run.ps1
+        run: ./scripts/validate.ps1
 
   windows-powershell:
     name: Windows PowerShell
@@ -32,9 +32,9 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Run Brew Windows tests
+      - name: Run validation
         shell: powershell
-        run: ./tests/run.ps1
+        run: ./scripts/validate.ps1
 
   script-analyzer:
     name: PSScriptAnalyzer
@@ -52,7 +52,7 @@ jobs:
       - name: Analyze PowerShell scripts
         shell: pwsh
         run: |
-          $paths = @("bin", "install.ps1", "uninstall.ps1", "tests")
+          $paths = @("bin", "install.ps1", "uninstall.ps1", "scripts", "tests")
           $results = foreach ($path in $paths) {
             Invoke-ScriptAnalyzer -Path $path -Recurse -Severity Error
           }
