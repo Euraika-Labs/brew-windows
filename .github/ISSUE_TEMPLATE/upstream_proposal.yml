@@ -1,0 +1,41 @@
+name: Upstream proposal
+description: Plan a potential Homebrew upstream contribution.
+title: "[Upstream]: "
+labels:
+  - upstream
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What upstream change are you proposing?
+    validations:
+      required: true
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation
+      description: Why would Homebrew maintainers and users benefit?
+    validations:
+      required: true
+  - type: textarea
+    id: minimal-slice
+    attributes:
+      label: Minimal reviewable slice
+      description: What is the smallest pull request that could validate this?
+    validations:
+      required: true
+  - type: textarea
+    id: risks
+    attributes:
+      label: Risks and maintenance cost
+      description: What could make this hard to accept upstream?
+    validations:
+      required: true
+  - type: textarea
+    id: validation
+    attributes:
+      label: Prototype validation
+      description: Link to prototype evidence, tests, or experiments.
+    validations:
+      required: false

@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Homebrew Discussions
+    url: https://github.com/orgs/Homebrew/discussions
+    about: Ask normal Homebrew usage questions in the official Homebrew community.
+  - name: Homebrew/brew
+    url: https://github.com/Homebrew/brew
+    about: Report upstream Homebrew issues in the official repository.

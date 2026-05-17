@@ -1,0 +1,43 @@
+name: Feature request
+description: Suggest a focused improvement.
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What problem would this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Describe the smallest useful change.
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - WSL integration
+        - PowerShell integration
+        - Windows Terminal integration
+        - Native Windows bootstrap
+        - Path handling
+        - Shims and linking
+        - Bottles
+        - Documentation
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: upstream
+    attributes:
+      label: Upstream relevance
+      description: How could this eventually help Homebrew upstream?
+    validations:
+      required: false

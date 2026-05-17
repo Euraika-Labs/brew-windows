@@ -1,0 +1,20 @@
+# Local upstream research clone
+upstream-brew/
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# Logs and temporary files
+*.log
+tmp/
+temp/
+
+# Local environment
+.env
+.env.*
+!.env.example
