@@ -97,11 +97,19 @@ Next:
 Implemented in this repository:
 
 - Upstream architecture document.
-- Initial upstream dossier with staged PR direction.
+- Current upstream reality check against `Homebrew/brew`, Homebrew docs, and
+  prior Windows discussion.
+- Evidence-backed upstream dossier with explicit compatibility gap map.
+- Maintainer packet for the first Homebrew discussion.
+- Public discussion draft for `Homebrew/discussions`.
+- Staged PR sequence with guardrails and exit criteria.
+- ADR 0005 documenting the discussion-first upstream strategy.
 
 Next:
 
-- Attach CI evidence from the first public release.
-- Open a Homebrew discussion before proposing code.
+- Publish the discussion draft from
+  [docs/UPSTREAM_DISCUSSION_DRAFT.md](UPSTREAM_DISCUSSION_DRAFT.md) after
+  project owner approval.
+- Pick the first upstream PR only after maintainer feedback.
 - Keep upstream PRs limited to abstractions that preserve macOS and Linux
   behavior.
