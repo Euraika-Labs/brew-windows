@@ -1,0 +1,111 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Release tag in vX.Y.Z format
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  id-token: write
+  attestations: write
+  artifact-metadata: write
+
+jobs:
+  release:
+    name: Build, attest, and publish release
+    runs-on: windows-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          persist-credentials: false
+
+      - name: Validate release version
+        id: release
+        shell: pwsh
+        env:
+          REQUESTED_VERSION: ${{ inputs.version }}
+        run: |
+          $version = $env:REQUESTED_VERSION.Trim()
+          if ($version -notmatch '^v\d+\.\d+\.\d+(-[A-Za-z0-9.-]+)?$') {
+            throw "Release version must match vX.Y.Z or vX.Y.Z-prerelease. Got '$version'."
+          }
+
+          if (git ls-remote --tags origin $version) {
+            throw "Release tag already exists: $version"
+          }
+
+          "version=$version" | Add-Content -LiteralPath $env:GITHUB_OUTPUT
+
+      - name: Run validation
+        shell: pwsh
+        run: ./scripts/validate.ps1
+
+      - name: Build release payload
+        shell: pwsh
+        env:
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+        run: ./scripts/build-release.ps1 -Version $env:RELEASE_VERSION
+
+      - name: Validate release artifacts
+        shell: pwsh
+        env:
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          $zipPath = Join-Path "dist" "brew-windows-$env:RELEASE_VERSION.zip"
+          $checksumPath = "$zipPath.sha256"
+
+          foreach ($path in @($zipPath, $checksumPath, "install.ps1")) {
+            if (-not (Test-Path -LiteralPath $path -PathType Leaf)) {
+              throw "Missing release artifact: $path"
+            }
+          }
+
+          $expectedHash = ((Get-Content -LiteralPath $checksumPath -Raw) -split "\s+")[0].ToLowerInvariant()
+          $actualHash = (Get-FileHash -LiteralPath $zipPath -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($actualHash -ne $expectedHash) {
+            throw "Payload checksum file mismatch. Expected $expectedHash but got $actualHash."
+          }
+
+      - name: Attest release artifacts
+        uses: actions/attest@59d89421af93a897026c735860bf21b6eb4f7b26 # v4.1.0
+        with:
+          subject-path: |
+            dist/brew-windows-${{ steps.release.outputs.version }}.zip
+            dist/brew-windows-${{ steps.release.outputs.version }}.zip.sha256
+            install.ps1
+
+      - name: Publish GitHub release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          $zipPath = Join-Path "dist" "brew-windows-$env:RELEASE_VERSION.zip"
+          $checksumPath = "$zipPath.sha256"
+          $notesPath = Join-Path $env:RUNNER_TEMP "release-notes.md"
+
+          @"
+          ## Brew Windows $env:RELEASE_VERSION
+
+          Published by the release workflow after repository validation.
+
+          Included assets:
+          - ``install.ps1``
+          - ``brew-windows-$env:RELEASE_VERSION.zip``
+          - ``brew-windows-$env:RELEASE_VERSION.zip.sha256``
+
+          The release workflow generates GitHub artifact attestations for the uploaded release assets.
+          "@ | Set-Content -LiteralPath $notesPath -Encoding UTF8
+
+          gh release create $env:RELEASE_VERSION `
+            $zipPath `
+            $checksumPath `
+            install.ps1 `
+            --title "Brew Windows $env:RELEASE_VERSION" `
+            --notes-file $notesPath `
+            --latest

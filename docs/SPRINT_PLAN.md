@@ -83,11 +83,13 @@ Implemented in this repository:
 - SHA256 verification for downloaded CI linter binaries.
 - Dependabot for GitHub Actions.
 - Dependabot cooldown for GitHub Actions updates.
+- Manual release workflow with release payload validation.
+- GitHub artifact attestations for release assets.
+- Shim argument and exit-code fuzz tests for generated `.ps1` and `.cmd`
+  launchers.
 
 Next:
 
-- Add generated artifact attestations for release payloads.
-- Expand shim argument fuzzing.
 - Add Authenticode checks for future installer-style packages.
 
 ## Sprint 6: Upstream Dossier
