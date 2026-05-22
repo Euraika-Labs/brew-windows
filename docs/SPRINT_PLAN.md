@@ -49,10 +49,11 @@ Implemented in this repository:
   setup, and bundled `rg.exe`.
 - Generated `.ps1` and `.cmd` shims.
 
-Remaining before a public release:
+Validated in public releases:
 
-- Run a real `brew install codex` smoke test on a clean Windows 11 machine.
-- Confirm Codex output still matches `^codex-cli\s+\d+\.\d+\.\d+`.
+- `v0.2.1` and later validate the public GitHub Release installer path.
+- `brew install codex` installs official OpenAI Windows release assets.
+- Codex output matches `^codex-cli\s+\d+\.\d+\.\d+`.
 
 ## Sprint 4: Lifecycle
 
@@ -77,11 +78,14 @@ Implemented in this repository:
 - Path-with-spaces test prefix.
 - PSScriptAnalyzer error gate.
 - JSON manifest parse gate.
+- actionlint workflow syntax gate.
+- zizmor GitHub Actions security gate.
+- SHA256 verification for downloaded CI linter binaries.
 - Dependabot for GitHub Actions.
+- Dependabot cooldown for GitHub Actions updates.
 
 Next:
 
-- Add actionlint and zizmor.
 - Add generated artifact attestations for release payloads.
 - Expand shim argument fuzzing.
 - Add Authenticode checks for future installer-style packages.

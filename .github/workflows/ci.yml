@@ -15,7 +15,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           persist-credentials: false
 
@@ -28,7 +28,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           persist-credentials: false
 
@@ -41,7 +41,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           persist-credentials: false
 
@@ -66,7 +66,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           persist-credentials: false
 
@@ -77,3 +77,86 @@ jobs:
             Write-Host "Parsing $_"
             Get-Content -LiteralPath $_ -Raw | ConvertFrom-Json | Out-Null
           }
+
+  actionlint:
+    name: actionlint
+    runs-on: windows-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          persist-credentials: false
+
+      - name: Install actionlint
+        shell: pwsh
+        run: |
+          $url = "https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_windows_amd64.zip"
+          $expectedSha256 = "6e7241b51e6817ea6a047693d8e6fed13b31819c9a0dd6c5a726e1592d22f6e9"
+          $archivePath = Join-Path $env:RUNNER_TEMP "actionlint.zip"
+          $toolDir = Join-Path $env:RUNNER_TEMP "actionlint"
+
+          Invoke-WebRequest -Uri $url -OutFile $archivePath -UseBasicParsing
+          $actualSha256 = (Get-FileHash -LiteralPath $archivePath -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($actualSha256 -ne $expectedSha256) {
+            throw "actionlint checksum mismatch. Expected $expectedSha256 but got $actualSha256."
+          }
+
+          Expand-Archive -LiteralPath $archivePath -DestinationPath $toolDir -Force
+          $toolPath = (Get-ChildItem -LiteralPath $toolDir -Recurse -Filter "actionlint.exe" | Select-Object -First 1).FullName
+          if ([string]::IsNullOrWhiteSpace($toolPath)) {
+            throw "actionlint.exe was not found in $toolDir."
+          }
+          "ACTIONLINT_EXE=$toolPath" | Add-Content -LiteralPath $env:GITHUB_ENV
+
+      - name: Lint GitHub Actions workflows
+        shell: pwsh
+        run: |
+          $workflowFiles = @(Get-ChildItem -LiteralPath ".github\workflows" -File | Where-Object {
+            $_.Extension -in @(".yml", ".yaml")
+          } | ForEach-Object { $_.FullName })
+          if ($workflowFiles.Count -eq 0) {
+            throw "No workflow files found."
+          }
+          & $env:ACTIONLINT_EXE -color=false @workflowFiles
+
+  zizmor:
+    name: zizmor
+    runs-on: windows-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          persist-credentials: false
+
+      - name: Install zizmor
+        shell: pwsh
+        run: |
+          $url = "https://github.com/zizmorcore/zizmor/releases/download/v1.25.2/zizmor-x86_64-pc-windows-msvc.zip"
+          $expectedSha256 = "65d46a8144f701200621b580f632076d80d082d60856de9f88793a95fb5882d7"
+          $archivePath = Join-Path $env:RUNNER_TEMP "zizmor.zip"
+          $toolDir = Join-Path $env:RUNNER_TEMP "zizmor"
+
+          Invoke-WebRequest -Uri $url -OutFile $archivePath -UseBasicParsing
+          $actualSha256 = (Get-FileHash -LiteralPath $archivePath -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($actualSha256 -ne $expectedSha256) {
+            throw "zizmor checksum mismatch. Expected $expectedSha256 but got $actualSha256."
+          }
+
+          Expand-Archive -LiteralPath $archivePath -DestinationPath $toolDir -Force
+          $toolPath = (Get-ChildItem -LiteralPath $toolDir -Recurse -Filter "zizmor.exe" | Select-Object -First 1).FullName
+          if ([string]::IsNullOrWhiteSpace($toolPath)) {
+            throw "zizmor.exe was not found in $toolDir."
+          }
+          "ZIZMOR_EXE=$toolPath" | Add-Content -LiteralPath $env:GITHUB_ENV
+
+      - name: Audit GitHub Actions security
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          & $env:ZIZMOR_EXE `
+            --format plain `
+            --color never `
+            --min-severity medium `
+            --min-confidence medium `
+            .github
