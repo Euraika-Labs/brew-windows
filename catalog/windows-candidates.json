@@ -191,10 +191,10 @@
       "homebrew": {
         "tap": "homebrew/core",
         "sourcePath": "Formula/m/mise.rb",
-        "sourceSha256": "c82094e952bb6c55c3c97f5d31efcc67dd6c523091892ffe8e578aec698b7855"
+        "sourceSha256": "3a539e424ad873041cdaab45f73f4450af282a841f81fcdbaa06c91c2f37dfab"
       },
-      "homebrewVersion": "2026.5.10",
-      "latestReleaseTag": "v2026.5.10",
+      "homebrewVersion": "2026.5.11",
+      "latestReleaseTag": "v2026.5.11",
       "description": "Polyglot runtime manager (asdf rust clone)",
       "homepage": "https://mise.jdx.dev/",
       "license": "MIT",
@@ -206,9 +206,9 @@
       ],
       "architectures": {
         "x64": {
-          "name": "mise-v2026.5.10-windows-x64.zip",
-          "url": "https://github.com/jdx/mise/releases/download/v2026.5.10/mise-v2026.5.10-windows-x64.zip",
-          "sha256": "0c23d98ec8eafc5eb790188df68d402ad545913673cd40da41d183b6f3c5ae2b",
+          "name": "mise-v2026.5.11-windows-x64.zip",
+          "url": "https://github.com/jdx/mise/releases/download/v2026.5.11/mise-v2026.5.11-windows-x64.zip",
+          "sha256": "49f146ea4659f39c53b8f186f5121a2f2abe45cc3625f58ea8e3e70656e0e227",
           "extractType": "zip",
           "score": 30,
           "layout": {
@@ -223,9 +223,9 @@
           }
         },
         "arm64": {
-          "name": "mise-v2026.5.10-windows-arm64.zip",
-          "url": "https://github.com/jdx/mise/releases/download/v2026.5.10/mise-v2026.5.10-windows-arm64.zip",
-          "sha256": "b2764f48f3c910f7a10cb540ea84c476e9ba79937bf7fde4e67826d7270b2c3e",
+          "name": "mise-v2026.5.11-windows-arm64.zip",
+          "url": "https://github.com/jdx/mise/releases/download/v2026.5.11/mise-v2026.5.11-windows-arm64.zip",
+          "sha256": "5f9093a6740813c462b1dab2d3d184051449fe77c764c205febbe211270fd717",
           "extractType": "zip",
           "score": 30,
           "layout": {
@@ -337,17 +337,17 @@
       "latestReleaseTag": "v2.6.31"
     },
     {
-      "name": "python@3.12",
-      "status": "rejected",
-      "reason": "no-github-release-repository-detected"
-    },
-    {
       "name": "imagemagick",
       "status": "rejected",
       "reason": "no-sha256-windows-x64-archive-asset",
       "repository": "ImageMagick/ImageMagick",
       "homebrewVersion": "7.1.2-23",
       "latestReleaseTag": "7.1.2-23"
+    },
+    {
+      "name": "python@3.12",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
     },
     {
       "name": "gnupg",
@@ -479,6 +479,13 @@
       }
     },
     {
+      "name": "pkgconf",
+      "status": "rejected",
+      "reason": "github-release-not-readable",
+      "repository": "pkgconf/pkgconf",
+      "error": "Response status code does not indicate success: 404 (Not Found)."
+    },
+    {
       "name": "yq",
       "status": "candidate",
       "promotable": false,
@@ -516,13 +523,6 @@
           }
         }
       }
-    },
-    {
-      "name": "pkgconf",
-      "status": "rejected",
-      "reason": "github-release-not-readable",
-      "repository": "pkgconf/pkgconf",
-      "error": "Response status code does not indicate success: 404 (Not Found)."
     },
     {
       "name": "python@3.11",
@@ -649,11 +649,6 @@
       "latestReleaseTag": "3.5.1"
     },
     {
-      "name": "python@3.13",
-      "status": "rejected",
-      "reason": "no-github-release-repository-detected"
-    },
-    {
       "name": "just",
       "status": "candidate",
       "promotable": true,
@@ -711,9 +706,9 @@
       }
     },
     {
-      "name": "nvm",
+      "name": "python@3.13",
       "status": "rejected",
-      "reason": "no-declared-executables"
+      "reason": "no-github-release-repository-detected"
     },
     {
       "name": "helm",
@@ -722,6 +717,19 @@
       "repository": "helm/helm",
       "homebrewVersion": "4.2.0",
       "latestReleaseTag": "v4.2.0"
+    },
+    {
+      "name": "nvm",
+      "status": "rejected",
+      "reason": "no-declared-executables"
+    },
+    {
+      "name": "yt-dlp",
+      "status": "rejected",
+      "reason": "github-release-version-does-not-match-homebrew-stable",
+      "repository": "yt-dlp/yt-dlp",
+      "homebrewVersion": "2026.3.17",
+      "latestReleaseTag": "2026.03.17"
     },
     {
       "name": "tmux",
@@ -737,14 +745,6 @@
       "reason": "no-github-release-repository-detected"
     },
     {
-      "name": "yt-dlp",
-      "status": "rejected",
-      "reason": "github-release-version-does-not-match-homebrew-stable",
-      "repository": "yt-dlp/yt-dlp",
-      "homebrewVersion": "2026.3.17",
-      "latestReleaseTag": "2026.03.17"
-    },
-    {
       "name": "mole",
       "status": "rejected",
       "reason": "no-sha256-windows-x64-archive-asset",
@@ -757,8 +757,8 @@
       "status": "rejected",
       "reason": "github-release-version-does-not-match-homebrew-stable",
       "repository": "ggml-org/llama.cpp",
-      "homebrewVersion": "9190",
-      "latestReleaseTag": "b9198"
+      "homebrewVersion": "9200",
+      "latestReleaseTag": "b9204"
     },
     {
       "name": "glab",
@@ -774,12 +774,12 @@
       "latestReleaseTag": "v1.13.2"
     },
     {
-      "name": "redis",
+      "name": "maven",
       "status": "rejected",
       "reason": "no-github-release-repository-detected"
     },
     {
-      "name": "maven",
+      "name": "redis",
       "status": "rejected",
       "reason": "no-github-release-repository-detected"
     },
@@ -827,17 +827,17 @@
       "latestReleaseTag": "azure-cli-2.86.0"
     },
     {
-      "name": "graphviz",
-      "status": "rejected",
-      "reason": "no-github-release-repository-detected"
-    },
-    {
       "name": "swiftlint",
       "status": "rejected",
       "reason": "no-sha256-windows-x64-archive-asset",
       "repository": "realm/SwiftLint",
       "homebrewVersion": "0.63.2",
       "latestReleaseTag": "0.63.2"
+    },
+    {
+      "name": "graphviz",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
     },
     {
       "name": "protobuf",
@@ -993,6 +993,48 @@
       "reason": "no-github-release-repository-detected"
     },
     {
+      "name": "fastfetch",
+      "status": "candidate",
+      "promotable": true,
+      "reason": "sha256-windows-archives-and-layout-validated",
+      "repository": "fastfetch-cli/fastfetch",
+      "homebrew": {
+        "tap": "homebrew/core",
+        "sourcePath": "Formula/f/fastfetch.rb",
+        "sourceSha256": "34ad6dc690e74bc6af89c0952a02f6be2dafdd85ac1f5eeccefa10665bd78c0d"
+      },
+      "homebrewVersion": "2.63.1",
+      "latestReleaseTag": "2.63.1",
+      "description": "Like neofetch, but much faster because written mostly in C",
+      "homepage": "https://github.com/fastfetch-cli/fastfetch",
+      "license": "MIT",
+      "executables": [
+        "fastfetch"
+      ],
+      "dependencies": [
+        "yyjson"
+      ],
+      "architectures": {
+        "x64": {
+          "name": "fastfetch-windows-amd64.zip",
+          "url": "https://github.com/fastfetch-cli/fastfetch/releases/download/2.63.1/fastfetch-windows-amd64.zip",
+          "sha256": "2de11119cbd874c7ecc82ecf4c09711f397a7407c85a1857256c5bf1139fc6f6",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": true,
+            "sourcePath": "",
+            "bins": [
+              {
+                "name": "fastfetch",
+                "path": "fastfetch.exe"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
       "name": "rclone",
       "status": "candidate",
       "promotable": true,
@@ -1050,56 +1092,6 @@
       }
     },
     {
-      "name": "fastfetch",
-      "status": "candidate",
-      "promotable": true,
-      "reason": "sha256-windows-archives-and-layout-validated",
-      "repository": "fastfetch-cli/fastfetch",
-      "homebrew": {
-        "tap": "homebrew/core",
-        "sourcePath": "Formula/f/fastfetch.rb",
-        "sourceSha256": "34ad6dc690e74bc6af89c0952a02f6be2dafdd85ac1f5eeccefa10665bd78c0d"
-      },
-      "homebrewVersion": "2.63.1",
-      "latestReleaseTag": "2.63.1",
-      "description": "Like neofetch, but much faster because written mostly in C",
-      "homepage": "https://github.com/fastfetch-cli/fastfetch",
-      "license": "MIT",
-      "executables": [
-        "fastfetch"
-      ],
-      "dependencies": [
-        "yyjson"
-      ],
-      "architectures": {
-        "x64": {
-          "name": "fastfetch-windows-amd64.zip",
-          "url": "https://github.com/fastfetch-cli/fastfetch/releases/download/2.63.1/fastfetch-windows-amd64.zip",
-          "sha256": "2de11119cbd874c7ecc82ecf4c09711f397a7407c85a1857256c5bf1139fc6f6",
-          "extractType": "zip",
-          "score": 30,
-          "layout": {
-            "ok": true,
-            "sourcePath": "",
-            "bins": [
-              {
-                "name": "fastfetch",
-                "path": "fastfetch.exe"
-              }
-            ]
-          }
-        }
-      }
-    },
-    {
-      "name": "docker-compose",
-      "status": "rejected",
-      "reason": "no-sha256-windows-x64-archive-asset",
-      "repository": "docker/compose",
-      "homebrewVersion": "5.1.3",
-      "latestReleaseTag": "v5.1.3"
-    },
-    {
       "name": "xcodegen",
       "status": "rejected",
       "reason": "no-sha256-windows-x64-archive-asset",
@@ -1114,6 +1106,14 @@
       "repository": "aristocratos/btop",
       "homebrewVersion": "1.4.7",
       "latestReleaseTag": "v1.4.7"
+    },
+    {
+      "name": "docker-compose",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "docker/compose",
+      "homebrewVersion": "5.1.3",
+      "latestReleaseTag": "v5.1.3"
     },
     {
       "name": "gnu-tar",
@@ -1161,11 +1161,6 @@
       }
     },
     {
-      "name": "wget",
-      "status": "rejected",
-      "reason": "no-github-release-repository-detected"
-    },
-    {
       "name": "watchman",
       "status": "rejected",
       "reason": "no-sha256-windows-x64-archive-asset",
@@ -1174,7 +1169,7 @@
       "latestReleaseTag": "v2026.05.11.00"
     },
     {
-      "name": "rust",
+      "name": "wget",
       "status": "rejected",
       "reason": "no-github-release-repository-detected"
     },
@@ -1187,7 +1182,7 @@
       "latestReleaseTag": "2026.5.0"
     },
     {
-      "name": "php",
+      "name": "rust",
       "status": "rejected",
       "reason": "no-github-release-repository-detected"
     },
@@ -1195,6 +1190,27 @@
       "name": "gnutls",
       "status": "rejected",
       "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "php",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "mint",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "yonaskolb/Mint",
+      "homebrewVersion": "0.18.0",
+      "latestReleaseTag": "0.18.0"
+    },
+    {
+      "name": "flyctl",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "superfly/flyctl",
+      "homebrewVersion": "0.4.52",
+      "latestReleaseTag": "v0.4.52"
     },
     {
       "name": "actionlint",
@@ -1256,20 +1272,9 @@
       }
     },
     {
-      "name": "flyctl",
+      "name": "libomp",
       "status": "rejected",
-      "reason": "no-sha256-windows-x64-archive-asset",
-      "repository": "superfly/flyctl",
-      "homebrewVersion": "0.4.52",
-      "latestReleaseTag": "v0.4.52"
-    },
-    {
-      "name": "mint",
-      "status": "rejected",
-      "reason": "no-sha256-windows-x64-archive-asset",
-      "repository": "yonaskolb/Mint",
-      "homebrewVersion": "0.18.0",
-      "latestReleaseTag": "0.18.0"
+      "reason": "no-declared-executables"
     },
     {
       "name": "powershell",
@@ -1278,6 +1283,11 @@
       "repository": "PowerShell/PowerShell",
       "homebrewVersion": "7.6.1",
       "latestReleaseTag": "v7.6.1"
+    },
+    {
+      "name": "libpq",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
     },
     {
       "name": "atuin",
@@ -1306,14 +1316,11 @@
       }
     },
     {
-      "name": "libomp",
+      "name": "vim",
       "status": "rejected",
-      "reason": "no-declared-executables"
-    },
-    {
-      "name": "libpq",
-      "status": "rejected",
-      "reason": "no-github-release-repository-detected"
+      "reason": "github-release-not-readable",
+      "repository": "vim/vim",
+      "error": "Response status code does not indicate success: 404 (Not Found)."
     },
     {
       "name": "kubeconform",
@@ -1322,13 +1329,6 @@
       "repository": "yannh/kubeconform",
       "homebrewVersion": "0.7.0",
       "latestReleaseTag": "v0.7.0"
-    },
-    {
-      "name": "vim",
-      "status": "rejected",
-      "reason": "github-release-not-readable",
-      "repository": "vim/vim",
-      "error": "Response status code does not indicate success: 404 (Not Found)."
     },
     {
       "name": "fd",
@@ -1388,12 +1388,9 @@
       }
     },
     {
-      "name": "lazygit",
+      "name": "gradle",
       "status": "rejected",
-      "reason": "no-sha256-windows-x64-archive-asset",
-      "repository": "jesseduffield/lazygit",
-      "homebrewVersion": "0.61.1",
-      "latestReleaseTag": "v0.61.1"
+      "reason": "no-github-release-repository-detected"
     },
     {
       "name": "ansible",
@@ -1401,9 +1398,12 @@
       "reason": "no-github-release-repository-detected"
     },
     {
-      "name": "gradle",
+      "name": "lazygit",
       "status": "rejected",
-      "reason": "no-github-release-repository-detected"
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "jesseduffield/lazygit",
+      "homebrewVersion": "0.61.1",
+      "latestReleaseTag": "v0.61.1"
     },
     {
       "name": "nmap",
@@ -1512,17 +1512,17 @@
       "reason": "no-github-release-repository-detected"
     },
     {
+      "name": "postgresql@16",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
       "name": "aria2",
       "status": "rejected",
       "reason": "no-sha256-windows-x64-archive-asset",
       "repository": "aria2/aria2",
       "homebrewVersion": "1.37.0",
       "latestReleaseTag": "release-1.37.0"
-    },
-    {
-      "name": "postgresql@16",
-      "status": "rejected",
-      "reason": "no-github-release-repository-detected"
     },
     {
       "name": "fastlane",
@@ -1539,6 +1539,19 @@
       "repository": "abiosoft/colima",
       "homebrewVersion": "0.10.1",
       "latestReleaseTag": "v0.10.1"
+    },
+    {
+      "name": "librsvg",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "fish",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "fish-shell/fish-shell",
+      "homebrewVersion": "4.7.1",
+      "latestReleaseTag": "4.7.1"
     },
     {
       "name": "bat",
@@ -1601,19 +1614,6 @@
       }
     },
     {
-      "name": "fish",
-      "status": "rejected",
-      "reason": "no-sha256-windows-x64-archive-asset",
-      "repository": "fish-shell/fish-shell",
-      "homebrewVersion": "4.7.1",
-      "latestReleaseTag": "4.7.1"
-    },
-    {
-      "name": "librsvg",
-      "status": "rejected",
-      "reason": "no-github-release-repository-detected"
-    },
-    {
       "name": "postgresql@18",
       "status": "rejected",
       "reason": "no-github-release-repository-detected"
@@ -1637,20 +1637,20 @@
       "latestReleaseTag": "v3.4.2"
     },
     {
-      "name": "mkcert",
-      "status": "rejected",
-      "reason": "no-sha256-windows-x64-archive-asset",
-      "repository": "FiloSottile/mkcert",
-      "homebrewVersion": "1.4.4",
-      "latestReleaseTag": "v1.4.4"
-    },
-    {
       "name": "ruby-build",
       "status": "rejected",
       "reason": "no-sha256-windows-x64-archive-asset",
       "repository": "rbenv/ruby-build",
       "homebrewVersion": "20260512",
       "latestReleaseTag": "v20260512"
+    },
+    {
+      "name": "mkcert",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "FiloSottile/mkcert",
+      "homebrewVersion": "1.4.4",
+      "latestReleaseTag": "v1.4.4"
     },
     {
       "name": "unbound",
@@ -1727,6 +1727,16 @@
       }
     },
     {
+      "name": "rsync",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "composer",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
       "name": "kustomize",
       "status": "candidate",
       "promotable": true,
@@ -1784,73 +1794,6 @@
       }
     },
     {
-      "name": "rsync",
-      "status": "rejected",
-      "reason": "no-github-release-repository-detected"
-    },
-    {
-      "name": "chezmoi",
-      "status": "candidate",
-      "promotable": true,
-      "reason": "sha256-windows-archives-and-layout-validated",
-      "repository": "twpayne/chezmoi",
-      "homebrew": {
-        "tap": "homebrew/core",
-        "sourcePath": "Formula/c/chezmoi.rb",
-        "sourceSha256": "fc0965ea19a419548d64e731dd2e7105937c620724685726451fd25947a73446"
-      },
-      "homebrewVersion": "2.70.3",
-      "latestReleaseTag": "v2.70.3",
-      "description": "Manage your dotfiles across multiple diverse machines, securely",
-      "homepage": "https://chezmoi.io/",
-      "license": "MIT",
-      "executables": [
-        "chezmoi"
-      ],
-      "dependencies": [],
-      "architectures": {
-        "x64": {
-          "name": "chezmoi_2.70.3_windows_amd64.zip",
-          "url": "https://github.com/twpayne/chezmoi/releases/download/v2.70.3/chezmoi_2.70.3_windows_amd64.zip",
-          "sha256": "d6985fd4cbbfda7fb50574a20b7f1fb1cf5c540da121cf1ebfd94461e861a3e3",
-          "extractType": "zip",
-          "score": 30,
-          "layout": {
-            "ok": true,
-            "sourcePath": "",
-            "bins": [
-              {
-                "name": "chezmoi",
-                "path": "chezmoi.exe"
-              }
-            ]
-          }
-        },
-        "arm64": {
-          "name": "chezmoi_2.70.3_windows_arm64.zip",
-          "url": "https://github.com/twpayne/chezmoi/releases/download/v2.70.3/chezmoi_2.70.3_windows_arm64.zip",
-          "sha256": "ebd9dbedba12759314bc57c891c42000e3781c33d3a2e80f0008288fd979a2b4",
-          "extractType": "zip",
-          "score": 30,
-          "layout": {
-            "ok": true,
-            "sourcePath": "",
-            "bins": [
-              {
-                "name": "chezmoi",
-                "path": "chezmoi.exe"
-              }
-            ]
-          }
-        }
-      }
-    },
-    {
-      "name": "composer",
-      "status": "rejected",
-      "reason": "no-github-release-repository-detected"
-    },
-    {
       "name": "podman",
       "status": "candidate",
       "promotable": false,
@@ -1903,20 +1846,20 @@
       "latestReleaseTag": "v3.2.2"
     },
     {
-      "name": "xclogparser",
-      "status": "rejected",
-      "reason": "no-sha256-windows-x64-archive-asset",
-      "repository": "MobileNativeFoundation/XCLogParser",
-      "homebrewVersion": "0.2.47",
-      "latestReleaseTag": "v0.2.47"
-    },
-    {
       "name": "ghostscript",
       "status": "rejected",
       "reason": "github-release-version-does-not-match-homebrew-stable",
       "repository": "ArtifexSoftware/ghostpdl-downloads",
       "homebrewVersion": "10.07.0",
       "latestReleaseTag": "gs10070"
+    },
+    {
+      "name": "xclogparser",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "MobileNativeFoundation/XCLogParser",
+      "homebrewVersion": "0.2.47",
+      "latestReleaseTag": "v0.2.47"
     },
     {
       "name": "k9s",
@@ -1983,12 +1926,61 @@
       "error": "Response status code does not indicate success: 404 (Not Found)."
     },
     {
-      "name": "llmfit",
-      "status": "rejected",
-      "reason": "github-release-version-does-not-match-homebrew-stable",
-      "repository": "AlexsJones/llmfit",
-      "homebrewVersion": "0.9.23",
-      "latestReleaseTag": "v0.9.25"
+      "name": "chezmoi",
+      "status": "candidate",
+      "promotable": true,
+      "reason": "sha256-windows-archives-and-layout-validated",
+      "repository": "twpayne/chezmoi",
+      "homebrew": {
+        "tap": "homebrew/core",
+        "sourcePath": "Formula/c/chezmoi.rb",
+        "sourceSha256": "fc0965ea19a419548d64e731dd2e7105937c620724685726451fd25947a73446"
+      },
+      "homebrewVersion": "2.70.3",
+      "latestReleaseTag": "v2.70.3",
+      "description": "Manage your dotfiles across multiple diverse machines, securely",
+      "homepage": "https://chezmoi.io/",
+      "license": "MIT",
+      "executables": [
+        "chezmoi"
+      ],
+      "dependencies": [],
+      "architectures": {
+        "x64": {
+          "name": "chezmoi_2.70.3_windows_amd64.zip",
+          "url": "https://github.com/twpayne/chezmoi/releases/download/v2.70.3/chezmoi_2.70.3_windows_amd64.zip",
+          "sha256": "d6985fd4cbbfda7fb50574a20b7f1fb1cf5c540da121cf1ebfd94461e861a3e3",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": true,
+            "sourcePath": "",
+            "bins": [
+              {
+                "name": "chezmoi",
+                "path": "chezmoi.exe"
+              }
+            ]
+          }
+        },
+        "arm64": {
+          "name": "chezmoi_2.70.3_windows_arm64.zip",
+          "url": "https://github.com/twpayne/chezmoi/releases/download/v2.70.3/chezmoi_2.70.3_windows_arm64.zip",
+          "sha256": "ebd9dbedba12759314bc57c891c42000e3781c33d3a2e80f0008288fd979a2b4",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": true,
+            "sourcePath": "",
+            "bins": [
+              {
+                "name": "chezmoi",
+                "path": "chezmoi.exe"
+              }
+            ]
+          }
+        }
+      }
     },
     {
       "name": "yazi",
@@ -2057,6 +2049,40 @@
       }
     },
     {
+      "name": "ugrep",
+      "status": "candidate",
+      "promotable": false,
+      "reason": "archive-layout-not-promotable",
+      "layoutReasons": [
+        "x64: archive-inspection-failed"
+      ],
+      "repository": "Genivia/ugrep",
+      "homebrewVersion": "7.8.2",
+      "latestReleaseTag": "v7.8.2",
+      "architectures": {
+        "x64": {
+          "name": "ugrep-windows-x64.zip",
+          "url": "https://github.com/Genivia/ugrep/releases/download/v7.8.2/ugrep-windows-x64.zip",
+          "sha256": "260b3677ee83372d16dfa615df60c56a92a13b9ce3822659d9aa27a346d1b002",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": false,
+            "reason": "archive-inspection-failed",
+            "error": "The property 'entry' cannot be found on this object. Verify that the property exists."
+          }
+        }
+      }
+    },
+    {
+      "name": "llmfit",
+      "status": "rejected",
+      "reason": "github-release-version-does-not-match-homebrew-stable",
+      "repository": "AlexsJones/llmfit",
+      "homebrewVersion": "0.9.23",
+      "latestReleaseTag": "v0.9.25"
+    },
+    {
       "name": "golangci-lint",
       "status": "candidate",
       "promotable": true,
@@ -2116,6 +2142,14 @@
       }
     },
     {
+      "name": "sops",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "getsops/sops",
+      "homebrewVersion": "3.13.1",
+      "latestReleaseTag": "v3.13.1"
+    },
+    {
       "name": "autoconf",
       "status": "rejected",
       "reason": "no-github-release-repository-detected"
@@ -2163,33 +2197,12 @@
       }
     },
     {
-      "name": "sops",
-      "status": "rejected",
-      "reason": "no-sha256-windows-x64-archive-asset",
-      "repository": "getsops/sops",
-      "homebrewVersion": "3.13.1",
-      "latestReleaseTag": "v3.13.1"
-    },
-    {
-      "name": "ugrep",
-      "status": "rejected",
-      "reason": "github-release-version-does-not-match-homebrew-stable",
-      "repository": "Genivia/ugrep",
-      "homebrewVersion": "7.8.1",
-      "latestReleaseTag": "v7.8.2"
-    },
-    {
       "name": "iperf3",
       "status": "rejected",
       "reason": "no-sha256-windows-x64-archive-asset",
       "repository": "esnet/iperf",
       "homebrewVersion": "3.21",
       "latestReleaseTag": "3.21"
-    },
-    {
-      "name": "gobject-introspection",
-      "status": "rejected",
-      "reason": "no-github-release-repository-detected"
     },
     {
       "name": "zstd",
@@ -2205,7 +2218,17 @@
       "reason": "no-github-release-repository-detected"
     },
     {
+      "name": "gobject-introspection",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
       "name": "zsh",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "sevenzip",
       "status": "rejected",
       "reason": "no-github-release-repository-detected"
     },
@@ -2267,11 +2290,6 @@
       }
     },
     {
-      "name": "sevenzip",
-      "status": "rejected",
-      "reason": "no-github-release-repository-detected"
-    },
-    {
       "name": "deno",
       "status": "candidate",
       "promotable": false,
@@ -2324,27 +2342,6 @@
       "reason": "no-github-release-repository-detected"
     },
     {
-      "name": "libpng",
-      "status": "rejected",
-      "reason": "no-github-release-repository-detected"
-    },
-    {
-      "name": "direnv",
-      "status": "rejected",
-      "reason": "no-sha256-windows-x64-archive-asset",
-      "repository": "direnv/direnv",
-      "homebrewVersion": "2.37.1",
-      "latestReleaseTag": "v2.37.1"
-    },
-    {
-      "name": "asdf",
-      "status": "rejected",
-      "reason": "no-sha256-windows-x64-archive-asset",
-      "repository": "asdf-vm/asdf",
-      "homebrewVersion": "0.19.0",
-      "latestReleaseTag": "v0.19.0"
-    },
-    {
       "name": "zellij",
       "status": "candidate",
       "promotable": true,
@@ -2387,12 +2384,33 @@
       }
     },
     {
-      "name": "exiftool",
+      "name": "direnv",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "direnv/direnv",
+      "homebrewVersion": "2.37.1",
+      "latestReleaseTag": "v2.37.1"
+    },
+    {
+      "name": "asdf",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "asdf-vm/asdf",
+      "homebrewVersion": "0.19.0",
+      "latestReleaseTag": "v0.19.0"
+    },
+    {
+      "name": "aom",
       "status": "rejected",
       "reason": "no-github-release-repository-detected"
     },
     {
-      "name": "aom",
+      "name": "libpng",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "exiftool",
       "status": "rejected",
       "reason": "no-github-release-repository-detected"
     },
@@ -2403,6 +2421,11 @@
     },
     {
       "name": "boost",
+      "status": "rejected",
+      "reason": "no-declared-executables"
+    },
+    {
+      "name": "ca-certificates",
       "status": "rejected",
       "reason": "no-declared-executables"
     },
@@ -2431,11 +2454,6 @@
       "repository": "tilt-dev/tilt",
       "homebrewVersion": "0.37.3",
       "latestReleaseTag": "v0.37.3"
-    },
-    {
-      "name": "ca-certificates",
-      "status": "rejected",
-      "reason": "no-declared-executables"
     },
     {
       "name": "k3d",
@@ -2490,37 +2508,6 @@
       "repository": "koalaman/shellcheck",
       "homebrewVersion": "0.11.0",
       "latestReleaseTag": "v0.11.0"
-    },
-    {
-      "name": "libxml2",
-      "status": "rejected",
-      "reason": "no-github-release-repository-detected"
-    },
-    {
-      "name": "gomplate",
-      "status": "candidate",
-      "promotable": false,
-      "reason": "archive-layout-not-promotable",
-      "layoutReasons": [
-        "x64: archive-inspection-failed"
-      ],
-      "repository": "hairyhenderson/gomplate",
-      "homebrewVersion": "5.1.0",
-      "latestReleaseTag": "v5.1.0",
-      "architectures": {
-        "x64": {
-          "name": "gomplate_windows-amd64.zip",
-          "url": "https://github.com/hairyhenderson/gomplate/releases/download/v5.1.0/gomplate_windows-amd64.zip",
-          "sha256": "7686e1158a37ee6d2db8cc90637f40d6d44d7822e3387f88c6d0d58e35e55f8d",
-          "extractType": "zip",
-          "score": 30,
-          "layout": {
-            "ok": false,
-            "reason": "archive-inspection-failed",
-            "error": "The property 'entry' cannot be found on this object. Verify that the property exists."
-          }
-        }
-      }
     },
     {
       "name": "terraform-docs",
@@ -2580,17 +2567,48 @@
       }
     },
     {
-      "name": "nss",
-      "status": "rejected",
-      "reason": "no-github-release-repository-detected"
-    },
-    {
       "name": "cliclick",
       "status": "rejected",
       "reason": "no-sha256-windows-x64-archive-asset",
       "repository": "BlueM/cliclick",
       "homebrewVersion": "5.1",
       "latestReleaseTag": "5.1"
+    },
+    {
+      "name": "gomplate",
+      "status": "candidate",
+      "promotable": false,
+      "reason": "archive-layout-not-promotable",
+      "layoutReasons": [
+        "x64: archive-inspection-failed"
+      ],
+      "repository": "hairyhenderson/gomplate",
+      "homebrewVersion": "5.1.0",
+      "latestReleaseTag": "v5.1.0",
+      "architectures": {
+        "x64": {
+          "name": "gomplate_windows-amd64.zip",
+          "url": "https://github.com/hairyhenderson/gomplate/releases/download/v5.1.0/gomplate_windows-amd64.zip",
+          "sha256": "7686e1158a37ee6d2db8cc90637f40d6d44d7822e3387f88c6d0d58e35e55f8d",
+          "extractType": "zip",
+          "score": 30,
+          "layout": {
+            "ok": false,
+            "reason": "archive-inspection-failed",
+            "error": "The property 'entry' cannot be found on this object. Verify that the property exists."
+          }
+        }
+      }
+    },
+    {
+      "name": "nss",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
+    },
+    {
+      "name": "libxml2",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
     },
     {
       "name": "gitleaks",
@@ -2698,14 +2716,14 @@
       }
     },
     {
-      "name": "node@20",
-      "status": "rejected",
-      "reason": "homebrew-formula-deprecated"
-    },
-    {
       "name": "python-tk@3.14",
       "status": "rejected",
       "reason": "no-declared-executables"
+    },
+    {
+      "name": "node@20",
+      "status": "rejected",
+      "reason": "homebrew-formula-deprecated"
     },
     {
       "name": "python-yq",
@@ -2724,6 +2742,11 @@
       "repository": "tailscale/tailscale",
       "homebrewVersion": "1.96.4",
       "latestReleaseTag": "v1.96.4"
+    },
+    {
+      "name": "nginx",
+      "status": "rejected",
+      "reason": "no-github-release-repository-detected"
     },
     {
       "name": "ruff",
@@ -2793,9 +2816,9 @@
       "reason": "no-github-release-repository-detected"
     },
     {
-      "name": "nginx",
+      "name": "postgresql@14",
       "status": "rejected",
-      "reason": "no-github-release-repository-detected"
+      "reason": "homebrew-formula-deprecated"
     },
     {
       "name": "libheif",
@@ -2804,14 +2827,6 @@
       "repository": "strukturag/libheif",
       "homebrewVersion": "1.21.2",
       "latestReleaseTag": "v1.21.2"
-    },
-    {
-      "name": "git-filter-repo",
-      "status": "rejected",
-      "reason": "no-sha256-windows-x64-archive-asset",
-      "repository": "newren/git-filter-repo",
-      "homebrewVersion": "2.47.0",
-      "latestReleaseTag": "v2.47.0"
     },
     {
       "name": "go-task",
@@ -2869,6 +2884,14 @@
           }
         }
       }
+    },
+    {
+      "name": "git-filter-repo",
+      "status": "rejected",
+      "reason": "no-sha256-windows-x64-archive-asset",
+      "repository": "newren/git-filter-repo",
+      "homebrewVersion": "2.47.0",
+      "latestReleaseTag": "v2.47.0"
     }
   ]
 }

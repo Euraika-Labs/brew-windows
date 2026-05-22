@@ -1,7 +1,7 @@
 {
   "schemaVersion": "0",
   "name": "mise",
-  "version": "2026.5.10",
+  "version": "2026.5.11",
   "description": "Polyglot runtime manager (asdf rust clone)",
   "homepage": "https://mise.jdx.dev/",
   "license": "MIT",
@@ -10,24 +10,24 @@
     "source": "homebrew-formula-api",
     "tap": "homebrew/core",
     "formulaPath": "Formula/m/mise.rb",
-    "formulaSha256": "c82094e952bb6c55c3c97f5d31efcc67dd6c523091892ffe8e578aec698b7855",
+    "formulaSha256": "3a539e424ad873041cdaab45f73f4450af282a841f81fcdbaa06c91c2f37dfab",
     "githubRepository": "jdx/mise",
-    "githubReleaseTag": "v2026.5.10"
+    "githubReleaseTag": "v2026.5.11"
   },
   "platforms": {
     "windows": {
       "arches": {
         "x64": {
-          "url": "https://github.com/jdx/mise/releases/download/v2026.5.10/mise-v2026.5.10-windows-x64.zip",
-          "sha256": "0c23d98ec8eafc5eb790188df68d402ad545913673cd40da41d183b6f3c5ae2b",
+          "url": "https://github.com/jdx/mise/releases/download/v2026.5.11/mise-v2026.5.11-windows-x64.zip",
+          "sha256": "49f146ea4659f39c53b8f186f5121a2f2abe45cc3625f58ea8e3e70656e0e227",
           "extract": {
             "type": "zip",
             "sourcePath": "mise/bin"
           }
         },
         "arm64": {
-          "url": "https://github.com/jdx/mise/releases/download/v2026.5.10/mise-v2026.5.10-windows-arm64.zip",
-          "sha256": "b2764f48f3c910f7a10cb540ea84c476e9ba79937bf7fde4e67826d7270b2c3e",
+          "url": "https://github.com/jdx/mise/releases/download/v2026.5.11/mise-v2026.5.11-windows-arm64.zip",
+          "sha256": "5f9093a6740813c462b1dab2d3d184051449fe77c764c205febbe211270fd717",
           "extract": {
             "type": "zip",
             "sourcePath": "mise/bin"
@@ -46,7 +46,7 @@
   "conflicts": [],
   "test": {
     "command": "mise --version",
-    "match": "2026\\.5\\.10"
+    "match": "2026\\.5\\.11"
   },
   "livecheck": {
     "type": "github-release",
