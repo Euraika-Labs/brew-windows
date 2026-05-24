@@ -36,7 +36,24 @@ Homebrew.
 
 ## Status
 
-Design only. No executable code in this directory yet.
+Phases 1, 2, and 3 of the plan are complete and verified against this
+PC. End-to-end:
+
+```powershell
+brew --version                                # Homebrew >=4.3.0
+brew config                                   # full Windows config
+brew doctor                                   # 2 legitimate warnings only
+brew tap euraika-labs/windows file:///<tap>   # 1 formula tapped
+brew install euraika-labs/windows/ripgrep     # built in 3 seconds
+rg --version                                  # ripgrep 15.1.0 (rev af60c2de9d)
+brew list                                     # ripgrep
+```
+
+The runtime carries 23 narrowly scoped patches against upstream
+Homebrew (`v2/launcher/patches/`), all of them guarded by
+`RbConfig host_os` so macOS/Linux behavior is untouched. Phases 4
+(non-author users + release pipeline) and 5 (upstream PR sequence)
+are not yet started.
 
 ## Document Map
 
@@ -155,13 +172,21 @@ are created during Phase 1 implementation.
 
 - [x] v1 archived; restructure complete.
 - [x] v2 architecture documented.
-- [x] Phase 1 - Launcher + Bootstrap proof (verified end-to-end:
-  PortableGit + RubyInstaller + patched upstream Homebrew produce
-  a working `brew --version` from a clean test prefix)
-- [ ] Phase 2 - Doctor parity (in progress)
-- [ ] Phase 3 - First formula install
-- [ ] Phase 4 - Non-author users + CI maturity
-- [ ] Phase 5 - Upstream PR sequence
+- [x] Phase 1 - Launcher + Bootstrap proof (PortableGit +
+  RubyInstaller + patched upstream Homebrew produce a working
+  `brew --version` from a clean test prefix).
+- [x] Phase 2 - Doctor parity (`brew config`, `brew doctor`,
+  `brew search`, `brew info` all run end-to-end through upstream
+  Homebrew; only legitimate Tier 3 warnings remain on a clean
+  prefix).
+- [x] Phase 3 - First formula install (`brew install
+  euraika-labs/windows/ripgrep` completes exit 0; generated
+  `<prefix>\bin\rg.cmd` + `rg.ps1` shim pair invokes the
+  keg-installed `rg.exe`).
+- [ ] Phase 4 - Non-author users + CI maturity (release pipeline,
+  3+ external users)
+- [ ] Phase 5 - Upstream PR sequence (small <500 LOC PRs per the
+  Homebrew maintainer feedback in discussion 6860)
 
 See [PHASE_PLAN.md](docs/PHASE_PLAN.md) for each phase's deliverables
 and exit criteria.

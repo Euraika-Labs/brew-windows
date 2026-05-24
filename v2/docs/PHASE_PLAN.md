@@ -13,6 +13,24 @@ The phase plan is calibrated to MikeMcQuaid's feedback in
 Phase 5 is the upstream-PR phase. Phases 1-4 produce what MikeMcQuaid
 asked for before Phase 5 is appropriate.
 
+## Current Status (2026-05-24)
+
+| Phase | Status |
+| --- | --- |
+| Phase 1 - Launcher + Bootstrap Proof | **Complete** |
+| Phase 2 - Doctor Parity + Diagnostics | **Complete** |
+| Phase 3 - First Formula Install | **Complete** |
+| Phase 4 - Non-Author Users + CI Maturity | Not started |
+| Phase 5 - Upstream PR Sequence | Not started |
+
+Phase 3's exit criterion is met against the test prefix on this PC:
+`brew install euraika-labs/windows/ripgrep` produces a working
+`rg --version` from a generated `.cmd` + `.ps1` shim pair, and
+`brew uninstall` reverses cleanly. Phase 3 required nine new patches
+beyond the originally planned `windows-link-strategy.patch`; see
+[`launcher/patches/`](../launcher/patches/) for the inventory and
+each patch's own header for the rationale.
+
 ## Phase 1: Launcher + Bootstrap Proof
 
 **Goal:** From a clean Windows 11 box, `irm install.ps1 | iex` produces

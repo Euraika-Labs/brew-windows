@@ -9,10 +9,56 @@ Linux.
 
 ## Status
 
-Brew Windows v2 is currently in Phase 1 (launcher + bootstrap proof). The
-launcher installs cleanly but actual formula installs are not yet available -
-that lands in Phase 3. See [`PHASE_PLAN.md`](PHASE_PLAN.md) for the current
-state and what each phase delivers.
+Phases 1, 2, and 3 of [`PHASE_PLAN.md`](PHASE_PLAN.md) are complete.
+The end-to-end flow now works on a clean Windows 11 host:
+
+```powershell
+brew --version                                # Homebrew >=4.3.0
+brew config                                   # full Windows config
+brew doctor                                   # 2 legitimate warnings only
+brew tap euraika-labs/windows file:///<path-to-tap>
+brew install euraika-labs/windows/ripgrep     # built in 3 seconds
+rg --version                                  # ripgrep 15.1.0
+brew list                                     # ripgrep
+brew uninstall ripgrep
+```
+
+Phases 4 (non-author users + release pipeline) and 5 (upstream PR
+sequence) are not yet started. The `irm install.ps1 | iex` release
+flow described below is the target shape; the launcher payload and
+tap currently ship from this monorepo.
+
+## Installing a formula
+
+Brew Windows ships with one Windows-shaped tap (`v2/tap/`) containing
+a single binary formula:
+
+```powershell
+brew tap euraika-labs/windows file:///C:/path/to/brew-windows/v2/tap
+brew install euraika-labs/windows/ripgrep
+```
+
+What that does end-to-end:
+
+1. Resolves the `Ripgrep` formula at
+   `euraika-labs/windows/Formula/ripgrep.rb`.
+2. Downloads the prebuilt Windows zip from BurntSushi's GitHub release,
+   verifies its SHA256, extracts under the staging dir.
+3. Runs the formula's `install` block (`bin.install "rg.exe"`) which
+   copies into the keg at `<prefix>\Cellar\ripgrep\15.1.0\bin\rg.exe`.
+4. Writes a `.cmd` + `.ps1` shim pair into `<prefix>\bin\` (the same
+   directory `install.ps1` added to your User PATH) that forwards
+   every argument and the exit code to the keg-installed binary.
+5. Updates `brew list` so the formula appears under
+   `brew list --formula`.
+
+`brew uninstall <formula>` cleanly reverses the install: the keg is
+removed from `Cellar/`, the shim pair is removed from `<prefix>\bin\`,
+and the tap entry remains in place for future installs.
+
+Formulae built by the launcher are also available as a manual exec:
+`<prefix>\runtime\homebrew\Cellar\<formula>\<version>\bin\<exe>` is the
+canonical path. The shim is the user-facing one.
 
 ## Install
 
