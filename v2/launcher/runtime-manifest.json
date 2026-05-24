@@ -1,34 +1,34 @@
 {
-  "schemaVersion": "0",
-  "launcherVersion": "0.1.0-dev",
-  "generatedAt": "2026-05-24T15:30:00Z",
-  "placeholdersFilled": false,
-  "components": {
-    "mingit": {
-      "version": "2.49.0",
-      "url": "https://github.com/git-for-windows/git/releases/download/v2.49.0.windows.1/MinGit-2.49.0-64-bit.zip",
-      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
-      "extract": "zip",
-      "stripTopLevel": false
-    },
-    "ruby": {
-      "version": "3.3.6-1",
-      "url": "https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-3.3.6-1/rubyinstaller-3.3.6-1-x64.7z",
-      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
-      "extract": "7z",
-      "stripTopLevel": true
-    },
-    "homebrew": {
-      "ref": "0000000000000000000000000000000000000000",
-      "url": "https://github.com/Homebrew/brew.git",
-      "expectedTreeId": "0000000000000000000000000000000000000000"
-    }
-  },
-  "patches": [
-    {
-      "path": "patches/windows-os-detection.patch",
-      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
-      "appliesTo": "homebrew"
-    }
-  ]
+    "schemaVersion":  "0",
+    "launcherVersion":  "0.1.0-dev",
+    "generatedAt":  "2026-05-24T14:34:40Z",
+    "placeholdersFilled":  true,
+    "components":  {
+                       "mingit":  {
+                                      "version":  "2.49.0",
+                                      "url":  "https://github.com/git-for-windows/git/releases/download/v2.49.0.windows.1/PortableGit-2.49.0-64-bit.7z.exe",
+                                      "sha256":  "bc980a64e875304ea5aa88386fda37e8a0089d0f2023616b9995b1ca75b471dd",
+                                      "extract":  "7z-sfx",
+                                      "stripTopLevel":  false
+                                  },
+                       "ruby":  {
+                                    "version":  "3.3.6-1",
+                                    "url":  "https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-3.3.6-1/rubyinstaller-3.3.6-1-x64.7z",
+                                    "sha256":  "c0409afee7429b1c2da3a0ce4ecf1ac65673e47901cc4ae455f0d08e1975d179",
+                                    "extract":  "7z",
+                                    "stripTopLevel":  true
+                                },
+                       "homebrew":  {
+                                        "ref":  "d6527df1f4882bcfc45d738cd5d45b2d59787c85",
+                                        "url":  "https://github.com/Homebrew/brew.git",
+                                        "expectedTreeId":  "8343ebbb3b2f07ba271f78429b90aacfc7e4efdf"
+                                    }
+                   },
+    "patches":  [
+                    {
+                        "path":  "patches/windows-os-detection.patch",
+                        "sha256":  "b4aeaa0b62ab8fa1b524b76eeec8ed6d2f0907ee6b5ee6685ad64f02483fc5b6",
+                        "appliesTo":  "homebrew"
+                    }
+                ]
 }

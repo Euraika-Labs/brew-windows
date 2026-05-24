@@ -60,6 +60,7 @@
               "enum": [
                 "zip",
                 "7z",
+                "7z-sfx",
                 "tar.gz",
                 "tgz"
               ]

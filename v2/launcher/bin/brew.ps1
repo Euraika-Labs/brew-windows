@@ -561,6 +561,7 @@ function Install-MinGitComponent {
 
     $url = Get-ComponentProperty -Container $Spec -Name "url"
     $expectedSha = Get-ComponentProperty -Container $Spec -Name "sha256"
+    $extractType = [string](Get-ComponentProperty -Container $Spec -Name "extract")
     $stripTopLevel = [bool](Get-ComponentProperty -Container $Spec -Name "stripTopLevel")
 
     if ([string]::IsNullOrWhiteSpace($url) -or [string]::IsNullOrWhiteSpace($expectedSha)) {
@@ -573,9 +574,25 @@ function Install-MinGitComponent {
     $extractDir = Join-Path $Stage "mingit-extract"
     New-BrewDirectory -Path $extractDir
 
-    Write-RuntimeLogEntry -LogPath $LogPath -Component "mingit" -State "EXTRACT_START" -Details ("archive={0}" -f $archive)
+    Write-RuntimeLogEntry -LogPath $LogPath -Component "mingit" -State "EXTRACT_START" -Details ("archive={0} type={1}" -f $archive, $extractType)
     try {
-        Expand-Archive -LiteralPath $archive -DestinationPath $extractDir -Force
+        switch ($extractType) {
+            "zip" {
+                Expand-Archive -LiteralPath $archive -DestinationPath $extractDir -Force
+            }
+            "7z-sfx" {
+                # PortableGit and similar self-extracting 7z archives. The .exe
+                # honors -o<dir> and -y to extract non-interactively. We have
+                # already SHA256-verified the archive before this point.
+                & $archive ("-o" + $extractDir) "-y" | Out-Null
+                if ($LASTEXITCODE -ne 0) {
+                    throw "Self-extracting 7z archive exited with code $LASTEXITCODE."
+                }
+            }
+            default {
+                throw "Unsupported extract type '$extractType' for MinGit component. Expected 'zip' or '7z-sfx'."
+            }
+        }
     } catch {
         throw "Failed to extract MinGit archive ${archive}: $($_.Exception.Message)"
     }

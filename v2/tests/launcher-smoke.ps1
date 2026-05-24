@@ -16,7 +16,6 @@ $RepoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot "..\.."))
 $LauncherRoot = Join-Path $RepoRoot "v2\launcher"
 $BrewScriptSource = Join-Path $LauncherRoot "bin\brew.ps1"
 $BrewCmdSource = Join-Path $LauncherRoot "bin\brew.cmd"
-$ManifestSource = Join-Path $LauncherRoot "runtime-manifest.json"
 
 if ($PSVersionTable.PSEdition -eq "Core") {
     $PowerShellExe = Join-Path $PSHOME "pwsh.exe"
@@ -70,9 +69,49 @@ function New-TestPrefix {
     return $prefix
 }
 
-function Copy-ManifestInto {
+function New-PlaceholderManifest {
     param([string]$Prefix)
-    Copy-Item -LiteralPath $ManifestSource -Destination (Join-Path $Prefix "runtime-manifest.json") -Force
+
+    # Tests construct their own placeholder manifest rather than copying the
+    # shipped runtime-manifest.json, so the test suite remains decoupled from
+    # whatever pins the shipped manifest currently carries. The shipped
+    # manifest is pinned with real SHA256s once pin-runtime.ps1 has run.
+    $manifest = [ordered]@{
+        schemaVersion      = "0"
+        launcherVersion    = "0.1.0-dev"
+        generatedAt        = "2026-05-24T15:30:00Z"
+        placeholdersFilled = $false
+        components = [ordered]@{
+            mingit = [ordered]@{
+                version       = "2.49.0"
+                url           = "https://example.invalid/mingit.zip"
+                sha256        = ("0" * 64)
+                extract       = "zip"
+                stripTopLevel = $false
+            }
+            ruby = [ordered]@{
+                version       = "3.3.6-1"
+                url           = "https://example.invalid/ruby.7z"
+                sha256        = ("0" * 64)
+                extract       = "7z"
+                stripTopLevel = $true
+            }
+            homebrew = [ordered]@{
+                ref            = ("0" * 40)
+                url            = "https://example.invalid/brew.git"
+                expectedTreeId = ("0" * 40)
+            }
+        }
+        patches = @(
+            [ordered]@{
+                path      = "patches/windows-os-detection.patch"
+                sha256    = ("0" * 64)
+                appliesTo = "homebrew"
+            }
+        )
+    }
+    $manifest | ConvertTo-Json -Depth 10 |
+        Set-Content -LiteralPath (Join-Path $Prefix "runtime-manifest.json") -Encoding UTF8
 }
 
 function New-FakeRuntime {
@@ -83,15 +122,13 @@ function New-FakeRuntime {
     # placeholder hashes already in the manifest - it does NOT validate the
     # contents of the runtime tree. This is exactly what we need to exercise
     # the post-bootstrap dispatch paths without a real 130 MB download.
+    #
+    # Pair this with New-PlaceholderManifest so the placeholder hashes in
+    # the manifest match the placeholder hashes in pins.json.
     foreach ($component in @("mingit", "ruby", "homebrew")) {
         New-Item -ItemType Directory -Force -Path (Join-Path $Prefix "runtime\$component") | Out-Null
     }
 
-    # The shipped runtime-manifest.json carries placeholdersFilled=false plus
-    # all-zero hashes. We write a pins.json that matches those placeholder
-    # values so Test-RuntimeReady returns $true. Note: Install-Runtime would
-    # refuse this manifest (placeholdersFilled is false), but the launcher's
-    # main dispatch only calls Install-Runtime after Test-RuntimeReady fails.
     $pins = [ordered]@{
         schemaVersion = "0"
         installedAt = "2026-05-24T00:00:00Z"
@@ -198,7 +235,7 @@ try {
 
     Write-Host "==> Test 3: Runtime not bootstrapped triggers placeholders abort"
     $prefix3 = New-TestPrefix -Root $tempRoot -Name "t3-manifest-no-runtime"
-    Copy-ManifestInto -Prefix $prefix3
+    New-PlaceholderManifest -Prefix $prefix3
 
     $r = Invoke-LauncherIsolated -Prefix $prefix3 -Arguments @("--version")
     Assert-True ($r.ExitCode -ne 0) "Test 3: brew --version should fail when runtime is not pinned. Got exit 0."
@@ -210,7 +247,7 @@ try {
 
     Write-Host "==> Test 4: brew update intercept message points to brew self-update"
     $prefix4 = New-TestPrefix -Root $tempRoot -Name "t4-update-intercept"
-    Copy-ManifestInto -Prefix $prefix4
+    New-PlaceholderManifest -Prefix $prefix4
     New-FakeRuntime -Prefix $prefix4
 
     $r = Invoke-LauncherIsolated -Prefix $prefix4 -Arguments @("update")
@@ -223,7 +260,7 @@ try {
 
     Write-Host "==> Test 5: brew config exec fails cleanly when MinGit bash is absent"
     $prefix5 = New-TestPrefix -Root $tempRoot -Name "t5-config-noexec"
-    Copy-ManifestInto -Prefix $prefix5
+    New-PlaceholderManifest -Prefix $prefix5
     New-FakeRuntime -Prefix $prefix5
     # We deliberately do NOT create runtime/mingit/usr/bin/bash.exe; the
     # launcher should fall through Test-RuntimeReady (dirs + matching pins.json)
@@ -240,7 +277,7 @@ try {
 
     Write-Host "==> Test 6: Prefix with spaces round-trips through launcher path handling"
     $prefix6 = New-TestPrefix -Root $tempRoot -Name "Homebrew V2 Test Prefix"
-    Copy-ManifestInto -Prefix $prefix6
+    New-PlaceholderManifest -Prefix $prefix6
     Assert-True ($prefix6 -match " ") "Test 6 setup: prefix must contain a space. Got: $prefix6"
 
     $r = Invoke-LauncherIsolated -Prefix $prefix6 -Arguments @("--version")
