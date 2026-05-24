@@ -1,0 +1,49 @@
+# Brew Windows v2 patch
+#
+# Title:      Add OS.windows? predicate and Windows OSTYPE detection
+# Targets:    Library/Homebrew/brew.sh (lines ~18-30), Library/Homebrew/os.rb
+# Upstream:   PR candidate for Homebrew/brew, drafted in Phase 5
+# Phase:      1 (bootstrap proof) and Phase 5 (upstream PR)
+# Rationale:  Native Windows host detection so brew.sh and Ruby code
+#             can branch on Windows explicitly. Inert on macOS/Linux.
+# Preserves:  All existing macOS/Linux OS detection behavior.
+diff --git a/Library/Homebrew/brew.sh b/Library/Homebrew/brew.sh
+--- a/Library/Homebrew/brew.sh
++++ b/Library/Homebrew/brew.sh
+@@ -22,6 +22,10 @@ case "${OSTYPE}" in
+     HOMEBREW_SYSTEM="Linux"
+     HOMEBREW_LINUX="1"
+     ;;
++  windows*|msys*|cygwin*|mingw*)
++    HOMEBREW_SYSTEM="Windows"
++    HOMEBREW_WINDOWS="1"
++    ;;
+   *)
+     HOMEBREW_SYSTEM="$(uname -s)"
+     ;;
+diff --git a/Library/Homebrew/os.rb b/Library/Homebrew/os.rb
+--- a/Library/Homebrew/os.rb
++++ b/Library/Homebrew/os.rb
+@@ -23,6 +23,16 @@ module OS
+     RbConfig::CONFIG["host_os"].include? "linux"
+   end
+
++  # Check whether the operating system is Windows.
++  #
++  # @api public
++  sig { returns(T::Boolean) }
++  def self.windows?
++    return false if ENV["HOMEBREW_TEST_GENERIC_OS"]
++
++    RbConfig::CONFIG["host_os"].match?(/mswin|mingw|cygwin/)
++  end
++
+   # Get the kernel version.
+   #
+   # @api public
+diff --git a/Library/Homebrew/extend/os/windows/.keep b/Library/Homebrew/extend/os/windows/.keep
+new file mode 100644
+--- /dev/null
++++ b/Library/Homebrew/extend/os/windows/.keep
+@@ -0,0 +1 @@
++

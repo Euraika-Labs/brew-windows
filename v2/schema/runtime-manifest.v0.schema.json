@@ -1,0 +1,164 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Euraika-Labs/brew-windows/v2/schema/runtime-manifest.v0.schema.json",
+  "title": "Brew Windows v2 Runtime Manifest v0",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "launcherVersion",
+    "generatedAt",
+    "placeholdersFilled",
+    "components",
+    "patches"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "0"
+    },
+    "launcherVersion": {
+      "type": "string",
+      "minLength": 1
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "placeholdersFilled": {
+      "type": "boolean"
+    },
+    "components": {
+      "type": "object",
+      "required": [
+        "mingit",
+        "ruby",
+        "homebrew"
+      ],
+      "properties": {
+        "mingit": {
+          "type": "object",
+          "required": [
+            "version",
+            "url",
+            "sha256",
+            "extract",
+            "stripTopLevel"
+          ],
+          "properties": {
+            "version": {
+              "type": "string",
+              "minLength": 1
+            },
+            "url": {
+              "type": "string",
+              "format": "uri"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-fA-F]{64}$"
+            },
+            "extract": {
+              "enum": [
+                "zip",
+                "7z",
+                "tar.gz",
+                "tgz"
+              ]
+            },
+            "stripTopLevel": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        "ruby": {
+          "type": "object",
+          "required": [
+            "version",
+            "url",
+            "sha256",
+            "extract",
+            "stripTopLevel"
+          ],
+          "properties": {
+            "version": {
+              "type": "string",
+              "minLength": 1
+            },
+            "url": {
+              "type": "string",
+              "format": "uri"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-fA-F]{64}$"
+            },
+            "extract": {
+              "enum": [
+                "zip",
+                "7z",
+                "tar.gz",
+                "tgz"
+              ]
+            },
+            "stripTopLevel": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        "homebrew": {
+          "type": "object",
+          "required": [
+            "ref",
+            "url",
+            "expectedTreeSha256"
+          ],
+          "properties": {
+            "ref": {
+              "type": "string",
+              "pattern": "^[0-9a-fA-F]{40}$"
+            },
+            "url": {
+              "type": "string",
+              "format": "uri"
+            },
+            "expectedTreeSha256": {
+              "type": "string",
+              "pattern": "^[0-9a-fA-F]{64}$"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "patches": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "path",
+          "sha256",
+          "appliesTo"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{64}$"
+          },
+          "appliesTo": {
+            "enum": [
+              "homebrew"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
