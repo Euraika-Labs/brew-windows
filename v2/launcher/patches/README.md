@@ -57,13 +57,51 @@ before mutating the working tree.
 
 ## Current Patch Set
 
-| File                              | Targets                                                | Purpose                                                |
-| --------------------------------- | ------------------------------------------------------ | ------------------------------------------------------ |
-| `windows-os-detection.patch`      | `Library/Homebrew/brew.sh`, `Library/Homebrew/os.rb`, `Library/Homebrew/extend/os/windows/.keep` | Adds `OS.windows?`, OSTYPE branch, extension dir.      |
+Twenty patches are pinned in `runtime-manifest.json` and applied in
+manifest order on every bootstrap. Each patch's own header records
+the targets, phase, and rationale; the table below is the index.
 
-The Windows link strategy patch (`windows-link-strategy.patch`) is
-documented in [LINK_STRATEGY.md](../../docs/LINK_STRATEGY.md) and lands
-in Wave 1.D; it is not yet present in this directory.
+### Phase 1 (OS detection)
+
+| File | Purpose |
+| --- | --- |
+| `windows-os-detection.patch` | Adds `OS.windows?`, OSTYPE branch in `brew.sh`, and the `extend/os/windows/` directory. |
+
+### Phase 2 (boot + doctor parity)
+
+| File | Purpose |
+| --- | --- |
+| `windows-path-separator.patch` | `split(":")` -> `split(File::PATH_SEPARATOR)` in `Library/Homebrew/utils/gems.rb`. |
+| `windows-bundler-lookup.patch` | `find_in_path` extension probe (.bat, .cmd, .exe, .com) for the bundler shim. |
+| `windows-system-command.patch` | `SystemCommand#exec3` via `Process.spawn` instead of fork+exec; strips POSIX-only spawn options; routes bash shebang shims through vendored bash.exe. |
+| `windows-tty.patch` | Rescue `ENOENT`/`EINVAL` around `/bin/stty` + `/usr/bin/tput` shellouts in `utils/tty.rb`. |
+| `windows-python-rescue.patch` | `Language::Python.major_minor_version` rescues `ENOENT` when no python is found. |
+| `windows-sandbox-stub.patch` | Skips `require "pty"` and `require "utils/fork"` from `sandbox.rb` on Windows. |
+| `windows-utils-popen.patch` | `Utils.popen` uses array-form `IO.popen` (Process.spawn under the hood) instead of the fork-myself idiom; resolves bare `git`/`curl`/`ruby` to `HOMEBREW_GIT_PATH`/`HOMEBREW_CURL_PATH`/`HOMEBREW_RUBY_PATH`. |
+| `windows-homebrew-system.patch` | `Homebrew._system` via `Process.spawn` instead of fork+exec; same bare-command and shebang routing. |
+| `windows-diagnostics.patch` | Adds Windows-aware doctor checks: `check_long_path_support`, `check_execution_policy`, `check_path_brew_windows` (reads HKCU\\Environment\\Path via reg.exe), `check_path_shadowed_shims`, `check_runtime_integrity`, `check_curl_present`. |
+| `windows-doctor-overrides.patch` | No-op overrides on existing checks that assume POSIX: `check_git_newline_settings`, `check_git_status`, `check_for_installed_developer_tools`, `check_homebrew_prefix`, `check_user_path_{1,2,3}`. |
+
+### Phase 3 (formula install)
+
+| File | Purpose |
+| --- | --- |
+| `windows-which-extensions.patch` | `Kernel#which` probes `.exe`/`.cmd`/`.bat`/`.com` for bare command lookups so `which("unzip")` finds MinGit's `unzip.exe`. |
+| `windows-lockfile-unlink-order.patch` | `LockFile#unlock` closes the file handle before `Pathname#unlink` on Windows (no `FILE_SHARE_DELETE` in Ruby's `File.open`). |
+| `windows-dev-tools.patch` | `DevelopmentTools.installed?` returns true on Windows so `UnbottledError` doesn't fire for binary-only formulae. |
+| `windows-fork-stub.patch` | `Utils.safe_fork` runs the block in-process under a `SafeForkContext` that intercepts `exec(*args)` and converts to `Process.spawn` + `Process.wait`. |
+| `windows-build-error-pipe.patch` | `build.rb` skips the UNIXSocket setup on Windows; errors flow back through stderr and exit status. |
+| `windows-formulary-drive-path.patch` | `FromURILoader.try_new` rejects `[A-Za-z]:[\\/]` paths early so Windows-absolute formula paths fall through to `FromPathLoader`. |
+| `windows-stdenv-compiler.patch` | `Stdenv#setup_build_environment` and `SharedEnvExtension#compiler` return early on Windows when no clang/gcc is available. |
+| `windows-atomic-write.patch` | `File.atomic_write` writes via a Tempfile but copies bytes directly to the destination instead of `File.rename` (cross-symlink-Cellar rename fails with ENOENT on Windows). |
+| `windows-link-strategy.patch` | `Keg#make_relative_symlink` reroutes `<prefix>/bin` files to `HOMEBREW_WINDOWS_PREFIX/bin` and emits a `.cmd` + `.ps1` shim pair pointing at the keg-installed executable; other files are NTFS-hardlinked (fall back to copy). |
+
+### Archived (no longer in manifest)
+
+`windows-gem-api-version.patch` and `windows-ruby-version.patch` are
+kept in this directory for historical reference. They worked around
+the Ruby 3.3 / 4.0 vendored-gems mismatch that surfaced before we
+upgraded to RubyInstaller 4.0.5-1; they are unused now.
 
 ## Adding A New Patch
 
