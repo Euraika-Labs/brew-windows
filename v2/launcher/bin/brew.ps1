@@ -282,6 +282,15 @@ function Set-HomebrewEnvironment {
     $env:HOMEBREW_NO_ANALYTICS    = "1"
     $env:HOMEBREW_NO_AUTO_UPDATE  = "1"
 
+    # Point Homebrew at our vendored toolchain rather than letting it search
+    # PATH and version-check whatever it finds. Required for any command path
+    # that triggers Homebrew's "validate the system toolchain" branch (e.g.
+    # `brew doctor`, `brew install`). `brew --version` has a faster path that
+    # works without these but everything else needs them set.
+    $env:HOMEBREW_GIT_PATH        = Join-Path $Prefix "runtime\mingit\cmd\git.exe"
+    $env:HOMEBREW_RUBY_PATH       = Join-Path $Prefix "runtime\ruby\bin\ruby.exe"
+    $env:HOMEBREW_CURL_PATH       = Join-Path $env:WINDIR "System32\curl.exe"
+
     # Force UTF-8 for both PowerShell host streams and the bash subprocess.
     # See HOMEBREW_INTEGRATION.md "Locale, Encoding, And Code Pages".
     [Console]::OutputEncoding = [System.Text.Encoding]::UTF8

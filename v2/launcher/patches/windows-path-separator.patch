@@ -1,0 +1,42 @@
+# Brew Windows v2 patch
+#
+# Title:      Use File::PATH_SEPARATOR in find_in_path
+# Targets:    Library/Homebrew/utils/gems.rb
+# Upstream:   Phase 5 PR candidate (useful on all platforms - this is a
+#             general cross-platform improvement, not Windows-specific).
+# Phase:      2 (doctor parity) and Phase 5 (upstream PR)
+# Rationale:  ENV.fetch("PATH").split(":") hard-codes POSIX path
+#             separator. On Windows PATH uses ";" and drive letters
+#             contain ":" so the split is doubly broken. The Ruby
+#             stdlib constant File::PATH_SEPARATOR is ":" on POSIX
+#             and ";" on Windows. This is the canonical Ruby idiom
+#             and is correct on every platform Homebrew runs on.
+# Preserves:  macOS and Linux behavior unchanged - File::PATH_SEPARATOR
+#             is ":" there. find_in_path returns the same value as
+#             before on those platforms.
+diff --git a/Library/Homebrew/utils/gems.rb b/Library/Homebrew/utils/gems.rb
+index 8e187ea..bd181b8 100644
+--- a/Library/Homebrew/utils/gems.rb
++++ b/Library/Homebrew/utils/gems.rb
+@@ -100,10 +100,10 @@ module Homebrew
+     return unless setup_path
+ 
+     # Add necessary Ruby and Gem binary directories to `PATH`.
+-    paths = ENV.fetch("PATH").split(":")
++    paths = ENV.fetch("PATH").split(File::PATH_SEPARATOR)
+     paths.unshift(ruby_bindir) unless paths.include?(ruby_bindir)
+     paths.unshift(Gem.bindir) unless paths.include?(Gem.bindir)
+-    ENV["PATH"] = paths.compact.join(":")
++    ENV["PATH"] = paths.compact.join(File::PATH_SEPARATOR)
+ 
+     # Set envs so the above binaries can be invoked.
+     # We don't do this unless requested as some formulae may invoke system Ruby instead of ours.
+@@ -140,7 +140,7 @@ module Homebrew
+   end
+ 
+   def self.find_in_path(executable)
+-    ENV.fetch("PATH").split(":").find do |path|
++    ENV.fetch("PATH").split(File::PATH_SEPARATOR).find do |path|
+       File.executable?(File.join(path, executable))
+     end
+   end

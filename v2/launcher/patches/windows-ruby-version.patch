@@ -1,0 +1,38 @@
+# Brew Windows v2 patch
+#
+# Title:      Accept Ruby 3.3+ on Windows
+# Targets:    Library/Homebrew/utils/ruby.sh
+# Upstream:   Phase 5 PR candidate (separate PR; depends on
+#             windows-os-detection.patch for HOMEBREW_WINDOWS)
+# Phase:      2 (doctor parity) and Phase 5 (upstream PR)
+# Rationale:  Homebrew requires "Ruby 4.0" - this is Homebrew's
+#             internal "Portable Ruby 4.0" version label. Homebrew
+#             builds and ships its own Portable Ruby for macOS and
+#             Linux but not Windows, so on Windows we use a system
+#             Ruby (RubyInstaller 3.3.6 in the current pin). Accept
+#             that lower bound on Windows so brew doctor and
+#             subsequent commands can boot.
+# Preserves:  macOS and Linux still require Ruby 4.0.
+# Risk:       If Homebrew's Ruby code uses 4.0-only language features
+#             somewhere, those code paths will fail on Windows.
+#             Phase 2 (doctor) and Phase 3 (first formula install)
+#             surface any such issues, which we then address with
+#             smaller targeted patches.
+diff --git a/Library/Homebrew/utils/ruby.sh b/Library/Homebrew/utils/ruby.sh
+index 144de28..2506945 100644
+--- a/Library/Homebrew/utils/ruby.sh
++++ b/Library/Homebrew/utils/ruby.sh
+@@ -3,7 +3,12 @@
+ # Also make sure that vendored gems have been committed for the new Ruby version by updating .gitignore.
+ # HOMEBREW_LIBRARY set by bin/brew
+ # shellcheck disable=SC2154
+-export HOMEBREW_REQUIRED_RUBY_VERSION="4.0"
++if [[ -n "${HOMEBREW_WINDOWS}" ]]
++then
++  export HOMEBREW_REQUIRED_RUBY_VERSION="3.3"
++else
++  export HOMEBREW_REQUIRED_RUBY_VERSION="4.0"
++fi
+ HOMEBREW_PORTABLE_RUBY_VERSION="$(cat "${HOMEBREW_LIBRARY}/Homebrew/vendor/portable-ruby-version")"
+ export HOMEBREW_BUNDLER_VERSION="4.0.10"
+ 

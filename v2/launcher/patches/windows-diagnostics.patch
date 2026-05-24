@@ -1,0 +1,218 @@
+# Brew Windows v2 patch
+#
+# Title:      Add Windows-specific brew doctor checks
+# Targets:    Library/Homebrew/extend/os/diagnostic.rb (loader),
+#             Library/Homebrew/extend/os/windows/diagnostic.rb (new)
+# Upstream:   Phase 5 PR candidate (depends on OS.windows? from windows-os-detection)
+# Phase:      2 (doctor parity) and Phase 5 (upstream PR)
+# Rationale:  brew doctor needs Windows-aware checks for path
+#             configuration, runtime integrity, long-path policy,
+#             execution policy, and the system curl that Homebrew
+#             relies on at runtime.
+# Preserves:  All macOS/Linux diagnostic behavior unchanged.
+diff --git a/Library/Homebrew/extend/os/diagnostic.rb b/Library/Homebrew/extend/os/diagnostic.rb
+--- a/Library/Homebrew/extend/os/diagnostic.rb
++++ b/Library/Homebrew/extend/os/diagnostic.rb
+@@ -5,4 +5,6 @@ if OS.mac?
+   require "extend/os/mac/diagnostic"
+ elsif OS.linux?
+   require "extend/os/linux/diagnostic"
++elsif OS.windows?
++  require "extend/os/windows/diagnostic"
+ end
+diff --git a/Library/Homebrew/extend/os/windows/diagnostic.rb b/Library/Homebrew/extend/os/windows/diagnostic.rb
+new file mode 100644
+--- /dev/null
++++ b/Library/Homebrew/extend/os/windows/diagnostic.rb
+@@ -0,0 +1,191 @@
++# typed: true
++# frozen_string_literal: true
++
++require "json"
++require "open3"
++
++module OS
++  module Windows
++    module Diagnostic
++      # Windows-specific diagnostic checks for Homebrew.
++      module Checks
++        extend T::Helpers
++
++        requires_ancestor { Homebrew::Diagnostic::Checks }
++
++        sig { returns(T::Array[String]) }
++        def supported_configuration_checks
++          super + %w[
++            check_long_path_support
++            check_execution_policy
++            check_path_brew_windows
++            check_path_shadowed_shims
++            check_runtime_integrity
++            check_curl_present
++          ]
++        end
++
++        sig { returns(T.nilable(String)) }
++        def check_long_path_support
++          output, status = Open3.capture2(
++            "reg.exe", "query",
++            "HKLM\\SYSTEM\\CurrentControlSet\\Control\\FileSystem",
++            "/v", "LongPathsEnabled"
++          )
++          unless status.success?
++            return <<~EOS
++              Could not query the Windows long path policy via reg.exe.
++              Homebrew needs LongPathsEnabled=1 to extract archives whose
++              internal paths exceed 260 characters.
++            EOS
++          end
++          return nil if output.match?(/0x1\b/)
++
++          <<~EOS
++            Windows long path support is not enabled. Paths longer than 260
++            characters may fail to extract or link. To enable, run as
++            Administrator:
++              reg add HKLM\\SYSTEM\\CurrentControlSet\\Control\\FileSystem /v LongPathsEnabled /t REG_DWORD /d 1 /f
++            or set the Group Policy at:
++              Computer Configuration > Administrative Templates > System > Filesystem > Enable Win32 long paths
++          EOS
++        rescue StandardError
++          nil
++        end
++
++        sig { returns(T.nilable(String)) }
++        def check_execution_policy
++          output, status = Open3.capture2(
++            "powershell.exe", "-NoProfile", "-Command",
++            "Get-ExecutionPolicy -Scope CurrentUser"
++          )
++          return nil unless status.success?
++
++          policy = output.strip
++          return nil unless policy == "Restricted"
++
++          <<~EOS
++            The PowerShell CurrentUser execution policy is Restricted.
++            Brew Windows shims are .ps1 scripts; a Restricted policy will
++            prevent them from running. Acceptable values are RemoteSigned,
++            AllSigned, Unrestricted, or Bypass. To set RemoteSigned for
++            the current user, run:
++              powershell.exe -NoProfile -Command "Set-ExecutionPolicy -Scope CurrentUser RemoteSigned"
++          EOS
++        rescue StandardError
++          nil
++        end
++
++        sig { returns(T.nilable(String)) }
++        def check_path_brew_windows
++          prefix = ENV.fetch("HOMEBREW_PREFIX", nil)
++          return nil if prefix.nil? || prefix.empty?
++
++          path_dirs = ENV.fetch("PATH", "").split(File::PATH_SEPARATOR)
++          found_dir = path_dirs.find { |dir| !dir.empty? && File.exist?(File.join(dir, "brew.cmd")) }
++
++          if found_dir.nil?
++            return <<~EOS
++              No brew.cmd was found on PATH. The Brew Windows launcher
++              installs <prefix>\\bin\\brew.cmd and adds <prefix>\\bin to
++              the User PATH. Open a new PowerShell window or re-run the
++              installer.
++            EOS
++          end
++
++          expected = File.expand_path(File.join(prefix, "bin"))
++          actual = File.expand_path(found_dir)
++          return nil if actual.casecmp(expected).zero?
++
++          <<~EOS
++            Another brew.cmd is shadowing the Brew Windows launcher on PATH.
++            Expected: #{expected}\\brew.cmd
++            Found:    #{actual}\\brew.cmd
++            Reorder PATH so #{expected} appears before #{actual}.
++          EOS
++        end
++
++        sig { returns(T.nilable(String)) }
++        def check_path_shadowed_shims
++          prefix = ENV.fetch("HOMEBREW_PREFIX", nil)
++          return nil if prefix.nil? || prefix.empty?
++
++          shim_dir = File.expand_path(File.join(prefix, "bin"))
++          return nil unless File.directory?(shim_dir)
++
++          shim_names = Dir.children(shim_dir)
++                          .select { |f| f.end_with?(".cmd") || f.end_with?(".ps1") }
++                          .map { |f| File.basename(f, File.extname(f)) }
++                          .uniq
++          return nil if shim_names.empty?
++
++          path_dirs = ENV.fetch("PATH", "").split(File::PATH_SEPARATOR)
++          conflicts = []
++          shim_names.each do |name|
++            %w[.cmd .ps1 .exe].each do |ext|
++              found = path_dirs.find do |dir|
++                !dir.empty? && File.exist?(File.join(dir, "#{name}#{ext}"))
++              end
++              next if found.nil?
++              next if File.expand_path(found).casecmp(shim_dir).zero?
++
++              conflicts << "  #{name}#{ext} found in #{File.expand_path(found)} (expected #{shim_dir})"
++              break
++            end
++          end
++          return nil if conflicts.empty?
++
++          "The following Brew Windows shims are shadowed on PATH:\n#{conflicts.join("\n")}\n"
++        end
++
++        sig { returns(T.nilable(String)) }
++        def check_runtime_integrity
++          prefix = ENV.fetch("HOMEBREW_PREFIX", nil)
++          return nil if prefix.nil? || prefix.empty?
++
++          pins_path = File.join(prefix, "runtime", "pins.json")
++          manifest_path = File.join(prefix, "runtime-manifest.json")
++
++          return "Runtime pins file is missing: #{pins_path}. Re-run install.ps1 to bootstrap the runtime." unless File.exist?(pins_path)
++          return "Runtime manifest is missing: #{manifest_path}. The launcher payload is incomplete." unless File.exist?(manifest_path)
++
++          pins = JSON.parse(File.read(pins_path))
++          manifest = JSON.parse(File.read(manifest_path))
++          mismatches = []
++          (manifest["components"] || {}).each do |name, entry|
++            recorded = (pins["components"] || {})[name]
++            next if recorded.nil?
++
++            %w[sha256 treeId commit].each do |key|
++              expected = entry[key]
++              actual = recorded[key]
++              next if expected.nil? || actual.nil?
++              next if expected.to_s.casecmp(actual.to_s).zero?
++
++              mismatches << "  #{name}.#{key}: pinned=#{actual} manifest=#{expected}"
++            end
++          end
++          return nil if mismatches.empty?
++
++          "Runtime is out of sync with runtime-manifest.json:\n#{mismatches.join("\n")}\nRe-run install.ps1 to reconcile.\n"
++        rescue StandardError => e
++          "Could not verify runtime integrity: #{e.message}"
++        end
++
++        sig { returns(T.nilable(String)) }
++        def check_curl_present
++          curl_path = "C:/Windows/System32/curl.exe"
++          return nil if File.exist?(curl_path)
++
++          <<~EOS
++            curl.exe was not found at #{curl_path}. Windows 10 1803 (April 2018)
++            and later ship curl in the base image. Earlier Windows versions are
++            not supported.
++          EOS
++        end
++      end
++    end
++  end
++end
++
++Homebrew::Diagnostic::Checks.prepend(OS::Windows::Diagnostic::Checks)

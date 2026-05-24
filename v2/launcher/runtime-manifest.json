@@ -1,7 +1,7 @@
 {
     "schemaVersion":  "0",
     "launcherVersion":  "0.1.0-dev",
-    "generatedAt":  "2026-05-24T14:34:40Z",
+    "generatedAt":  "2026-05-24T15:02:51Z",
     "placeholdersFilled":  true,
     "components":  {
                        "mingit":  {
@@ -28,6 +28,21 @@
                     {
                         "path":  "patches/windows-os-detection.patch",
                         "sha256":  "b4aeaa0b62ab8fa1b524b76eeec8ed6d2f0907ee6b5ee6685ad64f02483fc5b6",
+                        "appliesTo":  "homebrew"
+                    },
+                    {
+                        "path":  "patches/windows-diagnostics.patch",
+                        "sha256":  "ff54a39358b9d401b7b796c2d494d4bdf41a51b69885eae073f51b2984b7e55c",
+                        "appliesTo":  "homebrew"
+                    },
+                    {
+                        "path":  "patches/windows-ruby-version.patch",
+                        "sha256":  "21cdad8bbee9bb2736c8cc6376e5c2eca49297cb807ee25d893de2011d1e9ccb",
+                        "appliesTo":  "homebrew"
+                    },
+                    {
+                        "path":  "patches/windows-path-separator.patch",
+                        "sha256":  "efb93c626db9feee6f7f54263ecda1ac15a9db8405fe71f784aa14eed4f8a43d",
                         "appliesTo":  "homebrew"
                     }
                 ]
