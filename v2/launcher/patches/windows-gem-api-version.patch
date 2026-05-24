@@ -1,0 +1,53 @@
+# Brew Windows v2 patch
+#
+# Title:      Coerce Gem.ruby_api_version when running against vendored gems
+#             for a different Ruby MAJOR.MINOR
+# Targets:    Library/Homebrew/standalone/init.rb
+# Upstream:   Phase 5 PR candidate
+# Phase:      2 (doctor parity) and Phase 5 (upstream PR)
+# Rationale:  Homebrew vendors gems under
+#             Library/Homebrew/vendor/bundle/ruby/<MAJOR.MINOR>.0/.
+#             The vendored snapshot we ship corresponds to Homebrew's
+#             portable Ruby version label "4.0", so on disk the gems
+#             live under vendor/bundle/ruby/4.0.0/. Brew's vendored
+#             bundler/setup.rb hardcodes the lookup path as
+#             "ruby/<Gem.ruby_api_version>" which is "3.3.0" on
+#             RubyInstaller 3.3.6, pointing at an empty directory.
+#             Result: every gem require fails LoadError on Windows.
+#
+#             This patch detects when the host Ruby's vendor dir is
+#             missing and remaps Gem.ruby_api_version to whichever
+#             vendored version IS on disk. macOS/Linux are unaffected
+#             because their vendor dir exists.
+# Preserves:  macOS/Linux (host vendor dir always exists; the
+#             unless branch is a no-op).
+diff --git a/Library/Homebrew/standalone/init.rb b/Library/Homebrew/standalone/init.rb
+index ea86c21..ff7bec8 100644
+--- a/Library/Homebrew/standalone/init.rb
++++ b/Library/Homebrew/standalone/init.rb
+@@ -56,6 +56,25 @@ $LOAD_PATH.reject! { |path| path.start_with?(RbConfig::CONFIG["sitedir"]) }
+ Homebrew::FastBootRequire.from_rubylibdir("pathname")
+ dir = __dir__ || raise("__dir__ is not defined")
+ HOMEBREW_LIBRARY_PATH = Pathname(dir).parent.realpath.freeze
++
++# Brew Windows: coerce Gem.ruby_api_version to the vendored gems directory
++# that actually exists on disk when the running Ruby is a different MAJOR.MINOR
++# (e.g. RubyInstaller 3.3 running against gems vendored for 4.0). The override
++# only applies when the host-Ruby vendor directory is absent, so macOS/Linux
++# behavior is unchanged.
++# Homebrew boots Ruby with --disable=gems so RubyGems is not loaded by
++# default; load it explicitly before reading Gem.ruby_api_version.
++require "rubygems"
++_host_vendor = Pathname(HOMEBREW_LIBRARY_PATH)/"vendor/bundle/ruby"/Gem.ruby_api_version
++unless _host_vendor.directory?
++  _vendored_dirs = (Pathname(HOMEBREW_LIBRARY_PATH)/"vendor/bundle/ruby").children.select(&:directory?)
++  _vendored_dirs.each do |vd|
++    next unless vd.basename.to_s.match?(/\A\d+\.\d+\.\d+\z/)
++    _target = vd.basename.to_s
++    Gem.singleton_class.send(:define_method, :ruby_api_version) { _target }
++    break
++  end
++end
+ HOMEBREW_USING_PORTABLE_RUBY = RbConfig.ruby.include?("/vendor/portable-ruby/").freeze
+ 
+ HOMEBREW_BUNDLER_VERSION = ENV.fetch("HOMEBREW_BUNDLER_VERSION").freeze
