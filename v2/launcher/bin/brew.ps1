@@ -1036,7 +1036,7 @@ function Write-RuntimePins {
 function Install-Runtime {
     param([string]$Prefix)
 
-    Write-Host "Bootstrapping Homebrew runtime..."
+    Write-Host "Bootstrapping Homebrew runtime under $Prefix"
 
     $manifestPath = Join-Path $Prefix "runtime-manifest.json"
     $manifest = Read-RuntimeManifest -Path $manifestPath
