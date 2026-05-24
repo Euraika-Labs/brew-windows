@@ -1,7 +1,7 @@
 {
     "schemaVersion":  "0",
     "launcherVersion":  "0.1.0-dev",
-    "generatedAt":  "2026-05-24T15:02:51Z",
+    "generatedAt":  "2026-05-24T15:44:23Z",
     "placeholdersFilled":  true,
     "components":  {
                        "mingit":  {
@@ -43,6 +43,11 @@
                     {
                         "path":  "patches/windows-path-separator.patch",
                         "sha256":  "efb93c626db9feee6f7f54263ecda1ac15a9db8405fe71f784aa14eed4f8a43d",
+                        "appliesTo":  "homebrew"
+                    },
+                    {
+                        "path":  "patches/windows-bundler-lookup.patch",
+                        "sha256":  "76045c66693193075fa8e4480653fb5a3bbe34f4bc7d398a17182bf692ad2438",
                         "appliesTo":  "homebrew"
                     }
                 ]

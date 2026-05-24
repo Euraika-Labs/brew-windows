@@ -1,0 +1,77 @@
+# Brew Windows v2 patch
+#
+# Title:      Windows-aware find_in_path for bundle and other console scripts
+# Targets:    Library/Homebrew/extend/os/gems.rb (new loader),
+#             Library/Homebrew/extend/os/windows/gems.rb (new override),
+#             Library/Homebrew/utils/gems.rb (require new loader)
+# Upstream:   Phase 5 PR candidate (Windows-specific override following
+#             the existing extend/os/<platform>/<module>.rb pattern)
+# Phase:      2 (doctor parity) and Phase 5 (upstream PR)
+# Rationale:  Ruby's File.executable? on Windows hardcodes the
+#             extensions .bat, .cmd, .exe, .com and does NOT consult
+#             PATHEXT. RubyInstaller ships console scripts (bundle,
+#             rake, etc.) as extension-less Ruby files plus matching
+#             .bat wrappers; only the .bat wrapper passes
+#             File.executable?. find_in_path("bundle") therefore
+#             returns nil on Windows even when bundle.bat is on PATH.
+#             This override probes the standard Windows executable
+#             extensions in addition to the bare name.
+# Preserves:  macOS and Linux unchanged (the override only loads via
+#             OS.windows?).
+diff --git a/Library/Homebrew/extend/os/gems.rb b/Library/Homebrew/extend/os/gems.rb
+new file mode 100644
+index 0000000..52babef
+--- /dev/null
++++ b/Library/Homebrew/extend/os/gems.rb
+@@ -0,0 +1,7 @@
++# typed: strict
++# frozen_string_literal: true
++
++# Direct RbConfig check because this loader runs during the very early
++# init.rb bootstrap, before Library/Homebrew/os.rb is required and the
++# OS module is defined. The check is byte-identical to OS.windows?.
++require_relative "windows/gems" if RbConfig::CONFIG["host_os"].match?(/mswin|mingw|cygwin/)
+diff --git a/Library/Homebrew/extend/os/windows/gems.rb b/Library/Homebrew/extend/os/windows/gems.rb
+new file mode 100644
+index 0000000..8d8f59b
+--- /dev/null
++++ b/Library/Homebrew/extend/os/windows/gems.rb
+@@ -0,0 +1,28 @@
++# typed: true
++# frozen_string_literal: true
++
++module OS
++  module Windows
++    module Gems
++      # Windows executable lookup. Ruby's File.executable? on Windows
++      # only returns true for files with .bat, .cmd, .exe or .com
++      # extensions; it does not honor PATHEXT. RubyInstaller ships
++      # console scripts like `bundle` as extension-less Ruby files
++      # plus matching `.bat` wrappers, so only the `.bat` wrapper
++      # passes File.executable?. The base find_in_path probes only
++      # the bare name and so never finds the `.bat` variant. This
++      # override probes the standard Windows executable extensions
++      # in addition to the bare name.
++      def find_in_path(executable)
++        extensions = ["", ".bat", ".cmd", ".exe", ".com"]
++        ENV.fetch("PATH").split(File::PATH_SEPARATOR).find do |path|
++          extensions.any? do |ext|
++            File.executable?(File.join(path, executable + ext))
++          end
++        end
++      end
++    end
++  end
++end
++
++Homebrew.singleton_class.prepend(OS::Windows::Gems)
+diff --git a/Library/Homebrew/utils/gems.rb b/Library/Homebrew/utils/gems.rb
+index bd181b8..b511ab7 100644
+--- a/Library/Homebrew/utils/gems.rb
++++ b/Library/Homebrew/utils/gems.rb
+@@ -321,3 +321,5 @@ module Homebrew
+     end
+   end
+ end
++
++require_relative "../extend/os/gems"

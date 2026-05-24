@@ -291,6 +291,15 @@ function Set-HomebrewEnvironment {
     $env:HOMEBREW_RUBY_PATH       = Join-Path $Prefix "runtime\ruby\bin\ruby.exe"
     $env:HOMEBREW_CURL_PATH       = Join-Path $env:WINDIR "System32\curl.exe"
 
+    # Skip the boot-time bundler-gems install. Upstream's
+    # standalone/init.rb attempts Process.fork + exec("bundle install")
+    # when our Ruby's MAJOR.MINOR does not match Homebrew's vendored
+    # version label ("4.0"). Process.fork is unimplemented on Windows.
+    # Setting this routes the early init past the fork call. The
+    # vendored gems shipped in runtime/homebrew/Library/Homebrew/vendor/bundle/
+    # remain available for commands that need them.
+    $env:HOMEBREW_SKIP_INITIAL_GEM_INSTALL = "1"
+
     # Force UTF-8 for both PowerShell host streams and the bash subprocess.
     # See HOMEBREW_INTEGRATION.md "Locale, Encoding, And Code Pages".
     [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
