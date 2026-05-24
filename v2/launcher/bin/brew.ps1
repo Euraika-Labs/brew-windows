@@ -287,9 +287,14 @@ function Set-HomebrewEnvironment {
     # that triggers Homebrew's "validate the system toolchain" branch (e.g.
     # `brew doctor`, `brew install`). `brew --version` has a faster path that
     # works without these but everything else needs them set.
-    $env:HOMEBREW_GIT_PATH        = Join-Path $Prefix "runtime\mingit\cmd\git.exe"
-    $env:HOMEBREW_RUBY_PATH       = Join-Path $Prefix "runtime\ruby\bin\ruby.exe"
-    $env:HOMEBREW_CURL_PATH       = Join-Path $env:WINDIR "System32\curl.exe"
+    # Use forward slashes - bash shims under Library/Homebrew/shims/shared/
+    # parse these paths with POSIX ${var%/*}/ patterns which only strip
+    # forward-slash separators. A backslash path leaves the parameter
+    # expansion empty and the shim ends up calling `cd <full-path>/`,
+    # which fails with "Error: failed to cd to <full-path>/".
+    $env:HOMEBREW_GIT_PATH        = (Join-Path $Prefix "runtime\mingit\cmd\git.exe").Replace('\','/')
+    $env:HOMEBREW_RUBY_PATH       = (Join-Path $Prefix "runtime\ruby\bin\ruby.exe").Replace('\','/')
+    $env:HOMEBREW_CURL_PATH       = (Join-Path $env:WINDIR "System32\curl.exe").Replace('\','/')
 
     # Skip the boot-time bundler-gems install. Upstream's
     # standalone/init.rb attempts Process.fork + exec("bundle install")
@@ -323,7 +328,12 @@ function Set-HomebrewEnvironment {
 
     # Prepend the vendored runtime to PATH for the bash invocation only.
     # The persisted User PATH still only carries <prefix>\bin.
-    $env:PATH = (Join-Path $Prefix "runtime\mingit\usr\bin") + ";" +
+    # mingit\cmd contains git.exe (Process.spawn / CreateProcess resolves
+    # bare "git" through PATH for upstream calls like `safe_system "git"`).
+    # mingit\usr\bin contains bash.exe and the POSIX utilities the shell
+    # bootstrap depends on.
+    $env:PATH = (Join-Path $Prefix "runtime\mingit\cmd")     + ";" +
+                (Join-Path $Prefix "runtime\mingit\usr\bin") + ";" +
                 (Join-Path $Prefix "runtime\ruby\bin")       + ";" +
                 $env:PATH
 }

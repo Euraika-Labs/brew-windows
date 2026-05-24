@@ -1,0 +1,121 @@
+# Brew Windows v2 patch
+#
+# Title:      Windows-friendly Homebrew._system via Process.spawn
+# Targets:    Library/Homebrew/homebrew.rb (loader require),
+#             Library/Homebrew/extend/os/homebrew.rb (new loader),
+#             Library/Homebrew/extend/os/windows/homebrew.rb (override)
+# Upstream:   Phase 5 PR candidate. Uses extend/os/<platform>/<module>.rb
+#             pattern. Independent of windows-system-command.patch.
+# Phase:      2 (doctor parity)
+# Rationale:  Homebrew._system uses fork+exec; Process.fork is
+#             unimplemented on Windows. Many code paths route through
+#             here - notably Tap#install's git clone (called by
+#             check_coretap_integrity, brew doctor, brew install).
+#             Process.spawn is the Windows-supported equivalent.
+# Preserves:  macOS/Linux unchanged (loader is conditional on host_os).
+diff --git a/Library/Homebrew/extend/os/homebrew.rb b/Library/Homebrew/extend/os/homebrew.rb
+new file mode 100644
+index 0000000..9b163cd
+--- /dev/null
++++ b/Library/Homebrew/extend/os/homebrew.rb
+@@ -0,0 +1,4 @@
++# typed: strict
++# frozen_string_literal: true
++
++require_relative "windows/homebrew" if RbConfig::CONFIG["host_os"].match?(/mswin|mingw|cygwin/)
+diff --git a/Library/Homebrew/extend/os/windows/homebrew.rb b/Library/Homebrew/extend/os/windows/homebrew.rb
+new file mode 100644
+index 0000000..7d5a151
+--- /dev/null
++++ b/Library/Homebrew/extend/os/windows/homebrew.rb
+@@ -0,0 +1,80 @@
++# typed: true
++# frozen_string_literal: true
++
++module Homebrew
++  # Windows has no fork(2). Replace Homebrew._system - which uses
++  # fork+exec in upstream - with Process.spawn. Process.spawn returns
++  # the child PID directly and accepts the same env/argv/options the
++  # POSIX path uses, so the contract (boolean success) is preserved.
++  class << self
++    alias_method :_system_posix, :_system
++
++    def _system(cmd, argv0 = nil, *args, **options, &block)
++      args = args.map(&:to_s)
++      spawn_args = []
++      if cmd.is_a?(Hash)
++        spawn_args << cmd
++        cmd = argv0
++        argv0 = nil
++      end
++
++      # Resolve bare "git" / "curl" / "ruby" to the vendored executable
++      # so Process.spawn does not need a Windows PATH lookup. Upstream
++      # calls like `safe_system "git", "clone", ...` rely on PATH; the
++      # POSIX path uses Utils::Git.git or similar, but a few call sites
++      # pass the bare command name.
++      cmd_str = cmd.to_s
++      case cmd_str
++      when "git"
++        git_path = ENV["HOMEBREW_GIT_PATH"].to_s
++        cmd = git_path if !git_path.empty? && File.file?(git_path)
++      when "curl"
++        curl_path = ENV["HOMEBREW_CURL_PATH"].to_s
++        cmd = curl_path if !curl_path.empty? && File.file?(curl_path)
++      when "ruby"
++        ruby_path = ENV["HOMEBREW_RUBY_PATH"].to_s
++        cmd = ruby_path if !ruby_path.empty? && File.file?(ruby_path)
++      end
++
++      # Detect bash shebang scripts and route through vendored bash.exe.
++      # CreateProcess cannot exec a shebang file directly.
++      cmd_path = cmd.to_s
++      if File.file?(cmd_path)
++        first_line = File.open(cmd_path, "rb") { |f| f.read(256) }.to_s
++        if first_line.start_with?("#!") && first_line.include?("bash")
++          git_path = ENV["HOMEBREW_GIT_PATH"].to_s
++          bash = ENV["HOMEBREW_BASH"]
++          if (bash.nil? || bash.empty?) && !git_path.empty?
++            mingit_root = File.dirname(File.dirname(git_path))
++            bash = File.join(mingit_root, "usr", "bin", "bash.exe")
++          end
++          if bash && File.file?(bash)
++            args = [cmd_path, *args]
++            cmd = bash
++            argv0 = nil
++          end
++        end
++      end
++
++      spawn_args << cmd
++      spawn_args << argv0 if argv0
++      spawn_args.concat(args)
++
++      # Strip POSIX-only spawn options that Windows Process.spawn rejects.
++      unsupported = [:pgroup, :unsetenv_others, :close_others]
++      spawn_options = options.reject { |k, _| unsupported.include?(k) }
++
++      begin
++        $stderr.puts "[BW_system] spawn cmd=#{spawn_args.inspect} opts=#{spawn_options.inspect}" if ENV["HOMEBREW_BW_DEBUG"]
++        pid = Process.spawn(*spawn_args, **spawn_options)
++        yield if block_given?
++        Process.wait(pid)
++        $stderr.puts "[BW_system] exit=#{$CHILD_STATUS.exitstatus} pid=#{pid}" if ENV["HOMEBREW_BW_DEBUG"]
++      rescue Errno::ENOENT, Errno::EACCES => e
++        $stderr.puts "[BW_system] FAIL #{e.class}: #{e.message} cmd=#{spawn_args.inspect}" if ENV["HOMEBREW_BW_DEBUG"]
++        return false
++      end
++      $CHILD_STATUS.success?
++    end
++  end
++end
+diff --git a/Library/Homebrew/homebrew.rb b/Library/Homebrew/homebrew.rb
+index 37a1582..8e0b8e0 100644
+--- a/Library/Homebrew/homebrew.rb
++++ b/Library/Homebrew/homebrew.rb
+@@ -113,3 +113,5 @@ module Homebrew
+   end
+   # rubocop:enable Style/GlobalVars
+ end
++
++require_relative "extend/os/homebrew"

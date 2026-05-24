@@ -1,0 +1,65 @@
+# Brew Windows v2 patch
+#
+# Title:      Tolerate missing /bin/stty and /usr/bin/tput on Windows
+# Targets:    Library/Homebrew/utils/tty.rb
+# Upstream:   Phase 5 PR candidate. Also useful on stripped-down
+#             POSIX hosts that lack /bin/stty or /usr/bin/tput.
+# Phase:      2 (doctor parity)
+# Rationale:  Tty.size/height/width shell out to POSIX terminal-size
+#             utilities. On Windows neither exists; Ruby raises
+#             Errno::ENOENT trying to exec them. The redirect
+#             "2>/dev/null" was intended to be quiet about missing
+#             tools but Ruby's backtick exec doesn't go through a
+#             shell when the path is absolute, so the redirect never
+#             applies. Wrap the backticks in begin/rescue so the
+#             intent ("quiet on missing tool") matches the behavior.
+# Preserves:  Behavior identical on macOS/Linux - both rescues are
+#             no-ops there.
+diff --git a/Library/Homebrew/utils/tty.rb b/Library/Homebrew/utils/tty.rb
+index 889c7a1..57e9dfd 100644
+--- a/Library/Homebrew/utils/tty.rb
++++ b/Library/Homebrew/utils/tty.rb
+@@ -94,7 +94,12 @@ module Tty
+     def size
+       return @size if defined?(@size)
+
+-      height, width = `/bin/stty size 2>/dev/null`.presence&.split&.map(&:to_i)
++      raw = begin
++        `/bin/stty size 2>/dev/null`
++      rescue Errno::ENOENT, Errno::EINVAL
++        ""
++      end
++      height, width = raw.presence&.split&.map(&:to_i)
+       return if height.nil? || width.nil?
+
+       @size = T.let([height, width], T.nilable([Integer, Integer]))
+@@ -102,13 +107,27 @@ module Tty
+
+     sig { returns(Integer) }
+     def height
+-      @height ||= T.let(size&.first || `/usr/bin/tput lines 2>/dev/null`.presence&.to_i || 40, T.nilable(Integer))
++      @height ||= T.let(begin
++        fallback = begin
++          `/usr/bin/tput lines 2>/dev/null`
++        rescue Errno::ENOENT, Errno::EINVAL
++          ""
++        end
++        size&.first || fallback.presence&.to_i || 40
++      end, T.nilable(Integer))
+     end
+
+     # Keep in sync with `columns` in Library/Homebrew/utils/tty.sh.
+     sig { returns(Integer) }
+     def width
+-      @width ||= T.let(size&.second || `/usr/bin/tput cols 2>/dev/null`.presence&.to_i || 80, T.nilable(Integer))
++      @width ||= T.let(begin
++        fallback = begin
++          `/usr/bin/tput cols 2>/dev/null`
++        rescue Errno::ENOENT, Errno::EINVAL
++          ""
++        end
++        size&.second || fallback.presence&.to_i || 80
++      end, T.nilable(Integer))
+     end
+
+     sig { params(string: String).returns(String) }

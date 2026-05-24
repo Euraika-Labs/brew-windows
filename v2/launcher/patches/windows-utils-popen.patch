@@ -1,0 +1,140 @@
+# Brew Windows v2 patch
+#
+# Title:      Use array-form IO.popen on Windows in Utils.popen
+# Targets:    Library/Homebrew/utils/popen.rb
+# Upstream:   Phase 5 PR candidate. The Windows branch is fully
+#             isolated; the original POSIX path is untouched.
+# Phase:      2 (doctor parity) and Phase 3 (install)
+# Rationale:  Utils.popen uses IO.popen("-", mode) - the fork-myself
+#             idiom unimplemented on Windows. Many code paths call
+#             Utils.popen_read (Hardware::CPU.cores, Git.version, etc.)
+#             which all fail with "fork() function is unimplemented".
+#             Replace the implementation with the array form of
+#             IO.popen on Windows. IO.popen(args_array, mode, opts)
+#             internally calls Process.spawn (no fork) and gives the
+#             parent side the same readable/writable IO pipe semantics
+#             that the fork-myself path produces. Also routes bash
+#             shebang scripts through vendored bash.exe (CreateProcess
+#             cannot exec shebangs directly).
+# Preserves:  macOS/Linux behavior unchanged (the original IO.popen
+#             "-" path stays for non-Windows hosts).
+diff --git a/Library/Homebrew/utils/popen.rb b/Library/Homebrew/utils/popen.rb
+index ba3d563..e426272 100644
+--- a/Library/Homebrew/utils/popen.rb
++++ b/Library/Homebrew/utils/popen.rb
+@@ -86,29 +86,95 @@ module Utils
+       ).returns(T.any(T.type_parameter(:U), String))
+   }
+   def self.popen(args, mode, options = {}, &_block)
+-    IO.popen("-", mode) do |pipe|
+-      if pipe
+-        return pipe.read unless block_given?
+-
+-        yield pipe
++    if RbConfig::CONFIG["host_os"].match?(/mswin|mingw|cygwin/)
++      # Windows: Ruby has no fork(2), so the fork-myself "-" idiom below
++      # raises NotImplementedError. Use the array form of IO.popen which
++      # internally calls Process.spawn (no fork) and gives us the same
++      # parent-side IO pipe semantics.
++      options[:err] ||= File::NULL unless ENV["HOMEBREW_STDERR"]
++      cmd = if args[0].is_a? Hash
++        args[1]
+       else
+-        options[:err] ||= File::NULL unless ENV["HOMEBREW_STDERR"]
+-        cmd = if args[0].is_a? Hash
+-          args[1]
+-        else
+-          args[0]
++        args[0]
++      end
++      # Resolve bare "git"/"curl"/"ruby" to the vendored executable -
++    # Process.spawn on Windows doesn't search PATH the same way the
++    # POSIX exec path does for child processes.
++    exe_idx_pre = args[0].is_a?(Hash) ? 1 : 0
++    case args[exe_idx_pre].to_s
++    when "git"
++      gp = ENV["HOMEBREW_GIT_PATH"].to_s
++      args[exe_idx_pre] = gp if !gp.empty? && File.file?(gp)
++    when "curl"
++      cp = ENV["HOMEBREW_CURL_PATH"].to_s
++      args[exe_idx_pre] = cp if !cp.empty? && File.file?(cp)
++    when "ruby"
++      rp = ENV["HOMEBREW_RUBY_PATH"].to_s
++      args[exe_idx_pre] = rp if !rp.empty? && File.file?(rp)
++    end
++    # Detect bash shebang shims (e.g. Library/Homebrew/shims/shared/git)
++      # and route through the vendored bash.exe - Windows CreateProcess
++      # cannot exec a script with a shebang directly.
++      exe_idx = args[0].is_a?(Hash) ? 1 : 0
++      exe = args[exe_idx]
++      exe_path = exe.to_s if exe.is_a?(String) || exe.is_a?(Pathname)
++      if exe_path && File.file?(exe_path)
++        first_line = File.open(exe_path, "rb") { |f| f.read(256) }.to_s
++        if first_line.start_with?("#!") && first_line.include?("bash")
++          git_path = ENV["HOMEBREW_GIT_PATH"].to_s
++          bash = ENV["HOMEBREW_BASH"]
++          if (bash.nil? || bash.empty?) && !git_path.empty?
++            mingit_root = File.dirname(File.dirname(git_path))
++            bash = File.join(mingit_root, "usr", "bin", "bash.exe")
++          end
++          if bash && File.file?(bash)
++            args = args.dup
++            args[exe_idx] = bash
++            args.insert(exe_idx + 1, exe_path)
++          end
++        end
++      end
++      begin
++        IO.popen(args, mode, options) do |pipe|
++          return pipe.read unless block_given?
++
++          yield pipe
+         end
+-        begin
+-          exec(*args, options)
+-        rescue Errno::ENOENT
+-          $stderr.puts "brew: command not found: #{cmd}" if options[:err] != :close
+-          exit! 127
+-        rescue SystemCallError => e
+-          if options[:err] != :close
+-            require "utils"
+-            $stderr.puts "brew: exec failed (#{Utils.demodulize(e.class.name)}): #{cmd}"
++      rescue Errno::ENOENT
++        $stderr.puts "brew: command not found: #{cmd}" if options[:err] != :close
++        ""
++      rescue SystemCallError => e
++        if options[:err] != :close
++          require "utils"
++          $stderr.puts "brew: exec failed (#{Utils.demodulize(e.class.name)}): #{cmd}"
++        end
++        ""
++      end
++    else
++      IO.popen("-", mode) do |pipe|
++        if pipe
++          return pipe.read unless block_given?
++
++          yield pipe
++        else
++          options[:err] ||= File::NULL unless ENV["HOMEBREW_STDERR"]
++          cmd = if args[0].is_a? Hash
++            args[1]
++          else
++            args[0]
++          end
++          begin
++            exec(*args, options)
++          rescue Errno::ENOENT
++            $stderr.puts "brew: command not found: #{cmd}" if options[:err] != :close
++            exit! 127
++          rescue SystemCallError => e
++            if options[:err] != :close
++              require "utils"
++              $stderr.puts "brew: exec failed (#{Utils.demodulize(e.class.name)}): #{cmd}"
++            end
++            exit! 1
+           end
+-          exit! 1
+         end
+       end
+     end

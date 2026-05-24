@@ -1,0 +1,35 @@
+# Brew Windows v2 patch
+#
+# Title:      Make Homebrew::Sandbox a no-op on Windows
+# Targets:    Library/Homebrew/sandbox.rb
+# Upstream:   Phase 5 PR candidate. The require guards are
+#             Windows-only and don't change any behavior elsewhere.
+# Phase:      2 (doctor parity) and Phase 3 (install)
+# Rationale:  Sandbox requires Ruby's pty extension which Windows
+#             Ruby does not ship. The require blows up at boot for
+#             any command that touches formula_installer. Sandbox is
+#             also macOS-specific (sandbox-exec) with a Linux bwrap
+#             fallback - on Windows there's no enforcement layer
+#             anyway, so a no-op is the correct shape. utils/fork
+#             also requires fork(2), so guard the same way.
+#             Sandbox.available? already returns false at the base
+#             class level and there is no extend/os/windows/sandbox
+#             override, so on Windows the no-op default is exactly
+#             what callers see.
+# Preserves:  macOS/Linux unchanged (the requires still run there).
+diff --git a/Library/Homebrew/sandbox.rb b/Library/Homebrew/sandbox.rb
+index cdb42fa..efae24c 100644
+--- a/Library/Homebrew/sandbox.rb
++++ b/Library/Homebrew/sandbox.rb
+@@ -2,9 +2,9 @@
+ # frozen_string_literal: true
+
+ require "io/console"
+-require "pty"
++require "pty" unless RbConfig::CONFIG["host_os"].match?(/mswin|mingw|cygwin/)
+ require "tempfile"
+-require "utils/fork"
++require "utils/fork" unless RbConfig::CONFIG["host_os"].match?(/mswin|mingw|cygwin/)
+ require "utils/output"
+
+ # Helper class for running a sub-process inside of a sandboxed environment.

@@ -1,0 +1,30 @@
+# Brew Windows v2 patch
+#
+# Title:      Rescue ENOENT in Language::Python.major_minor_version
+# Targets:    Library/Homebrew/language/python.rb
+# Upstream:   Phase 5 PR candidate. Also an upstream-PR-worthy
+#             improvement to macOS/Linux robustness on hosts that
+#             don't ship python3.7.
+# Phase:      2 (doctor parity)
+# Rationale:  Hard-coded `python3.7 --version` backtick exec at the
+#             top of major_minor_version raises Errno::ENOENT when
+#             python3.7 is not installed. This blocks brew doctor on
+#             any system without python3.7 - not just Windows. The
+#             rescue makes the lookup return nil (the existing
+#             "no version found" return value above) instead.
+# Preserves:  Behavior identical on systems with python3.7 installed
+#             (rescue is unreachable). Also an upstream-PR-worthy
+#             improvement to macOS/Linux robustness.
+diff --git a/Library/Homebrew/language/python.rb b/Library/Homebrew/language/python.rb
+index 42bc7c8..4a7ecc0 100644
+--- a/Library/Homebrew/language/python.rb
++++ b/Library/Homebrew/language/python.rb
+@@ -17,6 +17,8 @@ module Language
+       return unless version
+
+       Version.new(version)
++    rescue Errno::ENOENT
++      nil
+     end
+
+     sig { params(python: T.any(String, Pathname)).returns(Pathname) }

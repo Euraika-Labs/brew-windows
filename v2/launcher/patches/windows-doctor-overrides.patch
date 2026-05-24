@@ -1,0 +1,144 @@
+# Brew Windows v2 patch
+#
+# Title:      Windows overrides for diagnostic checks that assume POSIX
+# Targets:    Library/Homebrew/diagnostic.rb (append require),
+#             Library/Homebrew/extend/os/diagnostic_overrides.rb (loader),
+#             Library/Homebrew/extend/os/windows/diagnostic_overrides.rb (overrides)
+# Upstream:   Phase 5 PR candidate. Independent of windows-diagnostics
+#             which only ADDS Windows-specific checks; this patch
+#             prepends overrides on existing checks.
+# Phase:      2 (doctor parity)
+# Rationale:  Two upstream checks fail on Windows for unrelated reasons:
+#             - check_git_newline_settings uses Ruby backticks against
+#               bare "git", which raises Errno::ENOENT under Windows
+#               Ruby (no PATH lookup via shell when args split).
+#             - check_for_installed_developer_tools recommends Clang or
+#               gcc, which is misleading on Windows. The actual
+#               toolchain readiness is surfaced by check_runtime_integrity
+#               from windows-diagnostics.
+# Preserves:  macOS/Linux unchanged.
+diff --git a/Library/Homebrew/diagnostic.rb b/Library/Homebrew/diagnostic.rb
+index 3b60514..62c17c4 100644
+--- a/Library/Homebrew/diagnostic.rb
++++ b/Library/Homebrew/diagnostic.rb
+@@ -1287,3 +1287,5 @@ module Homebrew
+ end
+ 
+ require "extend/os/diagnostic"
++
++require_relative "extend/os/diagnostic_overrides"
+diff --git a/Library/Homebrew/extend/os/diagnostic_overrides.rb b/Library/Homebrew/extend/os/diagnostic_overrides.rb
+new file mode 100644
+index 0000000..0d34130
+--- /dev/null
++++ b/Library/Homebrew/extend/os/diagnostic_overrides.rb
+@@ -0,0 +1,4 @@
++# typed: strict
++# frozen_string_literal: true
++
++require_relative "windows/diagnostic_overrides" if RbConfig::CONFIG["host_os"].match?(/mswin|mingw|cygwin/)
+diff --git a/Library/Homebrew/extend/os/windows/diagnostic_overrides.rb b/Library/Homebrew/extend/os/windows/diagnostic_overrides.rb
+new file mode 100644
+index 0000000..5976ce4
+--- /dev/null
++++ b/Library/Homebrew/extend/os/windows/diagnostic_overrides.rb
+@@ -0,0 +1,99 @@
++# typed: true
++# frozen_string_literal: true
++
++module OS
++  module Windows
++    # Overrides for upstream Homebrew::Diagnostic::Checks methods that
++    # make Linux/macOS assumptions that do not hold on Windows.
++    module DiagnosticOverrides
++      # check_git_newline_settings uses backticks to call `git config`.
++      # On Windows, Ruby backticks split bare "git" and exec it directly
++      # without a shell, which fails when git is only reachable via
++      # PATH set by the launcher. Route through the vendored git.
++      sig { returns(T.nilable(String)) }
++      def check_git_newline_settings
++        return unless Utils::Git.available?
++
++        git_path = ENV["HOMEBREW_GIT_PATH"].to_s
++        return nil if git_path.empty? || !File.file?(git_path)
++
++        autocrlf = HOMEBREW_REPOSITORY.cd do
++          Utils.popen_read(git_path, "config", "--get", "core.autocrlf").chomp
++        end
++        return if autocrlf != "true"
++
++        <<~EOS
++          Suspicious Git newline settings found.
++
++          The detected Git newline settings will cause checkout problems:
++            core.autocrlf = #{autocrlf}
++
++          If you are not routinely dealing with Windows-based projects,
++          consider removing these by running:
++            git config --global core.autocrlf input
++        EOS
++      end
++
++      # check_for_installed_developer_tools tells the user to install
++      # Clang or gcc. Both are macOS/Linux conventions and the message
++      # is misleading on Windows where Visual Studio Build Tools or
++      # MSYS2/UCRT GCC are the conventional toolchains. Make this
++      # check a no-op on Windows; the real toolchain readiness is
++      # surfaced by check_runtime_integrity from windows-diagnostics.
++      sig { returns(T.nilable(String)) }
++      def check_for_installed_developer_tools
++        nil
++      end
++
++      # check_git_status uses backticks against bare "git" inside each
++      # repo's directory. As with check_git_newline_settings, the
++      # Ruby/Windows split-and-exec path skips PATH lookup. Use the
++      # vendored git executable explicitly.
++      sig { returns(T.nilable(String)) }
++      def check_git_status
++        return unless Utils::Git.available?
++
++        git_path = ENV["HOMEBREW_GIT_PATH"].to_s
++        return nil if git_path.empty? || !File.file?(git_path)
++
++        message = nil
++        repos = {
++          "Homebrew/brew"          => HOMEBREW_REPOSITORY,
++          "Homebrew/homebrew-core" => CoreTap.instance.path,
++          "Homebrew/homebrew-cask" => CoreCaskTap.instance.path,
++        }
++
++        repos.each do |name, path|
++          next unless path.exist?
++
++          status = path.cd do
++            Utils.popen_read(git_path, "status", "--untracked-files=all", "--porcelain")
++          end
++          next if status.blank?
++
++          message ||= ""
++          message += "
++" unless message.empty?
++          message += <<~EOS
++            You have uncommitted modifications to #{name}.
++            If this is a surprise to you, then you should stash these modifications.
++            Stashing returns Homebrew to a pristine state but can be undone
++            should you later need to do so for some reason.
++              git -C "#{path}" stash -u && git -C "#{path}" clean -d -f
++          EOS
++
++          modified = status.split("
++")
++          message += inject_file_list modified, <<~EOS
++
++            Uncommitted files:
++          EOS
++        end
++
++        message
++      end
++    end
++  end
++end
++
++Homebrew::Diagnostic::Checks.prepend(OS::Windows::DiagnosticOverrides)

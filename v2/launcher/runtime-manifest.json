@@ -1,7 +1,7 @@
 {
     "schemaVersion":  "0",
     "launcherVersion":  "0.1.0-dev",
-    "generatedAt":  "2026-05-24T17:11:22Z",
+    "generatedAt":  "2026-05-24T18:02:41Z",
     "placeholdersFilled":  true,
     "components":  {
                        "mingit":  {
@@ -47,7 +47,37 @@
                     },
                     {
                         "path":  "patches/windows-system-command.patch",
-                        "sha256":  "22b7321d1e166ee43bf4be9fcc2dc701aab4f82fc54c2b1374f6108193490c55",
+                        "sha256":  "215d7b9d21f87111ecc97174a9ed49e09e0bf50cd9fa34336343606230f38aca",
+                        "appliesTo":  "homebrew"
+                    },
+                    {
+                        "path":  "patches/windows-tty.patch",
+                        "sha256":  "d6b89ac03df33565c34317fc303ddbe4e53eeac42903d71e7e8e210ffdbc8d13",
+                        "appliesTo":  "homebrew"
+                    },
+                    {
+                        "path":  "patches/windows-python-rescue.patch",
+                        "sha256":  "edf7528b1e0096d63d94ff20d9ba063bc580ef3cb4fe2df862b4e7a9aee0dedf",
+                        "appliesTo":  "homebrew"
+                    },
+                    {
+                        "path":  "patches/windows-sandbox-stub.patch",
+                        "sha256":  "d3ddee4b54b295289170db1b192f32a92b94550a0987b195f47d87f9761552f4",
+                        "appliesTo":  "homebrew"
+                    },
+                    {
+                        "path":  "patches/windows-utils-popen.patch",
+                        "sha256":  "255bbc4ddb5b00702834ee54144add74cf9b061c05a0e32057d9c0e7a6da8615",
+                        "appliesTo":  "homebrew"
+                    },
+                    {
+                        "path":  "patches/windows-homebrew-system.patch",
+                        "sha256":  "69494f7f0d783f1ff0d16ac0d2e5465093efb4d3f990afb5dbdf659af97e686a",
+                        "appliesTo":  "homebrew"
+                    },
+                    {
+                        "path":  "patches/windows-doctor-overrides.patch",
+                        "sha256":  "d8b47804c8c1608a080ff5a89c48284a0b53c2c5b5f06cc39c42be3fbb596fd6",
                         "appliesTo":  "homebrew"
                     }
                 ]
