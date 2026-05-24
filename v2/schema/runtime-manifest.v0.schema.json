@@ -111,7 +111,7 @@
           "required": [
             "ref",
             "url",
-            "expectedTreeSha256"
+            "expectedTreeId"
           ],
           "properties": {
             "ref": {
@@ -122,9 +122,10 @@
               "type": "string",
               "format": "uri"
             },
-            "expectedTreeSha256": {
+            "expectedTreeId": {
               "type": "string",
-              "pattern": "^[0-9a-fA-F]{64}$"
+              "description": "Git tree object id (SHA-1, 40 hex). Output of `git rev-parse <ref>^{tree}` after the pinned commit is checked out.",
+              "pattern": "^[0-9a-fA-F]{40}$"
             }
           },
           "additionalProperties": false

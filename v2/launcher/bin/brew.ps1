@@ -207,7 +207,7 @@ function Get-ExpectedComponentHash {
 
     # The Homebrew component records its working-tree hash rather than an
     # archive sha256. See BOOTSTRAP.md.
-    return Get-ComponentProperty -Container $Component -Name "expectedTreeSha256"
+    return Get-ComponentProperty -Container $Component -Name "expectedTreeId"
 }
 
 function Get-PinnedComponentHash {
@@ -222,7 +222,7 @@ function Get-PinnedComponentHash {
         return $sha
     }
 
-    return Get-ComponentProperty -Container $Pin -Name "treeSha256"
+    return Get-ComponentProperty -Container $Pin -Name "treeId"
 }
 
 function Test-RuntimeReady {
@@ -375,12 +375,512 @@ function Invoke-UpdateInterception {
 }
 
 # ---------------------------------------------------------------------------
-# Install-Runtime stub (real implementation lands in Wave 1.C)
+# Install-Runtime - shared helpers
+# ---------------------------------------------------------------------------
+
+function Get-UtcIso8601Timestamp {
+    return ([DateTime]::UtcNow).ToString("yyyy-MM-ddTHH:mm:ssZ")
+}
+
+function Write-RuntimeLogEntry {
+    param(
+        [string]$LogPath,
+        [string]$Component,
+        [string]$State,
+        [string]$Details
+    )
+
+    $line = "{0} {1} {2} {3}" -f (Get-UtcIso8601Timestamp), $Component, $State, $Details
+    Add-Content -LiteralPath $LogPath -Value $line -Encoding UTF8
+}
+
+function Get-FileSha256Lower {
+    param([string]$Path)
+    return (Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash.ToLowerInvariant()
+}
+
+function Move-RuntimeItem {
+    param(
+        [string]$LiteralSource,
+        [string]$LiteralDestination
+    )
+
+    # Move-Item can race with Windows AV / EDR products that hold open
+    # handles on freshly-extracted executables. Retry on
+    # ERROR_SHARING_VIOLATION (0x80070020) up to 3 times with a 1s gap.
+    $attempt = 0
+    $maxAttempts = 3
+    while ($true) {
+        $attempt++
+        try {
+            Move-Item -LiteralPath $LiteralSource -Destination $LiteralDestination -Force
+            return
+        } catch [System.IO.IOException] {
+            $hresult = $_.Exception.HResult
+            if ($hresult -ne -2147024864 -and $hresult -ne 0x80070020) {
+                throw
+            }
+
+            if ($attempt -ge $maxAttempts) {
+                throw "Move-Item failed after $maxAttempts attempts due to a sharing violation. This is typically caused by antivirus or endpoint detection software holding open handles on freshly-extracted files. Source: $LiteralSource. Destination: $LiteralDestination. Original error: $($_.Exception.Message)"
+            }
+
+            Start-Sleep -Seconds 1
+        }
+    }
+}
+
+function Remove-RuntimePath {
+    param(
+        [string]$Path,
+        [string]$Prefix
+    )
+
+    if (-not (Test-Path -LiteralPath $Path)) {
+        return
+    }
+
+    Assert-PathUnderPrefix -Path $Path -Prefix $Prefix
+    Remove-Item -LiteralPath $Path -Recurse -Force -ErrorAction SilentlyContinue
+}
+
+function Get-DownloadedRuntimeArtifact {
+    param(
+        [string]$Url,
+        [string]$ExpectedSha256,
+        [string]$CacheDir,
+        [string]$ComponentName,
+        [string]$LogPath
+    )
+
+    if (-not (Test-HttpsOrLocalUri -Url $Url)) {
+        throw "Refusing to download $ComponentName from non-HTTPS URL: $Url"
+    }
+
+    $basename = [System.IO.Path]::GetFileName(([System.Uri]$Url).AbsolutePath)
+    if ([string]::IsNullOrWhiteSpace($basename)) {
+        throw "Could not determine cache filename for $ComponentName URL: $Url"
+    }
+
+    $cachePath = Join-Path $CacheDir $basename
+
+    $needsDownload = $true
+    if (Test-Path -LiteralPath $cachePath -PathType Leaf) {
+        try {
+            $existingHash = Get-FileSha256Lower -Path $cachePath
+            if ($existingHash -eq $ExpectedSha256.ToLowerInvariant()) {
+                $needsDownload = $false
+                Write-RuntimeLogEntry -LogPath $LogPath -Component $ComponentName -State "CACHE_HIT" -Details ("path={0} sha256={1}" -f $cachePath, $existingHash)
+            }
+        } catch {
+            $needsDownload = $true
+        }
+    }
+
+    if ($needsDownload) {
+        Write-RuntimeLogEntry -LogPath $LogPath -Component $ComponentName -State "DOWNLOAD_START" -Details ("url={0}" -f $Url)
+        try {
+            Invoke-WebRequest -Uri $Url -OutFile $cachePath -UseBasicParsing
+        } catch {
+            throw "Failed to download $ComponentName from ${Url}: $($_.Exception.Message)"
+        }
+        $downloadedHash = Get-FileSha256Lower -Path $cachePath
+        Write-RuntimeLogEntry -LogPath $LogPath -Component $ComponentName -State "DOWNLOADED" -Details ("url={0} sha256={1}" -f $Url, $downloadedHash)
+    }
+
+    Assert-FileHash -Path $cachePath -ExpectedSha256 $ExpectedSha256
+    $verifiedHash = Get-FileSha256Lower -Path $cachePath
+    Write-RuntimeLogEntry -LogPath $LogPath -Component $ComponentName -State "VERIFIED" -Details ("expected={0} actual={1}" -f $ExpectedSha256.ToLowerInvariant(), $verifiedHash)
+
+    return $cachePath
+}
+
+function Resolve-StrippedTopLevel {
+    param([string]$ExtractedDir)
+
+    $entries = @(Get-ChildItem -LiteralPath $ExtractedDir -Force)
+    if ($entries.Count -ne 1 -or -not $entries[0].PSIsContainer) {
+        throw "stripTopLevel was requested but the extracted tree at $ExtractedDir does not have exactly one top-level directory (found $($entries.Count) entries)."
+    }
+    return $entries[0].FullName
+}
+
+function Install-RuntimeComponentSwap {
+    param(
+        [string]$Prefix,
+        [string]$ComponentName,
+        [string]$StagedSource,
+        [string]$LogPath
+    )
+
+    $finalDir = Join-Path $Prefix "runtime\$ComponentName"
+    $stageRoot = Split-Path -Parent $StagedSource
+    $oldDir = Join-Path $stageRoot ("$ComponentName-old")
+
+    Assert-PathUnderPrefix -Path $finalDir -Prefix $Prefix
+    Assert-PathUnderPrefix -Path $oldDir -Prefix $Prefix
+
+    $hadExisting = Test-Path -LiteralPath $finalDir -PathType Container
+    if ($hadExisting) {
+        Move-RuntimeItem -LiteralSource $finalDir -LiteralDestination $oldDir
+    }
+
+    try {
+        Move-RuntimeItem -LiteralSource $StagedSource -LiteralDestination $finalDir
+    } catch {
+        if ($hadExisting -and (Test-Path -LiteralPath $oldDir -PathType Container)) {
+            try {
+                Move-RuntimeItem -LiteralSource $oldDir -LiteralDestination $finalDir
+                Write-RuntimeLogEntry -LogPath $LogPath -Component $ComponentName -State "RESTORED_PREVIOUS" -Details ("path={0}" -f $finalDir)
+            } catch {
+                # Restoration failed; surface both errors.
+                throw "Failed to install $ComponentName and the previous version could not be restored. Original error: $($_.Exception.Message). Restore error: see Logs\install-runtime.log."
+            }
+        }
+        throw
+    }
+
+    if ($hadExisting -and (Test-Path -LiteralPath $oldDir -PathType Container)) {
+        Remove-RuntimePath -Path $oldDir -Prefix $Prefix
+    }
+
+    Write-RuntimeLogEntry -LogPath $LogPath -Component $ComponentName -State "INSTALLED" -Details ("path={0}" -f $finalDir)
+}
+
+# ---------------------------------------------------------------------------
+# Install-Runtime - per-component sub-functions
+# ---------------------------------------------------------------------------
+
+function Install-MinGitComponent {
+    param(
+        [string]$Prefix,
+        [object]$Spec,
+        [string]$Stage,
+        [string]$LogPath
+    )
+
+    $url = Get-ComponentProperty -Container $Spec -Name "url"
+    $expectedSha = Get-ComponentProperty -Container $Spec -Name "sha256"
+    $stripTopLevel = [bool](Get-ComponentProperty -Container $Spec -Name "stripTopLevel")
+
+    if ([string]::IsNullOrWhiteSpace($url) -or [string]::IsNullOrWhiteSpace($expectedSha)) {
+        throw "MinGit component spec is missing url or sha256."
+    }
+
+    $cacheDir = Join-Path $Prefix "Cache"
+    $archive = Get-DownloadedRuntimeArtifact -Url $url -ExpectedSha256 $expectedSha -CacheDir $cacheDir -ComponentName "mingit" -LogPath $LogPath
+
+    $extractDir = Join-Path $Stage "mingit-extract"
+    New-BrewDirectory -Path $extractDir
+
+    Write-RuntimeLogEntry -LogPath $LogPath -Component "mingit" -State "EXTRACT_START" -Details ("archive={0}" -f $archive)
+    try {
+        Expand-Archive -LiteralPath $archive -DestinationPath $extractDir -Force
+    } catch {
+        throw "Failed to extract MinGit archive ${archive}: $($_.Exception.Message)"
+    }
+
+    $stagedSource = if ($stripTopLevel) {
+        Resolve-StrippedTopLevel -ExtractedDir $extractDir
+    } else {
+        $extractDir
+    }
+
+    # Rename the staged directory to a stable name so the swap helper can
+    # locate its sibling "-old" location.
+    $stagedFinal = Join-Path $Stage "mingit"
+    if ($stagedSource -ne $stagedFinal) {
+        Move-RuntimeItem -LiteralSource $stagedSource -LiteralDestination $stagedFinal
+    }
+
+    Write-RuntimeLogEntry -LogPath $LogPath -Component "mingit" -State "EXTRACTED" -Details ("path={0}" -f $stagedFinal)
+
+    Install-RuntimeComponentSwap -Prefix $Prefix -ComponentName "mingit" -StagedSource $stagedFinal -LogPath $LogPath
+}
+
+function Install-RubyComponent {
+    param(
+        [string]$Prefix,
+        [object]$Spec,
+        [string]$Stage,
+        [string]$LogPath
+    )
+
+    $url = Get-ComponentProperty -Container $Spec -Name "url"
+    $expectedSha = Get-ComponentProperty -Container $Spec -Name "sha256"
+    $stripTopLevel = [bool](Get-ComponentProperty -Container $Spec -Name "stripTopLevel")
+
+    if ([string]::IsNullOrWhiteSpace($url) -or [string]::IsNullOrWhiteSpace($expectedSha)) {
+        throw "Ruby component spec is missing url or sha256."
+    }
+
+    $cacheDir = Join-Path $Prefix "Cache"
+    $archive = Get-DownloadedRuntimeArtifact -Url $url -ExpectedSha256 $expectedSha -CacheDir $cacheDir -ComponentName "ruby" -LogPath $LogPath
+
+    $extractDir = Join-Path $Stage "ruby-extract"
+    New-BrewDirectory -Path $extractDir
+
+    Write-RuntimeLogEntry -LogPath $LogPath -Component "ruby" -State "EXTRACT_START" -Details ("archive={0}" -f $archive)
+
+    # tar.exe (libarchive) is the primary 7z extractor on Windows 10 1803+.
+    # A bundled-7z fallback is a documented follow-up; for now we throw a
+    # clear actionable error if tar.exe cannot extract the archive.
+    $tarExe = Join-Path $env:WINDIR "System32\tar.exe"
+    if (-not (Test-Path -LiteralPath $tarExe -PathType Leaf)) {
+        throw "tar.exe was not found at $tarExe. Brew Windows v2 Phase 1 requires the bundled tar.exe (Windows 10 1803+) to extract the RubyInstaller 7z archive. Please file an issue at https://github.com/Euraika-Labs/brew-windows."
+    }
+
+    & $tarExe -xf $archive -C $extractDir
+    if ($LASTEXITCODE -ne 0) {
+        throw "tar.exe failed to extract the RubyInstaller 7z archive (exit code $LASTEXITCODE). A bundled-7z fallback is not yet implemented; please file an issue at https://github.com/Euraika-Labs/brew-windows so we can prioritise it. Archive: $archive"
+    }
+
+    $stagedSource = if ($stripTopLevel) {
+        Resolve-StrippedTopLevel -ExtractedDir $extractDir
+    } else {
+        $extractDir
+    }
+
+    $stagedFinal = Join-Path $Stage "ruby"
+    if ($stagedSource -ne $stagedFinal) {
+        Move-RuntimeItem -LiteralSource $stagedSource -LiteralDestination $stagedFinal
+    }
+
+    Write-RuntimeLogEntry -LogPath $LogPath -Component "ruby" -State "EXTRACTED" -Details ("path={0}" -f $stagedFinal)
+
+    Install-RuntimeComponentSwap -Prefix $Prefix -ComponentName "ruby" -StagedSource $stagedFinal -LogPath $LogPath
+}
+
+function Install-HomebrewComponent {
+    param(
+        [string]$Prefix,
+        [object]$Spec,
+        [object[]]$Patches,
+        [string]$Stage,
+        [string]$LogPath
+    )
+
+    $url = Get-ComponentProperty -Container $Spec -Name "url"
+    $ref = Get-ComponentProperty -Container $Spec -Name "ref"
+    $expectedTreeHash = Get-ComponentProperty -Container $Spec -Name "expectedTreeId"
+
+    if ([string]::IsNullOrWhiteSpace($url) -or [string]::IsNullOrWhiteSpace($ref) -or [string]::IsNullOrWhiteSpace($expectedTreeHash)) {
+        throw "Homebrew component spec is missing url, ref, or expectedTreeId."
+    }
+
+    if ($ref -notmatch "^[0-9a-fA-F]{40}$") {
+        throw "Homebrew ref '$ref' is not a 40-character commit SHA. runtime-manifest.json must pin a commit SHA, never a branch or tag."
+    }
+
+    # MinGit was installed in the previous step; use its git.exe.
+    $gitExe = Join-Path $Prefix "runtime\mingit\cmd\git.exe"
+    if (-not (Test-Path -LiteralPath $gitExe -PathType Leaf)) {
+        throw "MinGit git.exe not found at $gitExe after MinGit install. The runtime is in an inconsistent state; delete <prefix>\runtime and re-run brew."
+    }
+
+    $cloneDir = Join-Path $Stage "homebrew"
+    if (Test-Path -LiteralPath $cloneDir) {
+        Remove-Item -LiteralPath $cloneDir -Recurse -Force
+    }
+
+    Write-RuntimeLogEntry -LogPath $LogPath -Component "homebrew" -State "CLONE_START" -Details ("url={0} ref={1}" -f $url, $ref)
+
+    & $gitExe clone --depth=1 --no-tags --no-checkout $url $cloneDir
+    if ($LASTEXITCODE -ne 0) {
+        throw "git clone of $url failed (exit code $LASTEXITCODE)."
+    }
+
+    & $gitExe -C $cloneDir fetch --depth=1 origin $ref
+    if ($LASTEXITCODE -ne 0) {
+        throw "git fetch of commit $ref from $url failed (exit code $LASTEXITCODE)."
+    }
+
+    & $gitExe -C $cloneDir checkout $ref
+    if ($LASTEXITCODE -ne 0) {
+        throw "git checkout of commit $ref failed (exit code $LASTEXITCODE)."
+    }
+
+    Write-RuntimeLogEntry -LogPath $LogPath -Component "homebrew" -State "CHECKED_OUT" -Details ("ref={0}" -f $ref)
+
+    # Phase 1 tree-hash: use git's own tree object id (SHA-1, 40 hex chars).
+    # The runtime-manifest.json field is named expectedTreeId for forward
+    # compatibility with a future recursive SHA256 of the working tree, but
+    # the v0 semantics is git's tree object id. See BOOTSTRAP.md and the
+    # follow-up note in this function.
+    $treeHash = (& $gitExe -C $cloneDir rev-parse "$ref^{tree}") | Out-String
+    $treeHash = $treeHash.Trim().ToLowerInvariant()
+    if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($treeHash)) {
+        throw "git rev-parse failed to compute the tree hash for ref $ref."
+    }
+
+    $expectedTreeHashLower = $expectedTreeHash.ToLowerInvariant()
+    if (-not $treeHash.Equals($expectedTreeHashLower, [System.StringComparison]::OrdinalIgnoreCase)) {
+        throw "Homebrew tree hash mismatch. Expected $expectedTreeHashLower but got $treeHash. The upstream repository may have been rewritten, or the manifest is out of sync."
+    }
+
+    Write-RuntimeLogEntry -LogPath $LogPath -Component "homebrew" -State "TREE_VERIFIED" -Details ("expected={0} actual={1}" -f $expectedTreeHashLower, $treeHash)
+
+    if ($null -ne $Patches) {
+        foreach ($patch in $Patches) {
+            $patchRelPath = Get-ComponentProperty -Container $patch -Name "path"
+            $patchSha = Get-ComponentProperty -Container $patch -Name "sha256"
+            $appliesTo = Get-ComponentProperty -Container $patch -Name "appliesTo"
+
+            if ([string]::IsNullOrWhiteSpace($patchRelPath) -or [string]::IsNullOrWhiteSpace($patchSha)) {
+                throw "Patch entry is missing path or sha256."
+            }
+
+            if (-not [string]::IsNullOrWhiteSpace($appliesTo) -and $appliesTo -ne "homebrew") {
+                # Only homebrew-targeted patches are applied here.
+                continue
+            }
+
+            $patchAbsPath = Join-Path $Prefix $patchRelPath
+            if (-not (Test-Path -LiteralPath $patchAbsPath -PathType Leaf)) {
+                throw "Patch file not found at $patchAbsPath. The launcher payload looks incomplete; re-run install.ps1."
+            }
+
+            Assert-FileHash -Path $patchAbsPath -ExpectedSha256 $patchSha
+            $patchActualSha = Get-FileSha256Lower -Path $patchAbsPath
+
+            & $gitExe -C $cloneDir apply --check $patchAbsPath
+            if ($LASTEXITCODE -ne 0) {
+                throw "git apply --check failed for patch $patchRelPath. The patch does not apply cleanly to the pinned Homebrew commit; the launcher and runtime manifest are out of sync."
+            }
+
+            & $gitExe -C $cloneDir apply $patchAbsPath
+            if ($LASTEXITCODE -ne 0) {
+                throw "git apply failed for patch $patchRelPath after --check succeeded. Working tree may be in a partial state; bootstrap aborted."
+            }
+
+            Write-RuntimeLogEntry -LogPath $LogPath -Component "homebrew" -State "PATCH_APPLIED" -Details ("file={0} sha256={1}" -f $patchRelPath, $patchActualSha)
+        }
+    }
+
+    Install-RuntimeComponentSwap -Prefix $Prefix -ComponentName "homebrew" -StagedSource $cloneDir -LogPath $LogPath
+}
+
+# ---------------------------------------------------------------------------
+# Install-Runtime - pins writer
+# ---------------------------------------------------------------------------
+
+function Write-RuntimePins {
+    param(
+        [string]$Prefix,
+        [object]$Manifest
+    )
+
+    $mingit = Get-ComponentProperty -Container $Manifest.components -Name "mingit"
+    $ruby = Get-ComponentProperty -Container $Manifest.components -Name "ruby"
+    $homebrew = Get-ComponentProperty -Container $Manifest.components -Name "homebrew"
+
+    $patchesApplied = @()
+    if ($null -ne $Manifest.PSObject.Properties["patches"] -and $null -ne $Manifest.patches) {
+        foreach ($patch in $Manifest.patches) {
+            $patchesApplied += [ordered]@{
+                path   = (Get-ComponentProperty -Container $patch -Name "path")
+                sha256 = (Get-ComponentProperty -Container $patch -Name "sha256")
+            }
+        }
+    }
+
+    $pins = [ordered]@{
+        schemaVersion   = "0"
+        installedAt     = (Get-UtcIso8601Timestamp)
+        launcherVersion = $Script:LauncherVersion
+        components      = [ordered]@{
+            mingit   = [ordered]@{
+                version = (Get-ComponentProperty -Container $mingit -Name "version")
+                sha256  = (Get-ComponentProperty -Container $mingit -Name "sha256")
+            }
+            ruby     = [ordered]@{
+                version = (Get-ComponentProperty -Container $ruby -Name "version")
+                sha256  = (Get-ComponentProperty -Container $ruby -Name "sha256")
+            }
+            homebrew = [ordered]@{
+                ref        = (Get-ComponentProperty -Container $homebrew -Name "ref")
+                treeId = (Get-ComponentProperty -Container $homebrew -Name "expectedTreeId")
+            }
+        }
+        patchesApplied  = $patchesApplied
+    }
+
+    $pinsPath = Join-Path $Prefix "runtime\pins.json"
+    Assert-PathUnderPrefix -Path $pinsPath -Prefix $Prefix
+
+    $json = $pins | ConvertTo-Json -Depth 10
+    Set-Content -LiteralPath $pinsPath -Value $json -Encoding UTF8
+}
+
+# ---------------------------------------------------------------------------
+# Install-Runtime - top-level driver
 # ---------------------------------------------------------------------------
 
 function Install-Runtime {
     param([string]$Prefix)
-    throw "Install-Runtime not yet implemented (stub in Wave 1.B). The real implementation lands in Wave 1.C."
+
+    Write-Host "Bootstrapping Homebrew runtime..."
+
+    $manifestPath = Join-Path $Prefix "runtime-manifest.json"
+    $manifest = Read-RuntimeManifest -Path $manifestPath
+
+    $placeholders = $false
+    if ($null -ne $manifest.PSObject.Properties["placeholdersFilled"]) {
+        $placeholders = -not [bool]$manifest.placeholdersFilled
+    } else {
+        # Field absent: treat as still-placeholder for safety.
+        $placeholders = $true
+    }
+
+    if ($placeholders) {
+        throw "runtime-manifest.json still contains placeholder SHA256s (placeholdersFilled: false). Re-build the launcher with v2/scripts/pin-runtime.ps1 before running Install-Runtime."
+    }
+
+    foreach ($d in @("Cache", "Temp", "runtime", "Logs")) {
+        $dir = Join-Path $Prefix $d
+        Assert-PathUnderPrefix -Path $dir -Prefix $Prefix
+        New-BrewDirectory -Path $dir
+    }
+
+    $stage = Join-Path $Prefix ("Temp\runtime-stage-" + [Guid]::NewGuid().ToString("N"))
+    Assert-PathUnderPrefix -Path $stage -Prefix $Prefix
+    New-BrewDirectory -Path $stage
+
+    $logPath = Join-Path $Prefix "Logs\install-runtime.log"
+    Write-RuntimeLogEntry -LogPath $logPath -Component "runtime" -State "BOOTSTRAP_START" -Details ("prefix={0} launcher={1}" -f $Prefix, $Script:LauncherVersion)
+
+    try {
+        $mingitSpec = Get-ComponentProperty -Container $manifest.components -Name "mingit"
+        $rubySpec = Get-ComponentProperty -Container $manifest.components -Name "ruby"
+        $homebrewSpec = Get-ComponentProperty -Container $manifest.components -Name "homebrew"
+
+        if ($null -eq $mingitSpec -or $null -eq $rubySpec -or $null -eq $homebrewSpec) {
+            throw "runtime-manifest.json is missing one of: components.mingit, components.ruby, components.homebrew."
+        }
+
+        $patches = @()
+        if ($null -ne $manifest.PSObject.Properties["patches"] -and $null -ne $manifest.patches) {
+            $patches = @($manifest.patches)
+        }
+
+        Install-MinGitComponent   -Prefix $Prefix -Spec $mingitSpec   -Stage $stage -LogPath $logPath
+        Install-RubyComponent     -Prefix $Prefix -Spec $rubySpec     -Stage $stage -LogPath $logPath
+        Install-HomebrewComponent -Prefix $Prefix -Spec $homebrewSpec -Patches $patches -Stage $stage -LogPath $logPath
+
+        Write-RuntimePins -Prefix $Prefix -Manifest $manifest
+
+        Write-RuntimeLogEntry -LogPath $logPath -Component "runtime" -State "BOOTSTRAP_COMPLETE" -Details ("prefix={0}" -f $Prefix)
+        Write-Host "Runtime bootstrap complete."
+    } finally {
+        if (Test-Path -LiteralPath $stage -PathType Container) {
+            try {
+                Assert-PathUnderPrefix -Path $stage -Prefix $Prefix
+                Remove-Item -LiteralPath $stage -Recurse -Force -ErrorAction SilentlyContinue
+            } catch {
+                # Cleanup is best-effort; never mask the original error.
+            }
+        }
+    }
 }
 
 # ---------------------------------------------------------------------------

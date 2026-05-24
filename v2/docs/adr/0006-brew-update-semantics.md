@@ -159,7 +159,7 @@ pull` if they want updates between launcher releases.
 ## Rejected Alternative: Let `brew update` Run
 
 Rejected because it defeats the pin model. Once `git pull` runs, the
-checked-out tree no longer matches `expectedTreeSha256` in
+checked-out tree no longer matches `expectedTreeId` in
 `runtime-manifest.json`. Either:
 
 - We weaken the integrity check (bad - removes a defense layer).

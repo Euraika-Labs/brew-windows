@@ -41,7 +41,7 @@ external dependency the runtime needs.
     "homebrew": {
       "ref": "<40 hex chars - upstream commit SHA>",
       "url": "https://github.com/Homebrew/brew.git",
-      "expectedTreeSha256": "<64 hex chars - reproducible tree hash>"
+      "expectedTreeId": "<40 hex chars - git tree object id, see note below>"
     }
   },
   "patches": [
@@ -63,9 +63,13 @@ Fields:
   No SHA256 means refuse to install.
 - `components.homebrew.ref`: a full 40-character commit SHA. Never a
   branch name. Never a tag.
-- `components.homebrew.expectedTreeSha256`: a hash of the working tree
-  after checkout. Belt-and-braces protection against history rewrites
-  on the Homebrew GitHub repository.
+- `components.homebrew.expectedTreeId`: the git tree object id (SHA-1,
+  40 hex chars) reachable from the pinned commit, computed via
+  `git rev-parse <ref>^{tree}`. Belt-and-braces protection against
+  history rewrites on the Homebrew GitHub repository. The schema v0
+  uses git's native tree id rather than a recursive SHA256; v1 of the
+  schema may switch to a full content hash if the tree id ever proves
+  insufficient.
 - `patches[]`: ordered list of patches to apply to the Homebrew
   working tree after checkout. Stored in the launcher release zip
   under `patches/` and referenced by relative path here.
@@ -86,7 +90,7 @@ Records the version + SHA256 that was actually placed on disk.
   "components": {
     "mingit":   { "version": "2.49.0",  "sha256": "<64 hex>" },
     "ruby":     { "version": "3.3.6-1", "sha256": "<64 hex>" },
-    "homebrew": { "ref": "<40 hex>",    "treeSha256": "<64 hex>" }
+    "homebrew": { "ref": "<40 hex>",    "treeId": "<40 hex>" }
   },
   "patchesApplied": [
     { "path": "patches/windows-link-strategy.patch", "sha256": "<64 hex>" }
@@ -156,8 +160,9 @@ Different flow because this is git, not an archive.
    git fetch --depth=1 origin <commit-sha>
    git checkout <commit-sha>
    ```
-3. Compute the working tree hash (a stable hash over the file
-   contents) and compare to `components.homebrew.expectedTreeSha256`.
+3. Compute the working tree id via `git rev-parse <ref>^{tree}` (the
+   git tree object SHA-1) and compare to
+   `components.homebrew.expectedTreeId`.
 4. Apply each patch in `patches[]`:
    ```
    git apply --check <staging>/homebrew/path/to/patch

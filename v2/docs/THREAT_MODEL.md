@@ -136,7 +136,7 @@ repository (force-push, branch deletion, repo transfer).
 
 **Mitigations:**
 - `Install-Runtime` checks both the commit SHA and a working-tree
-  SHA256 (`components.homebrew.expectedTreeSha256`). If the commit
+  SHA256 (`components.homebrew.expectedTreeId`). If the commit
   resolves but the tree contents have changed, the install aborts.
 - If the commit SHA does not exist anymore, the install aborts with
   a clear error.
