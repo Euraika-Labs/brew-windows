@@ -43,23 +43,23 @@ jobs:
 
       - name: Run validation
         shell: pwsh
-        run: ./scripts/validate.ps1
+        run: ./v1/scripts/validate.ps1
 
       - name: Build release payload
         shell: pwsh
         env:
           RELEASE_VERSION: ${{ steps.release.outputs.version }}
-        run: ./scripts/build-release.ps1 -Version $env:RELEASE_VERSION
+        run: ./v1/scripts/build-release.ps1 -Version $env:RELEASE_VERSION
 
       - name: Validate release artifacts
         shell: pwsh
         env:
           RELEASE_VERSION: ${{ steps.release.outputs.version }}
         run: |
-          $zipPath = Join-Path "dist" "brew-windows-$env:RELEASE_VERSION.zip"
+          $zipPath = Join-Path "v1/dist" "brew-windows-$env:RELEASE_VERSION.zip"
           $checksumPath = "$zipPath.sha256"
 
-          foreach ($path in @($zipPath, $checksumPath, "install.ps1")) {
+          foreach ($path in @($zipPath, $checksumPath, "v1/install.ps1")) {
             if (-not (Test-Path -LiteralPath $path -PathType Leaf)) {
               throw "Missing release artifact: $path"
             }
@@ -75,9 +75,9 @@ jobs:
         uses: actions/attest@59d89421af93a897026c735860bf21b6eb4f7b26 # v4.1.0
         with:
           subject-path: |
-            dist/brew-windows-${{ steps.release.outputs.version }}.zip
-            dist/brew-windows-${{ steps.release.outputs.version }}.zip.sha256
-            install.ps1
+            v1/dist/brew-windows-${{ steps.release.outputs.version }}.zip
+            v1/dist/brew-windows-${{ steps.release.outputs.version }}.zip.sha256
+            v1/install.ps1
 
       - name: Publish GitHub release
         shell: pwsh
@@ -85,7 +85,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           RELEASE_VERSION: ${{ steps.release.outputs.version }}
         run: |
-          $zipPath = Join-Path "dist" "brew-windows-$env:RELEASE_VERSION.zip"
+          $zipPath = Join-Path "v1/dist" "brew-windows-$env:RELEASE_VERSION.zip"
           $checksumPath = "$zipPath.sha256"
           $notesPath = Join-Path $env:RUNNER_TEMP "release-notes.md"
 
@@ -105,7 +105,7 @@ jobs:
           gh release create $env:RELEASE_VERSION `
             $zipPath `
             $checksumPath `
-            install.ps1 `
+            v1/install.ps1 `
             --title "Brew Windows $env:RELEASE_VERSION" `
             --notes-file $notesPath `
             --latest

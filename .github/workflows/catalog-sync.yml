@@ -24,14 +24,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          ./scripts/sync-homebrew-catalog.ps1 `
+          ./v1/scripts/sync-homebrew-catalog.ps1 `
             -Limit 200 `
             -GenerateManifests `
             -FailOnNoCandidates
 
       - name: Validate generated catalog
         shell: pwsh
-        run: ./scripts/validate.ps1
+        run: ./v1/scripts/validate.ps1
 
       - name: Create or update catalog sync pull request
         shell: pwsh
@@ -46,7 +46,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -B automation/catalog-sync
-          git add catalog Library/Taps/euraika-labs/homebrew-core/Formula/Generated
+          git add v1/catalog v1/Library/Taps/euraika-labs/homebrew-core/Formula/Generated
           git commit -m "Sync Windows-compatible Homebrew catalog"
           git fetch origin automation/catalog-sync --depth=1 2>$null
           git push --force-with-lease origin HEAD:automation/catalog-sync

@@ -21,7 +21,7 @@ jobs:
 
       - name: Run validation
         shell: pwsh
-        run: ./scripts/validate.ps1
+        run: ./v1/scripts/validate.ps1
 
   windows-powershell:
     name: Windows PowerShell
@@ -34,7 +34,7 @@ jobs:
 
       - name: Run validation
         shell: powershell
-        run: ./scripts/validate.ps1
+        run: ./v1/scripts/validate.ps1
 
   script-analyzer:
     name: PSScriptAnalyzer
@@ -52,7 +52,7 @@ jobs:
       - name: Analyze PowerShell scripts
         shell: pwsh
         run: |
-          $paths = @("bin", "install.ps1", "uninstall.ps1", "scripts", "tests")
+          $paths = @("v1/bin", "v1/install.ps1", "v1/uninstall.ps1", "v1/scripts", "v1/tests")
           $results = foreach ($path in $paths) {
             Invoke-ScriptAnalyzer -Path $path -Recurse -Severity Error
           }
