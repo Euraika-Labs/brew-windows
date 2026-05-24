@@ -155,8 +155,10 @@ are created during Phase 1 implementation.
 
 - [x] v1 archived; restructure complete.
 - [x] v2 architecture documented.
-- [~] Phase 1 - Launcher + Bootstrap proof (in progress)
-- [ ] Phase 2 - Doctor parity
+- [x] Phase 1 - Launcher + Bootstrap proof (verified end-to-end:
+  PortableGit + RubyInstaller + patched upstream Homebrew produce
+  a working `brew --version` from a clean test prefix)
+- [ ] Phase 2 - Doctor parity (in progress)
 - [ ] Phase 3 - First formula install
 - [ ] Phase 4 - Non-author users + CI maturity
 - [ ] Phase 5 - Upstream PR sequence
@@ -169,5 +171,5 @@ and exit criteria.
 - [x] Wave 1.B: launcher core (`brew.cmd`, `brew.ps1`, `install.ps1`, `uninstall.ps1`, `runtime-manifest.json`, schema, `windows-os-detection.patch`)
 - [x] Wave 1.C: real `Install-Runtime` + scripts (`validate.ps1`, `build-release.ps1`, `pin-runtime.ps1`)
 - [x] Wave 1.D: Phase 1 tests + user guide ([`docs/USER_GUIDE.md`](docs/USER_GUIDE.md))
-- [ ] Wave 1.E: CI integration (`.github/workflows/ci.yml` gets v2 jobs)
-- [ ] Phase 1 end-to-end verification: pin the manifest, run `install.ps1` against a local payload, verify `brew --version` works
+- [x] Wave 1.E: CI integration (`.github/workflows/ci.yml` gets v2 jobs)
+- [x] Phase 1 end-to-end verification: pinned the manifest (`pin-runtime.ps1`), ran the launcher against a clean test prefix, the full bootstrap chain produced `brew --version` output from upstream Homebrew. R2 (MinGit lacks bash) surfaced and was resolved by switching to PortableGit; R1 and R3 did not surface.
