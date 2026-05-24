@@ -248,7 +248,7 @@ function Test-RuntimeReady {
         $pinnedComponent = Get-ComponentProperty -Container $pins.components -Name $component
 
         $expectedHash = Get-ExpectedComponentHash -Component $expectedComponent
-        $pinnedHash = Get-PinnedComponentHash -Component $pinnedComponent
+        $pinnedHash = Get-PinnedComponentHash -Pin $pinnedComponent
 
         if ([string]::IsNullOrWhiteSpace($expectedHash) -or [string]::IsNullOrWhiteSpace($pinnedHash)) {
             return $false

@@ -23,6 +23,12 @@ foreach ($test in $tests) {
         continue
     }
     Write-Step "Running $test"
+    # Reset $LASTEXITCODE before each invocation so StrictMode does not
+    # trip on the variable being unset before the test script has had a
+    # chance to call exit. Scripts that complete normally (no exit call)
+    # leave $LASTEXITCODE at whatever its previous value was; we treat
+    # that as success.
+    $global:LASTEXITCODE = 0
     & $path
     if ($LASTEXITCODE -ne 0) {
         exit $LASTEXITCODE

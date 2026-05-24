@@ -155,7 +155,7 @@ are created during Phase 1 implementation.
 
 - [x] v1 archived; restructure complete.
 - [x] v2 architecture documented.
-- [ ] Phase 1 - Launcher + Bootstrap proof
+- [~] Phase 1 - Launcher + Bootstrap proof (in progress)
 - [ ] Phase 2 - Doctor parity
 - [ ] Phase 3 - First formula install
 - [ ] Phase 4 - Non-author users + CI maturity
@@ -163,3 +163,11 @@ are created during Phase 1 implementation.
 
 See [PHASE_PLAN.md](docs/PHASE_PLAN.md) for each phase's deliverables
 and exit criteria.
+
+### Phase 1 substatus
+
+- [x] Wave 1.B: launcher core (`brew.cmd`, `brew.ps1`, `install.ps1`, `uninstall.ps1`, `runtime-manifest.json`, schema, `windows-os-detection.patch`)
+- [x] Wave 1.C: real `Install-Runtime` + scripts (`validate.ps1`, `build-release.ps1`, `pin-runtime.ps1`)
+- [x] Wave 1.D: Phase 1 tests + user guide ([`docs/USER_GUIDE.md`](docs/USER_GUIDE.md))
+- [ ] Wave 1.E: CI integration (`.github/workflows/ci.yml` gets v2 jobs)
+- [ ] Phase 1 end-to-end verification: pin the manifest, run `install.ps1` against a local payload, verify `brew --version` works
