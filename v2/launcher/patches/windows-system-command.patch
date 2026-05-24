@@ -1,0 +1,94 @@
+# Brew Windows v2 patch
+#
+# Title:      Windows-friendly SystemCommand#exec3 via Process.spawn
+# Targets:    Library/Homebrew/system_command.rb (loader require),
+#             Library/Homebrew/extend/os/system_command.rb (new loader),
+#             Library/Homebrew/extend/os/windows/system_command.rb (new override)
+# Upstream:   Phase 5 PR candidate (substantial - enables a broad
+#             swath of brew commands on Windows). Uses the existing
+#             extend/os/<platform>/<module>.rb pattern.
+# Phase:      2 (doctor parity) and Phase 5 (upstream PR)
+# Rationale:  SystemCommand#exec3 is upstream Homebrew's central
+#             primitive for invoking a child process with separate
+#             stdin/stdout/stderr pipes. The implementation uses
+#             fork+exec with Process::UID.change_privilege - both
+#             unimplemented on Windows. brew config, brew doctor,
+#             brew install, brew tap, and most brew commands route
+#             through this. Windows Ruby provides Process.spawn which
+#             returns a PID directly (no fork) and accepts the same
+#             env/options/redirect arguments. The drop-in replacement
+#             preserves the [stdin, stdout, stderr, wait_thread] return
+#             contract that callers depend on.
+# Preserves:  macOS/Linux unchanged. The override only loads when
+#             RbConfig::CONFIG["host_os"] matches Windows. Existing
+#             fork-based code still runs everywhere else.
+diff --git a/Library/Homebrew/extend/os/system_command.rb b/Library/Homebrew/extend/os/system_command.rb
+new file mode 100644
+index 0000000..d72bab6
+--- /dev/null
++++ b/Library/Homebrew/extend/os/system_command.rb
+@@ -0,0 +1,4 @@
++# typed: strict
++# frozen_string_literal: true
++
++require_relative "windows/system_command" if RbConfig::CONFIG["host_os"].match?(/mswin|mingw|cygwin/)
+diff --git a/Library/Homebrew/extend/os/windows/system_command.rb b/Library/Homebrew/extend/os/windows/system_command.rb
+new file mode 100644
+index 0000000..3448011
+--- /dev/null
++++ b/Library/Homebrew/extend/os/windows/system_command.rb
+@@ -0,0 +1,44 @@
++# typed: true
++# frozen_string_literal: true
++
++module OS
++  module Windows
++    module SystemCommandWrapper
++      # Replace the fork+exec implementation with Process.spawn, which is
++      # the supported way to launch a child process on Windows (Ruby's
++      # fork is unimplemented there). Drops the Process::UID privilege
++      # handoff since Windows has no setuid model.
++      def exec3(env, executable, *args, **options)
++        in_r, in_w = IO.pipe
++        options[:in] = in_r
++        in_w.sync = true
++
++        out_r, out_w = IO.pipe
++        options[:out] = out_w
++
++        err_r, err_w = IO.pipe
++        options[:err] = err_w
++
++        pid = Process.spawn(
++          env.merge({ "COLUMNS" => Tty.width.to_s }),
++          executable,
++          *args,
++          **options,
++        )
++        wait_thr = Process.detach(pid)
++
++        [in_w, out_r, err_r, wait_thr]
++      rescue
++        in_w&.close
++        out_r&.close
++        err_r&.close
++        raise
++      ensure
++        in_r&.close
++        out_w&.close
++      end
++    end
++  end
++end
++
++SystemCommand.prepend(OS::Windows::SystemCommandWrapper)
+diff --git a/Library/Homebrew/system_command.rb b/Library/Homebrew/system_command.rb
+index 2db76f0..52ecf0d 100644
+--- a/Library/Homebrew/system_command.rb
++++ b/Library/Homebrew/system_command.rb
+@@ -576,3 +576,5 @@ class SystemCommand
+     private :warn_plist_garbage
+   end
+ end
++
++require_relative "extend/os/system_command"
