@@ -61,6 +61,57 @@ jobs:
             exit 1
           }
 
+  v2-powershell-7:
+    name: V2 PowerShell 7
+    runs-on: windows-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          persist-credentials: false
+
+      - name: Run v2 validation
+        shell: pwsh
+        run: ./v2/scripts/validate.ps1
+
+  v2-windows-powershell:
+    name: V2 Windows PowerShell
+    runs-on: windows-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          persist-credentials: false
+
+      - name: Run v2 validation
+        shell: powershell
+        run: ./v2/scripts/validate.ps1
+
+  v2-script-analyzer:
+    name: V2 PSScriptAnalyzer
+    runs-on: windows-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          persist-credentials: false
+
+      - name: Install PSScriptAnalyzer
+        shell: pwsh
+        run: Install-Module PSScriptAnalyzer -Scope CurrentUser -Force
+
+      - name: Analyze v2 PowerShell scripts
+        shell: pwsh
+        run: |
+          $paths = @("v2/launcher", "v2/scripts", "v2/tests")
+          $results = foreach ($path in $paths) {
+            Invoke-ScriptAnalyzer -Path $path -Recurse -Severity Error
+          }
+          if ($results) {
+            $results | Format-Table -AutoSize
+            exit 1
+          }
+
   manifest:
     name: Manifest JSON
     runs-on: windows-latest
