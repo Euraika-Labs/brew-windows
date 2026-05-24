@@ -271,6 +271,12 @@ function Set-HomebrewEnvironment {
 
     $env:HOMEBREW_BREW_FILE       = Join-Path $Prefix "runtime\homebrew\bin\brew"
     $env:HOMEBREW_PREFIX          = $Prefix
+    # Upstream's brew.sh rewrites HOMEBREW_PREFIX in some code paths to
+    # match HOMEBREW_REPOSITORY (because on macOS/Linux they're typically
+    # equal). Stash the real Brew Windows prefix in a separate variable
+    # so Windows-aware diagnostic checks (check_runtime_integrity,
+    # check_path_brew_windows) can recover it.
+    $env:HOMEBREW_WINDOWS_PREFIX  = $Prefix
     $env:HOMEBREW_REPOSITORY      = Join-Path $Prefix "runtime\homebrew"
     $env:HOMEBREW_LIBRARY         = Join-Path $Prefix "runtime\homebrew\Library"
     $env:HOMEBREW_CELLAR          = Join-Path $Prefix "Cellar"
@@ -332,7 +338,8 @@ function Set-HomebrewEnvironment {
     # bare "git" through PATH for upstream calls like `safe_system "git"`).
     # mingit\usr\bin contains bash.exe and the POSIX utilities the shell
     # bootstrap depends on.
-    $env:PATH = (Join-Path $Prefix "runtime\mingit\cmd")     + ";" +
+    $env:PATH = (Join-Path $Prefix "bin")                    + ";" +
+                (Join-Path $Prefix "runtime\mingit\cmd")     + ";" +
                 (Join-Path $Prefix "runtime\mingit\usr\bin") + ";" +
                 (Join-Path $Prefix "runtime\ruby\bin")       + ";" +
                 $env:PATH
@@ -864,6 +871,29 @@ function Install-HomebrewComponent {
     # absolute paths to the final installed location (NTFS reparse points
     # always resolve relative targets to absolute at creation time).
     Repair-GitSymlinks -RepoDir $installedHomebrew -GitExe $gitExe -LogPath $LogPath
+
+    # Stage and commit the patched + symlink-repaired runtime so the
+    # working tree is clean from Homebrew's perspective. Without this,
+    # `brew doctor` -> check_git_status sees our intentional patches as
+    # uncommitted modifications. Use --no-gpg-sign + --no-verify so the
+    # user's global commit signing / hooks do not interfere with the
+    # vendored runtime's bootstrap; this commit is purely local and
+    # never pushed anywhere.
+    # Use a single-token user.name to dodge PowerShell -> cmd.exe argument
+    # splitting on spaces. The commit only exists in this local clone and
+    # is never pushed; the author identity is informational.
+    $oldPref2 = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    try {
+        & $gitExe -C $installedHomebrew -c "user.name=brew-windows-bootstrap" -c "user.email=bootstrap@brew-windows.invalid" add -A 2>&1 | Out-Null
+        $addExit = $LASTEXITCODE
+        & $gitExe -C $installedHomebrew -c "user.name=brew-windows-bootstrap" -c "user.email=bootstrap@brew-windows.invalid" commit --no-gpg-sign --no-verify -m "BrewWindows-runtime-patches-applied" 2>&1 | Out-Null
+        $commitExit = $LASTEXITCODE
+        Write-RuntimeLogEntry -LogPath $LogPath -Component "homebrew" -State "POST_SWAP_COMMIT" -Details ("add_exit={0} commit_exit={1}" -f $addExit, $commitExit)
+    } finally {
+        $ErrorActionPreference = $oldPref2
+    }
+    Write-RuntimeLogEntry -LogPath $LogPath -Component "homebrew" -State "POST_SWAP_COMMIT" -Details "patches and symlink repairs committed"
 }
 
 function Repair-GitSymlinks {
@@ -981,7 +1011,13 @@ function Write-RuntimePins {
     Assert-PathUnderPrefix -Path $pinsPath -Prefix $Prefix
 
     $json = $pins | ConvertTo-Json -Depth 10
-    Set-Content -LiteralPath $pinsPath -Value $json -Encoding UTF8
+    # Windows PowerShell 5.1's Set-Content -Encoding UTF8 prepends a
+    # UTF-8 BOM that Ruby's JSON.parse rejects with "unexpected character"
+    # at column 1. Write a BOM-less UTF-8 file explicitly via .NET. ASCII
+    # would also work since pin data is pure JSON, but UTF-8-no-BOM is the
+    # safer default if a future pin records, e.g., a UTF-8 patch path.
+    $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+    [System.IO.File]::WriteAllText($pinsPath, $json, $utf8NoBom)
 }
 
 # ---------------------------------------------------------------------------

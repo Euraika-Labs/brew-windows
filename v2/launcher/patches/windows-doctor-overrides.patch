@@ -39,10 +39,10 @@ index 0000000..0d34130
 +require_relative "windows/diagnostic_overrides" if RbConfig::CONFIG["host_os"].match?(/mswin|mingw|cygwin/)
 diff --git a/Library/Homebrew/extend/os/windows/diagnostic_overrides.rb b/Library/Homebrew/extend/os/windows/diagnostic_overrides.rb
 new file mode 100644
-index 0000000..5976ce4
+index 0000000..b7cbc1a
 --- /dev/null
 +++ b/Library/Homebrew/extend/os/windows/diagnostic_overrides.rb
-@@ -0,0 +1,99 @@
+@@ -0,0 +1,131 @@
 +# typed: true
 +# frozen_string_literal: true
 +
@@ -87,6 +87,38 @@ index 0000000..5976ce4
 +      # surfaced by check_runtime_integrity from windows-diagnostics.
 +      sig { returns(T.nilable(String)) }
 +      def check_for_installed_developer_tools
++        nil
++      end
++
++      # check_homebrew_prefix warns when prefix != /usr/local (or
++      # /opt/homebrew on Apple Silicon). That distinction does not
++      # apply to Windows where Brew Windows installs to
++      # %LOCALAPPDATA%\Homebrew and bottles are not available anyway.
++      # Suppress the Tier 3 warning - Windows IS the supported prefix
++      # for this distribution.
++      sig { returns(T.nilable(String)) }
++      def check_homebrew_prefix
++        nil
++      end
++
++      # check_user_path_1/2/3 advise editing ~/.profile to add bin to
++      # PATH. The advice is meaningless on Windows (no ~/.profile in
++      # PowerShell/cmd workflows; PATH is managed via
++      # HKCU\Environment). The Windows-aware check_path_brew_windows
++      # (added by windows-diagnostics) handles the equivalent
++      # diagnostic with platform-appropriate guidance.
++      sig { returns(T.nilable(String)) }
++      def check_user_path_1
++        nil
++      end
++
++      sig { returns(T.nilable(String)) }
++      def check_user_path_2
++        nil
++      end
++
++      sig { returns(T.nilable(String)) }
++      def check_user_path_3
 +        nil
 +      end
 +

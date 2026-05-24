@@ -1,7 +1,7 @@
 {
     "schemaVersion":  "0",
     "launcherVersion":  "0.1.0-dev",
-    "generatedAt":  "2026-05-24T18:02:41Z",
+    "generatedAt":  "2026-05-24T18:33:39Z",
     "placeholdersFilled":  true,
     "components":  {
                        "mingit":  {
@@ -32,7 +32,7 @@
                     },
                     {
                         "path":  "patches/windows-diagnostics.patch",
-                        "sha256":  "ff54a39358b9d401b7b796c2d494d4bdf41a51b69885eae073f51b2984b7e55c",
+                        "sha256":  "423510b67d19cc92b9dbfb4515a0d8059cd5fe8903f3766ea8f0579e68652197",
                         "appliesTo":  "homebrew"
                     },
                     {
@@ -77,7 +77,7 @@
                     },
                     {
                         "path":  "patches/windows-doctor-overrides.patch",
-                        "sha256":  "d8b47804c8c1608a080ff5a89c48284a0b53c2c5b5f06cc39c42be3fbb596fd6",
+                        "sha256":  "e7cc0524d3a5232f055fd5e6a4bbd5e48e097c5f17f7e18cb35700a961ab0fda",
                         "appliesTo":  "homebrew"
                     }
                 ]

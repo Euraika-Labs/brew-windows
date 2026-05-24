@@ -11,6 +11,7 @@
 #             relies on at runtime.
 # Preserves:  All macOS/Linux diagnostic behavior unchanged.
 diff --git a/Library/Homebrew/extend/os/diagnostic.rb b/Library/Homebrew/extend/os/diagnostic.rb
+index 066e485..abda348 100644
 --- a/Library/Homebrew/extend/os/diagnostic.rb
 +++ b/Library/Homebrew/extend/os/diagnostic.rb
 @@ -5,4 +5,6 @@ if OS.mac?
@@ -22,9 +23,10 @@ diff --git a/Library/Homebrew/extend/os/diagnostic.rb b/Library/Homebrew/extend/
  end
 diff --git a/Library/Homebrew/extend/os/windows/diagnostic.rb b/Library/Homebrew/extend/os/windows/diagnostic.rb
 new file mode 100644
+index 0000000..14deafc
 --- /dev/null
 +++ b/Library/Homebrew/extend/os/windows/diagnostic.rb
-@@ -0,0 +1,191 @@
+@@ -0,0 +1,217 @@
 +# typed: true
 +# frozen_string_literal: true
 +
@@ -83,17 +85,16 @@ new file mode 100644
 +        sig { returns(T.nilable(String)) }
 +        def check_execution_policy
 +          output, status = Open3.capture2(
-+            "powershell.exe", "-NoProfile", "-Command",
-+            "Get-ExecutionPolicy -Scope CurrentUser"
++            "powershell.exe", "-NoProfile", "-Command", "Get-ExecutionPolicy -Scope CurrentUser"
 +          )
 +          return nil unless status.success?
 +
 +          policy = output.strip
-+          return nil unless policy == "Restricted"
++          return nil if %w[RemoteSigned AllSigned Unrestricted Bypass Undefined].include?(policy)
 +
 +          <<~EOS
-+            The PowerShell CurrentUser execution policy is Restricted.
-+            Brew Windows shims are .ps1 scripts; a Restricted policy will
++            PowerShell execution policy is "#{policy}" for the current user.
++            Homebrew Windows shims are .ps1 scripts; a Restricted policy will
 +            prevent them from running. Acceptable values are RemoteSigned,
 +            AllSigned, Unrestricted, or Bypass. To set RemoteSigned for
 +            the current user, run:
@@ -105,36 +106,53 @@ new file mode 100644
 +
 +        sig { returns(T.nilable(String)) }
 +        def check_path_brew_windows
-+          prefix = ENV.fetch("HOMEBREW_PREFIX", nil)
++          prefix = ENV.fetch("HOMEBREW_WINDOWS_PREFIX", nil) || ENV.fetch("HOMEBREW_PREFIX", nil)
 +          return nil if prefix.nil? || prefix.empty?
 +
-+          path_dirs = ENV.fetch("PATH", "").split(File::PATH_SEPARATOR)
-+          found_dir = path_dirs.find { |dir| !dir.empty? && File.exist?(File.join(dir, "brew.cmd")) }
++          expected = File.expand_path(File.join(prefix, "bin"))
 +
-+          if found_dir.nil?
-+            return <<~EOS
-+              No brew.cmd was found on PATH. The Brew Windows launcher
-+              installs <prefix>\\bin\\brew.cmd and adds <prefix>\\bin to
-+              the User PATH. Open a new PowerShell window or re-run the
-+              installer.
-+            EOS
++          # Query the user's persistent PATH from HKCU\Environment\Path -
++          # install.ps1 writes <prefix>\bin there. The current-process
++          # PATH is augmented by the launcher and is not authoritative.
++          user_path = nil
++          begin
++            out, status = Open3.capture2(
++              "reg.exe", "query", "HKCU\\Environment", "/v", "Path"
++            )
++            if status.success?
++              match = out.match(/Path\s+REG(?:_EXPAND)?_SZ\s+(.*)/)
++              user_path = match[1].strip if match
++            end
++          rescue StandardError
++            user_path = nil
 +          end
 +
-+          expected = File.expand_path(File.join(prefix, "bin"))
-+          actual = File.expand_path(found_dir)
-+          return nil if actual.casecmp(expected).zero?
++          if user_path
++            user_dirs = user_path.split(";").map { |d| d.strip.gsub(/\\$/, "") }
++            if user_dirs.any? { |d| !d.empty? && File.expand_path(d).casecmp(expected).zero? }
++              return nil
++            end
++          end
++
++          # Fallback: also check current process PATH (catches the case
++          # where install.ps1 set User PATH but the registry read failed,
++          # or the user is running brew from a custom env).
++          path_dirs = ENV.fetch("PATH", "").split(File::PATH_SEPARATOR)
++          return nil if path_dirs.any? { |d| !d.empty? && File.expand_path(d).casecmp(expected).zero? }
 +
 +          <<~EOS
-+            Another brew.cmd is shadowing the Brew Windows launcher on PATH.
-+            Expected: #{expected}\\brew.cmd
-+            Found:    #{actual}\\brew.cmd
-+            Reorder PATH so #{expected} appears before #{actual}.
++            <prefix>\\bin (#{expected}) is not on your User PATH.
++            The Brew Windows launcher installs brew.cmd here and the
++            install script (install.ps1) adds the directory to HKCU
++            Environment Path. Re-run install.ps1, or add it manually:
++              setx PATH "%PATH%;#{expected}"
++            then open a new PowerShell window.
 +          EOS
 +        end
 +
 +        sig { returns(T.nilable(String)) }
 +        def check_path_shadowed_shims
-+          prefix = ENV.fetch("HOMEBREW_PREFIX", nil)
++          prefix = ENV.fetch("HOMEBREW_WINDOWS_PREFIX", nil) || ENV.fetch("HOMEBREW_PREFIX", nil)
 +          return nil if prefix.nil? || prefix.empty?
 +
 +          shim_dir = File.expand_path(File.join(prefix, "bin"))
@@ -167,7 +185,17 @@ new file mode 100644
 +
 +        sig { returns(T.nilable(String)) }
 +        def check_runtime_integrity
-+          prefix = ENV.fetch("HOMEBREW_PREFIX", nil)
++          # HOMEBREW_PREFIX is rewritten by brew.sh to point at
++          # HOMEBREW_REPOSITORY when they are siblings on the same tree.
++          # The actual Brew Windows prefix (which holds runtime/pins.json
++          # and runtime-manifest.json) is one level up. The launcher
++          # exports HOMEBREW_WINDOWS_PREFIX for this purpose; fall back
++          # to the parent of HOMEBREW_REPOSITORY's parent.
++          prefix = ENV.fetch("HOMEBREW_WINDOWS_PREFIX", nil)
++          if prefix.nil? || prefix.empty?
++            repo = ENV.fetch("HOMEBREW_REPOSITORY", nil)
++            prefix = repo.nil? ? nil : File.dirname(File.dirname(repo))
++          end
 +          return nil if prefix.nil? || prefix.empty?
 +
 +          pins_path = File.join(prefix, "runtime", "pins.json")
