@@ -1,0 +1,102 @@
+# Brew Windows v2 patch
+#
+# Title:      In-process Utils.safe_fork on Windows
+# Targets:    Library/Homebrew/utils/fork.rb (loader),
+#             Library/Homebrew/extend/os/utils/fork.rb (new),
+#             Library/Homebrew/extend/os/windows/utils/fork.rb (new)
+# Upstream:   Phase 5 PR candidate.
+# Phase:      3 (first formula install)
+# Rationale:  safe_fork uses Process.fork + a UNIX socket via
+#             Utils::UNIXServerExt to run a formula's install
+#             method in a child process and watch for errors.
+#             Windows has no fork(2) and the SUN_PATH limit (108
+#             bytes) is exceeded by Homebrew's typical tmp paths.
+#             Replace the body in-process for Windows so the
+#             install method runs in the parent and exceptions
+#             surface directly. Sandboxing is already a no-op on
+#             Windows (windows-sandbox-stub.patch).
+# Preserves:  macOS/Linux behavior unchanged.
+diff --git a/Library/Homebrew/extend/os/utils/fork.rb b/Library/Homebrew/extend/os/utils/fork.rb
+new file mode 100644
+index 0000000..d75a643
+--- /dev/null
++++ b/Library/Homebrew/extend/os/utils/fork.rb
+@@ -0,0 +1,4 @@
++# typed: strict
++# frozen_string_literal: true
++
++require_relative "../windows/utils/fork" if RbConfig::CONFIG["host_os"].match?(/mswin|mingw|cygwin/)
+diff --git a/Library/Homebrew/extend/os/windows/utils/fork.rb b/Library/Homebrew/extend/os/windows/utils/fork.rb
+new file mode 100644
+index 0000000..3316a1b
+--- /dev/null
++++ b/Library/Homebrew/extend/os/windows/utils/fork.rb
+@@ -0,0 +1,58 @@
++# typed: true
++# frozen_string_literal: true
++
++require "tmpdir"
++
++module Utils
++  # Windows has no fork(2) and Ruby's UNIXServer is limited to a
++  # 108-byte SUN_PATH on Windows when AF_UNIX is even available. The
++  # safe_fork pattern - parent watches an IPC socket while a forked
++  # child runs the formula's install method - has no native analogue
++  # on Windows. Replace the body with a spawn-and-wait implementation:
++  # the block (typically `exec(*args)`) gets monkey-patched at the
++  # Kernel level for the block's duration so `exec` becomes
++  # Process.spawn + Process.wait, preserving the parent process
++  # while still running the build command as a separate child.
++  # Sandbox context that intercepts `exec` and turns it into
++  # Process.spawn + Process.wait. The typical safe_fork caller is
++  # `Utils.safe_fork { exec(*args) }` at formula_installer.rb:1136;
++  # POSIX's safe_fork is already inside a fork at that point so
++  # exec replaces the forked child. On Windows there is no fork,
++  # so a real `exec` would replace the launcher itself - which is
++  # why the upstream block silently exits the parent.
++  class SafeForkContext
++    def exec(*args, **opts)
++      # Force child stdout/stderr to flow through the launcher so
++      # the build's diagnostic output is visible.
++      opts[:out] = $stdout if opts[:out].nil?
++      opts[:err] = $stderr if opts[:err].nil?
++      $stderr.puts "[BW_fork] spawning: #{args.inspect}" if ENV["HOMEBREW_BW_DEBUG"]
++      child_pid = Process.spawn(*args, **opts)
++      _, status = Process.wait2(child_pid)
++      $stderr.puts "[BW_fork] child exit=#{status.exitstatus}" if ENV["HOMEBREW_BW_DEBUG"]
++      unless status.success?
++        require "exceptions"
++        raise ErrorDuringExecution.new(args, status: status)
++      end
++      true
++    end
++  end
++
++  class << self
++    alias_method :safe_fork_posix, :safe_fork
++
++    def safe_fork(directory: nil, yield_parent: false, &blk)
++      run_block = lambda do |tmpdir|
++        ENV["HOMEBREW_ERROR_PIPE"] = File.join(tmpdir.to_s, "error_pipe.txt")
++        ctx = SafeForkContext.new
++        ctx.instance_exec(ENV["HOMEBREW_ERROR_PIPE"], &blk)
++      end
++
++      if directory
++        run_block.call(directory)
++      else
++        Dir.mktmpdir("homebrew-fork-windows", HOMEBREW_TEMP, &run_block)
++      end
++    end
++  end
++end
+diff --git a/Library/Homebrew/utils/fork.rb b/Library/Homebrew/utils/fork.rb
+index ce82728..9f4ec02 100644
+--- a/Library/Homebrew/utils/fork.rb
++++ b/Library/Homebrew/utils/fork.rb
+@@ -124,3 +124,5 @@ module Utils
+     end
+   end
+ end
++
++require_relative "../extend/os/utils/fork"

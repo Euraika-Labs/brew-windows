@@ -1,0 +1,46 @@
+# Brew Windows v2 patch
+#
+# Title:      Skip CompilerSelectionError on Windows for binary-only formulae
+# Targets:    Library/Homebrew/extend/ENV/std.rb (Stdenv#setup_build_environment)
+# Upstream:   Phase 5 PR candidate.
+# Phase:      3 (first formula install)
+# Rationale:  Stdenv#setup_build_environment calls `send(compiler)`
+#             which raises CompilerSelectionError when no clang/gcc
+#             is discoverable. Windows-shaped formulae that ship as
+#             prebuilt zips need no compile step. Swallow the
+#             error on Windows and return early - the formula's
+#             install method runs without a compiler env, which is
+#             what we want.
+# Preserves:  macOS/Linux behavior unchanged.
+diff --git a/Library/Homebrew/extend/ENV/shared.rb b/Library/Homebrew/extend/ENV/shared.rb
+index 5bbf535..35705e6 100644
+--- a/Library/Homebrew/extend/ENV/shared.rb
++++ b/Library/Homebrew/extend/ENV/shared.rb
+@@ -233,7 +233,7 @@ module SharedEnvExtension
+       end
+ 
+       compiler
+-    elsif @formula
++    elsif @formula && !RbConfig::CONFIG["host_os"].match?(/mswin|mingw|cygwin/)
+       CompilerSelector.select_for(@formula, testing_formula: @testing_formula == true)
+     else
+       DevelopmentTools.default_compiler
+diff --git a/Library/Homebrew/extend/ENV/std.rb b/Library/Homebrew/extend/ENV/std.rb
+index 787ea7b..12b31bb 100644
+--- a/Library/Homebrew/extend/ENV/std.rb
++++ b/Library/Homebrew/extend/ENV/std.rb
+@@ -58,6 +58,14 @@ module Stdenv
+     begin
+       send(compiler)
+     rescue CompilerSelectionError
++      # On Windows, binary-only formulae (pre-built .zip artifacts
++      # that need no compile step) hit CompilerSelectionError here
++      # because clang/gcc aren't on a stock PATH. Swallow and fall
++      # back to the default compiler ident so downstream env
++      # methods don't try to use it.
++      if RbConfig::CONFIG["host_os"].match?(/mswin|mingw|cygwin/)
++        return
++      end
+       # We don't care if our compiler fails to build the formula during `brew test`.
+       raise unless testing_formula
+ 

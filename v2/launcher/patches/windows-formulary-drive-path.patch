@@ -1,0 +1,39 @@
+# Brew Windows v2 patch
+#
+# Title:      Skip FromURILoader for Windows drive paths
+# Targets:    Library/Homebrew/formulary.rb (FromURILoader.try_new)
+# Upstream:   Phase 5 PR candidate.
+# Phase:      3 (first formula install)
+# Rationale:  An absolute Windows path like "C:/Users/foo/bar.rb"
+#             matches the RFC 2396 URI regex with "C" as a single-
+#             letter scheme, so FromURILoader claims the path
+#             ahead of FromPathLoader. The downstream load_file
+#             then raises UnsupportedInstallationMethod because
+#             "C" is not in ALLOWED_URL_SCHEMES. Reject Windows
+#             drive paths early so they fall through to
+#             FromPathLoader (the right loader for local
+#             formula files).
+# Preserves:  macOS/Linux behavior unchanged.
+diff --git a/Library/Homebrew/formulary.rb b/Library/Homebrew/formulary.rb
+index ade61f1..e9f5265 100644
+--- a/Library/Homebrew/formulary.rb
++++ b/Library/Homebrew/formulary.rb
+@@ -627,6 +627,18 @@ module Formulary
+       end, T.nilable(Regexp))
+ 
+       uri = ref.to_s
++
++      # On Windows, an absolute path like "C:/Users/foo/bar.rb"
++      # matches the RFC 2396 URI regex with "C" as a single-letter
++      # scheme. That would route the local file through FromURILoader
++      # and then UnsupportedInstallationMethod fires because "C" is
++      # not an allowed scheme. Skip the URI loader for paths that
++      # look like Windows drive references; they belong to
++      # FromPathLoader.
++      if RbConfig::CONFIG["host_os"].match?(/mswin|mingw|cygwin/) && uri.match?(%r{\A[A-Za-z]:[\/]})
++        return
++      end
++
+       return unless uri.match?(@uri_regex)
+ 
+       uri = URI(uri)

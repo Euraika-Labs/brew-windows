@@ -1,0 +1,57 @@
+# Brew Windows v2 patch
+#
+# Title:      Treat Windows as "developer tools installed"
+# Targets:    Library/Homebrew/development_tools.rb (loader),
+#             Library/Homebrew/extend/os/development_tools.rb (new),
+#             Library/Homebrew/extend/os/windows/development_tools.rb (new)
+# Upstream:   Phase 5 PR candidate.
+# Phase:      3 (first formula install)
+# Rationale:  Upstream gates "must build from source" on
+#             DevelopmentTools.installed? returning true. The
+#             default check probes for clang or gcc which usually
+#             aren't on a stock Windows PATH. Most Windows-shaped
+#             formulae ship as prebuilt zips and need no compiler;
+#             the UnbottledError is the wrong gate. Override
+#             installed? to return true on Windows.
+# Preserves:  macOS/Linux behavior unchanged.
+diff --git a/Library/Homebrew/extend/os/development_tools.rb b/Library/Homebrew/extend/os/development_tools.rb
+index 58e4f58..e729b36 100644
+--- a/Library/Homebrew/extend/os/development_tools.rb
++++ b/Library/Homebrew/extend/os/development_tools.rb
+@@ -5,4 +5,6 @@ if OS.mac?
+   require "extend/os/mac/development_tools"
+ elsif OS.linux?
+   require "extend/os/linux/development_tools"
++elsif OS.windows?
++  require "extend/os/windows/development_tools"
+ end
+diff --git a/Library/Homebrew/extend/os/windows/development_tools.rb b/Library/Homebrew/extend/os/windows/development_tools.rb
+new file mode 100644
+index 0000000..19fc96c
+--- /dev/null
++++ b/Library/Homebrew/extend/os/windows/development_tools.rb
+@@ -0,0 +1,24 @@
++# typed: true
++# frozen_string_literal: true
++
++module OS
++  module Windows
++    module DevelopmentTools
++      # Brew Windows v2 prefers prebuilt Windows binary distributions over
++      # source builds (formulae point at .zip artifacts with no compile
++      # step). The UnbottledError check at formula_installer.rb:558 fires
++      # when no compiler is found and we're not pouring a bottle, but it
++      # is the wrong gate on Windows: most Windows-shaped formulae don't
++      # need a compiler at all. Returning true here unblocks installs of
++      # binary-only formulae. Formulae that DO need a Windows compiler
++      # should declare `depends_on "..."` for the relevant tool, which
++      # the dependency_collector will still enforce.
++      sig { returns(T::Boolean) }
++      def installed?
++        true
++      end
++    end
++  end
++end
++
++DevelopmentTools.singleton_class.prepend(OS::Windows::DevelopmentTools)

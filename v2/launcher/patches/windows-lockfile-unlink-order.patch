@@ -1,0 +1,52 @@
+# Brew Windows v2 patch
+#
+# Title:      Close lock file handle before unlinking on Windows
+# Targets:    Library/Homebrew/lock_file.rb (LockFile#unlock)
+# Upstream:   Phase 5 PR candidate. Branch guarded by RbConfig
+#             host_os; POSIX hosts keep the original ordering.
+# Phase:      3 (first formula install) and Phase 5 (upstream PR)
+# Rationale:  Ruby's File.open on Windows does not pass
+#             FILE_SHARE_DELETE, so Pathname#unlink on a file that
+#             is still held open by the current process raises
+#             EACCES (surfaced as "Permission denied @ apply2files
+#             - <path>" from Pathname's internal FileUtils call).
+#             On POSIX the upstream order works: unlink first
+#             (legal even with the handle open) and the inode is
+#             released after close. Reverse the order on Windows
+#             so the close happens before the unlink.
+# Preserves:  macOS/Linux behavior unchanged.
+diff --git a/Library/Homebrew/lock_file.rb b/Library/Homebrew/lock_file.rb
+index dd67029..f936d63 100644
+--- a/Library/Homebrew/lock_file.rb
++++ b/Library/Homebrew/lock_file.rb
+@@ -72,10 +72,26 @@ class LockFile
+     ignore_interrupts do
+       next if @lockfile.nil?
+ 
+-      @path.unlink if unlink
+-      @lockfile.flock(File::LOCK_UN)
+-      @lockfile.close
+-      @lockfile = nil
++      # On Windows, File.open does not pass FILE_SHARE_DELETE, so
++      # Pathname#unlink on a file that is still held open by the
++      # current process raises EACCES (surfaced as
++      # "Permission denied @ apply2files - <path>" from
++      # Pathname's internal FileUtils call). Close the file
++      # handle first on Windows, then unlink. POSIX hosts keep
++      # the original order which lets the unlink succeed while
++      # the file is still open (an idiomatic atomic-replace
++      # pattern there).
++      if unlink && RbConfig::CONFIG["host_os"].match?(/mswin|mingw|cygwin/)
++        @lockfile.flock(File::LOCK_UN)
++        @lockfile.close
++        @path.unlink if @path.exist?
++        @lockfile = nil
++      else
++        @path.unlink if unlink
++        @lockfile.flock(File::LOCK_UN)
++        @lockfile.close
++        @lockfile = nil
++      end
+     end
+   end
+ 

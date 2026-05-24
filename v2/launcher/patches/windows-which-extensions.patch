@@ -1,0 +1,46 @@
+# Brew Windows v2 patch
+#
+# Title:      Probe Windows executable extensions in Kernel#which
+# Targets:    Library/Homebrew/extend/kernel.rb (`which`)
+# Upstream:   Phase 5 PR candidate. The extension probe is guarded
+#             by RbConfig host_os; macOS/Linux behavior is unchanged.
+# Phase:      3 (first formula install) and Phase 5 (upstream PR)
+# Rationale:  Ruby's `File.executable?` on Windows only matches files
+#             with .bat, .cmd, .exe, or .com extension - PATHEXT
+#             lookup is not done by Ruby itself. Many callers
+#             pass a bare name like "unzip" expecting the same
+#             PATH-walk semantics as POSIX. `which("unzip")`
+#             returns nil because no file named exactly "unzip"
+#             (with no extension) exists, even though unzip.exe
+#             is on PATH. Dependency_collector relies on
+#             `which("unzip")` to decide whether to inject an
+#             implicit "unzip" build dependency; the failure
+#             surfaces as "No available formula with the name
+#             'unzip'" on Windows where there is no Homebrew
+#             unzip formula. Same issue applies to zstd, bzip2,
+#             xz, and similar tools that ship with mingit's
+#             usr/bin/.
+# Preserves:  macOS/Linux behavior unchanged.
+diff --git a/Library/Homebrew/extend/kernel.rb b/Library/Homebrew/extend/kernel.rb
+index 9e861e7..1976ab4 100644
+--- a/Library/Homebrew/extend/kernel.rb
++++ b/Library/Homebrew/extend/kernel.rb
+@@ -97,7 +97,17 @@ module Kernel
+         # See https://github.com/Homebrew/legacy-homebrew/issues/32789
+         next
+       end
+-      return Pathname.new(pcmd) if File.file?(pcmd) && File.executable?(pcmd)
++return Pathname.new(pcmd) if File.file?(pcmd) && File.executable?(pcmd)
++# On Windows, File.executable? only matches files with .bat,
++# .cmd, .exe, or .com extension - PATHEXT-aware lookup is not
++# done. When the caller passed a bare name like "unzip", probe
++# the conventional Windows executable extensions in order.
++if RbConfig::CONFIG["host_os"].match?(/mswin|mingw|cygwin/) && File.extname(cmd).empty?
++  %w[.exe .cmd .bat .com].each do |ext|
++    candidate = pcmd + ext
++    return Pathname.new(candidate) if File.file?(candidate) && File.executable?(candidate)
++  end
++end
+     end
+     nil
+   end

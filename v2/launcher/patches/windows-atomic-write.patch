@@ -1,0 +1,55 @@
+# Brew Windows v2 patch
+#
+# Title:      Bypass File.rename for atomic_write on Windows
+# Targets:    Library/Homebrew/extend/file/atomic.rb (File.atomic_write)
+# Upstream:   Phase 5 PR candidate.
+# Phase:      3 (first formula install)
+# Rationale:  File.atomic_write writes a Tempfile in the destination
+#             dir then File.rename's it over the destination. On
+#             Windows, when the destination dir is a symlink into
+#             Cellar (e.g. <prefix>/opt/<name>/sbom.spdx.json), the
+#             rename fails with ENOENT despite both paths being
+#             valid. Skip the rename: write the temp file, read it
+#             back, write directly to the destination, then unlink
+#             the temp. Trades off atomicity for reliability on a
+#             single-user dev workstation.
+# Preserves:  macOS/Linux behavior unchanged.
+diff --git a/Library/Homebrew/extend/file/atomic.rb b/Library/Homebrew/extend/file/atomic.rb
+index d0ae305..392ba43 100644
+--- a/Library/Homebrew/extend/file/atomic.rb
++++ b/Library/Homebrew/extend/file/atomic.rb
+@@ -27,6 +27,34 @@ class File
+     ).returns(T.type_parameter(:Out))
+   }
+   def self.atomic_write(file_name, temp_dir = dirname(file_name), &_block)
++    # Windows: skip the tempfile-and-rename dance. Tempfile-then-
++    # File.rename across symlinked dirs (e.g. <prefix>/opt/<name>
++    # which is a symlink into Cellar) sometimes fails on Windows
++    # with ENOENT even though both src and dst look fine. The
++    # atomicity guarantee matters less on a single-user dev
++    # workstation; trade it for reliability by writing directly.
++    if RbConfig::CONFIG["host_os"].match?(/mswin|mingw|cygwin/)
++      require "tempfile" unless defined?(Tempfile)
++      buf = Tempfile.new(".#{basename(file_name)}", temp_dir)
++      begin
++        buf.binmode
++        return_val = yield buf
++        buf.close
++        # Read the data back out and write to destination directly,
++        # then unlink the temp file. This avoids File.rename across
++        # the symlinked Cellar path.
++        data = File.binread(buf.path)
++        File.binwrite(file_name.to_s, data)
++        return return_val
++      ensure
++        buf.close unless buf.closed?
++        begin
++          buf.unlink
++        rescue StandardError
++          nil
++        end
++      end
++    end
+     require "tempfile" unless defined?(Tempfile)
+ 
+     Tempfile.open(".#{basename(file_name)}", temp_dir) do |temp_file|

@@ -1,7 +1,7 @@
 {
     "schemaVersion":  "0",
     "launcherVersion":  "0.1.0-dev",
-    "generatedAt":  "2026-05-24T18:33:39Z",
+    "generatedAt":  "2026-05-24T20:15:22Z",
     "placeholdersFilled":  true,
     "components":  {
                        "mingit":  {
@@ -78,6 +78,51 @@
                     {
                         "path":  "patches/windows-doctor-overrides.patch",
                         "sha256":  "e7cc0524d3a5232f055fd5e6a4bbd5e48e097c5f17f7e18cb35700a961ab0fda",
+                        "appliesTo":  "homebrew"
+                    },
+                    {
+                        "path":  "patches/windows-link-strategy.patch",
+                        "sha256":  "f57944642517504365f59e068b8d9dd17c87b8b3b8e5aae1caf2707ffff9e5a5",
+                        "appliesTo":  "homebrew"
+                    },
+                    {
+                        "path":  "patches/windows-which-extensions.patch",
+                        "sha256":  "8b16d041b0c15aa29e5136fdfa26733ec15733998bae4c3683b264b8736aa420",
+                        "appliesTo":  "homebrew"
+                    },
+                    {
+                        "path":  "patches/windows-lockfile-unlink-order.patch",
+                        "sha256":  "43a9e73d6dc92aefa0ebd3b8aa5f6355bf16564424f05b4b9ec55f8a8706a4cc",
+                        "appliesTo":  "homebrew"
+                    },
+                    {
+                        "path":  "patches/windows-dev-tools.patch",
+                        "sha256":  "1353c9ac2be9f87a216741cfdaec70b461c8ed6fd943c5acb01869035847a66a",
+                        "appliesTo":  "homebrew"
+                    },
+                    {
+                        "path":  "patches/windows-fork-stub.patch",
+                        "sha256":  "651f43846dc17b4391dff216579a7cfa5fdb9481981318948d2041f1d67296fb",
+                        "appliesTo":  "homebrew"
+                    },
+                    {
+                        "path":  "patches/windows-build-error-pipe.patch",
+                        "sha256":  "b61fcf43503b6c6cd74d2e270dc8a2d8374a831f82fff1183894d3726161d4a6",
+                        "appliesTo":  "homebrew"
+                    },
+                    {
+                        "path":  "patches/windows-formulary-drive-path.patch",
+                        "sha256":  "c2540ec93d35b62419dd210fe67176303a92ddf9d9ee4fbac4991fd4b7a8b6eb",
+                        "appliesTo":  "homebrew"
+                    },
+                    {
+                        "path":  "patches/windows-stdenv-compiler.patch",
+                        "sha256":  "acda55303123f45a5e38ab98ad29b6439cb8ab7523db2773d76df95b5957d6c0",
+                        "appliesTo":  "homebrew"
+                    },
+                    {
+                        "path":  "patches/windows-atomic-write.patch",
+                        "sha256":  "fdd516da73492ae649e71ef11a9a66437186ab6d7e28c3ffc12bf6633e1354a4",
                         "appliesTo":  "homebrew"
                     }
                 ]

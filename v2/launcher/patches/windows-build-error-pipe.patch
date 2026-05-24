@@ -1,0 +1,55 @@
+# Brew Windows v2 patch
+#
+# Title:      Windows-aware error reporting in build.rb
+# Targets:    Library/Homebrew/build.rb
+# Upstream:   Phase 5 PR candidate.
+# Phase:      3 (first formula install)
+# Rationale:  build.rb opens HOMEBREW_ERROR_PIPE as a UNIXSocket
+#             to communicate errors back to the parent. Windows
+#             has no native UNIX socket setup that matches; the
+#             windows-fork-stub patch already runs build.rb
+#             in-process via Process.spawn+wait, so error
+#             reporting goes through exit status + stderr.
+#             Skip the socket open on Windows and stream errors
+#             to stderr.
+# Preserves:  macOS/Linux behavior unchanged.
+diff --git a/Library/Homebrew/build.rb b/Library/Homebrew/build.rb
+index a7552bf..1c70e33 100644
+--- a/Library/Homebrew/build.rb
++++ b/Library/Homebrew/build.rb
+@@ -264,8 +264,16 @@ begin
+   args = Homebrew::Cmd::InstallCmd.new.args
+   Context.current = args.context
+ 
+-  error_pipe = Utils::UNIXSocketExt.open(ENV.fetch("HOMEBREW_ERROR_PIPE"), &:recv_io)
+-  error_pipe.fcntl(Fcntl::F_SETFD, Fcntl::FD_CLOEXEC)
++  # Windows has no UNIX socket support that matches the POSIX path.
++  # The safe_fork stub already runs the build in-process via
++  # Process.spawn+wait, so error reporting goes back through the
++  # child's exit status and stderr. Skip the socket setup here.
++  error_pipe = if RbConfig::CONFIG["host_os"].match?(/mswin|mingw|cygwin/)
++    nil
++  else
++    Utils::UNIXSocketExt.open(ENV.fetch("HOMEBREW_ERROR_PIPE"), &:recv_io)
++  end
++  error_pipe&.fcntl(Fcntl::F_SETFD, Fcntl::FD_CLOEXEC)
+ 
+   trap("INT", old_trap)
+ 
+@@ -308,6 +316,16 @@ rescue Exception => e # rubocop:disable Lint/RescueException
+     error_hash["output"] = e.output
+   end
+ 
++  if RbConfig::CONFIG["host_os"].match?(/mswin|mingw|cygwin/)
++    # Windows: stream the error to stderr so the parent
++    # process (the launcher's Ruby) sees what went wrong.
++    $stderr.puts "==> Build error: #{e.class}: #{e.message}"
++    if e.respond_to?(:backtrace) && e.backtrace
++      e.backtrace.first(20).each { |line| $stderr.puts "  #{line}" }
++    end
++    $stderr.puts "==> error_hash json:"
++    $stderr.puts error_hash.to_json
++  end
+   error_pipe&.puts error_hash.to_json
+   error_pipe&.close
+   exit! 1

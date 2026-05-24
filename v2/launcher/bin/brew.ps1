@@ -311,6 +311,15 @@ function Set-HomebrewEnvironment {
     # remain available for commands that need them.
     $env:HOMEBREW_SKIP_INITIAL_GEM_INSTALL = "1"
 
+    # Upstream's utils/ruby.sh exports HOMEBREW_BUNDLER_VERSION before
+    # invoking ruby. The build child spawned via Utils.safe_fork
+    # (Process.spawn under windows-fork-stub.patch) inherits env from
+    # the parent Ruby. Set it here so a child Ruby that runs without
+    # going through bash again (e.g. build.rb) finds the var on its
+    # first read at standalone/init.rb:61. Keep in sync with the
+    # vendored ruby.sh value.
+    $env:HOMEBREW_BUNDLER_VERSION = "4.0.10"
+
     # Bypass Hardware::CPU.cores (which uses fork-based IO.popen via
     # Utils.popen) by setting concrete concurrency values. Auto-detection
     # would call getconf via IO.popen("-", mode) - the fork-myself idiom
