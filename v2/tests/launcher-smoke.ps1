@@ -290,7 +290,15 @@ try {
     # opening "Bootstrapping Homebrew runtime..." block and the manifest path
     # in the placeholders-filled error message - either path includes the
     # prefix verbatim.
-    Assert-True ($r.Output -match [regex]::Escape("Homebrew V2 Test Prefix")) `
+    #
+    # Windows PowerShell wraps Write-Error output at $Host.UI.RawUI.BufferSize
+    # (default 80 columns under -NonInteractive). That can split the path
+    # substring across a newline mid-word ("Homebrew V2 Test\nPrefix\..."),
+    # which makes a literal regex match miss. Collapse all whitespace runs
+    # to a single space before checking; the round-trip evidence (no chars
+    # dropped, no chars added) is still preserved.
+    $outputCollapsed = ($r.Output -replace "\s+", " ")
+    Assert-True ($outputCollapsed -match [regex]::Escape("Homebrew V2 Test Prefix")) `
         "Test 6: error or status output should contain the prefix path with spaces preserved. Got: $($r.Output)"
     Write-Host "Test 6 passed."
 
