@@ -1,7 +1,7 @@
 {
     "schemaVersion":  "0",
     "launcherVersion":  "0.1.0-dev",
-    "generatedAt":  "2026-05-24T16:02:16Z",
+    "generatedAt":  "2026-05-24T17:01:45Z",
     "placeholdersFilled":  true,
     "components":  {
                        "mingit":  {
@@ -12,9 +12,9 @@
                                       "stripTopLevel":  false
                                   },
                        "ruby":  {
-                                    "version":  "3.3.6-1",
-                                    "url":  "https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-3.3.6-1/rubyinstaller-3.3.6-1-x64.7z",
-                                    "sha256":  "c0409afee7429b1c2da3a0ce4ecf1ac65673e47901cc4ae455f0d08e1975d179",
+                                    "version":  "4.0.5-1",
+                                    "url":  "https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-4.0.5-1/rubyinstaller-4.0.5-1-x64.7z",
+                                    "sha256":  "74e31613fc71e6e23431dfc4d8b6ec2818a4dc1fd16e0983b074144c16719c8b",
                                     "extract":  "7z",
                                     "stripTopLevel":  true
                                 },
@@ -36,11 +36,6 @@
                         "appliesTo":  "homebrew"
                     },
                     {
-                        "path":  "patches/windows-ruby-version.patch",
-                        "sha256":  "21cdad8bbee9bb2736c8cc6376e5c2eca49297cb807ee25d893de2011d1e9ccb",
-                        "appliesTo":  "homebrew"
-                    },
-                    {
                         "path":  "patches/windows-path-separator.patch",
                         "sha256":  "efb93c626db9feee6f7f54263ecda1ac15a9db8405fe71f784aa14eed4f8a43d",
                         "appliesTo":  "homebrew"
@@ -48,11 +43,6 @@
                     {
                         "path":  "patches/windows-bundler-lookup.patch",
                         "sha256":  "76045c66693193075fa8e4480653fb5a3bbe34f4bc7d398a17182bf692ad2438",
-                        "appliesTo":  "homebrew"
-                    },
-                    {
-                        "path":  "patches/windows-gem-api-version.patch",
-                        "sha256":  "323570023b7e2f96574bd376bdca528534dccb20d1b0e861479c93042b90938a",
                         "appliesTo":  "homebrew"
                     }
                 ]

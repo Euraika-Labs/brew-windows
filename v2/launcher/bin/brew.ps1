@@ -300,6 +300,20 @@ function Set-HomebrewEnvironment {
     # remain available for commands that need them.
     $env:HOMEBREW_SKIP_INITIAL_GEM_INSTALL = "1"
 
+    # Bypass Hardware::CPU.cores (which uses fork-based IO.popen via
+    # Utils.popen) by setting concrete concurrency values. Auto-detection
+    # would call getconf via IO.popen("-", mode) - the fork-myself idiom
+    # that Windows Ruby does not implement.
+    $env:HOMEBREW_DOWNLOAD_CONCURRENCY = "4"
+    $env:HOMEBREW_MAKE_JOBS = "4"
+
+    # Skip the API-prefetch step. Homebrew uses a fork-based parallel
+    # DownloadQueue (Ruby Process.fork) for prefetching formula/cask JSON
+    # APIs. Fork is unimplemented on Windows; downloads error out. The
+    # API is only required for some install paths anyway. Doctor and
+    # config do not need it.
+    $env:HOMEBREW_NO_INSTALL_FROM_API = "1"
+
     # Force UTF-8 for both PowerShell host streams and the bash subprocess.
     # See HOMEBREW_INTEGRATION.md "Locale, Encoding, And Code Pages".
     [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
@@ -725,6 +739,14 @@ function Install-HomebrewComponent {
         throw "git clone of $url failed (exit code $LASTEXITCODE)."
     }
 
+    # Enable long-path support inside this repo so git can write files
+    # whose absolute Windows paths exceed MAX_PATH (260 chars). Without
+    # this, git silently skips files like
+    # ...\concurrent-ruby-1.3.6\lib\concurrent-ruby\concurrent\synchronization\abstract_lockable_object.rb
+    # leaving a working tree with missing files that show up as deleted
+    # in `git status` later.
+    & $gitExe -C $cloneDir config core.longpaths true
+
     & $gitExe -C $cloneDir fetch --depth=1 origin $ref
     if ($LASTEXITCODE -ne 0) {
         throw "git fetch of commit $ref from $url failed (exit code $LASTEXITCODE)."
@@ -793,6 +815,111 @@ function Install-HomebrewComponent {
     }
 
     Install-RuntimeComponentSwap -Prefix $Prefix -ComponentName "homebrew" -StagedSource $cloneDir -LogPath $LogPath
+
+    # The swap (Move-Item of the staging tree) can lose files on very deep
+    # paths under certain Windows conditions. Recover by re-checking-out
+    # HEAD from the moved git repo (cheap because all blobs are local) and
+    # then re-applying the patches against the recovered working tree.
+    $installedHomebrew = Join-Path $Prefix "runtime\homebrew"
+    # git emits whitespace warnings on stderr; our StrictMode + $ErrorActionPreference="Stop"
+    # promotes that to a fatal error. Wrap each native invocation in a
+    # try/catch that swallows the wrapped NativeCommandError so long as
+    # $LASTEXITCODE indicates success.
+    function Invoke-GitQuiet {
+        param([string]$Exe, [string[]]$Args, [string]$Cwd)
+        try {
+            $oldPref = $ErrorActionPreference
+            $ErrorActionPreference = "Continue"
+            $argv = @("-C", $Cwd) + $Args
+            & $Exe @argv 2>&1 | Out-Null
+        } finally {
+            $ErrorActionPreference = $oldPref
+        }
+    }
+
+    Invoke-GitQuiet -Exe $gitExe -Args @("reset", "--hard", "HEAD") -Cwd $installedHomebrew
+    Invoke-GitQuiet -Exe $gitExe -Args @("clean", "-fdx") -Cwd $installedHomebrew
+    if ($null -ne $Patches) {
+        foreach ($patch in $Patches) {
+            $patchRelPath = Get-ComponentProperty -Container $patch -Name "path"
+            $appliesTo = Get-ComponentProperty -Container $patch -Name "appliesTo"
+            if (-not [string]::IsNullOrWhiteSpace($appliesTo) -and $appliesTo -ne "homebrew") { continue }
+            $patchAbsPath = Join-Path $Prefix $patchRelPath
+            Invoke-GitQuiet -Exe $gitExe -Args @("apply", $patchAbsPath) -Cwd $installedHomebrew
+        }
+    }
+    Write-RuntimeLogEntry -LogPath $LogPath -Component "homebrew" -State "POST_SWAP_RECHECKOUT" -Details ("path={0}" -f $installedHomebrew)
+
+    # The symlink repair has to run AFTER the swap so the junctions store
+    # absolute paths to the final installed location (NTFS reparse points
+    # always resolve relative targets to absolute at creation time).
+    Repair-GitSymlinks -RepoDir $installedHomebrew -GitExe $gitExe -LogPath $LogPath
+}
+
+function Repair-GitSymlinks {
+    param(
+        [string]$RepoDir,
+        [string]$GitExe,
+        [string]$LogPath
+    )
+
+    # Git on Windows without admin/Developer Mode writes symbolic-link
+    # entries as plain text files containing the link target instead of
+    # creating real symlinks. Homebrew's repository ships ~159 such
+    # symlinks (notably vendor/gems/<gem> -> <gem>-<version>/) that Ruby
+    # code requires via the unsuffixed name. Without repair, every
+    # require("vendor/gems/mechanize/...") fails with LoadError and
+    # Homebrew.require? silently swallows it - which masquerades as
+    # "Unknown command: brew <name>" for any cmd whose load chain touches
+    # download_strategy.rb (including brew doctor, brew install, etc.).
+    #
+    # Resolution without elevation: create NTFS junctions for directory
+    # targets and hardlinks for file targets. Both work without admin
+    # rights or Developer Mode.
+
+    $entries = & $GitExe -C $RepoDir ls-files --stage
+    if ($LASTEXITCODE -ne 0) {
+        throw "git ls-files failed while scanning for symlinks (exit $LASTEXITCODE)."
+    }
+
+    $repaired = 0
+    foreach ($line in $entries) {
+        if (-not ($line -match "^120000\s+\S+\s+\S+\s+(.+)$")) {
+            continue
+        }
+
+        $relPath = $matches[1].Trim()
+        $linkFile = Join-Path $RepoDir $relPath
+        if (-not (Test-Path -LiteralPath $linkFile -PathType Leaf)) {
+            continue
+        }
+
+        $targetSpec = (Get-Content -LiteralPath $linkFile -Raw).TrimEnd("`r","`n","/","\")
+        if ([string]::IsNullOrWhiteSpace($targetSpec)) {
+            continue
+        }
+
+        $linkDir = Split-Path -Parent $linkFile
+        $targetAbs = [System.IO.Path]::GetFullPath((Join-Path $linkDir $targetSpec))
+        if (-not (Test-Path -LiteralPath $targetAbs)) {
+            # Dangling symlink in the upstream repo - skip silently.
+            continue
+        }
+
+        Remove-Item -LiteralPath $linkFile -Force
+        if (Test-Path -LiteralPath $targetAbs -PathType Container) {
+            # Directory junction. No admin required.
+            & cmd.exe /c mklink /J "`"$linkFile`"" "`"$targetAbs`"" 2>$null | Out-Null
+        } else {
+            # File hardlink. No admin required.
+            & cmd.exe /c mklink /H "`"$linkFile`"" "`"$targetAbs`"" 2>$null | Out-Null
+        }
+        if ($LASTEXITCODE -eq 0) {
+            $repaired++
+        }
+    }
+
+    Write-RuntimeLogEntry -LogPath $LogPath -Component "homebrew" -State "SYMLINKS_REPAIRED" -Details ("count={0}" -f $repaired)
 }
 
 # ---------------------------------------------------------------------------
